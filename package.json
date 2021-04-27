@@ -1,0 +1,24 @@
+{
+  "name": "f1laptimes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "entry.js",
+  "scripts": {
+    "prod-build": "esbuild entry.js --bundle --minify --outfile=out.js --target=chrome58,firefox57,safari11,edge16",
+    "build": "esbuild entry.js --bundle --sourcemap --outfile=dist/out.js --watch"
+    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cris415/f1laptimes.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cris415/f1laptimes/issues"
+  },
+  "homepage": "https://github.com/Cris415/f1laptimes#readme",
+  "dependencies": {
+    "esbuild": "^0.11.15"
+  }
+}
