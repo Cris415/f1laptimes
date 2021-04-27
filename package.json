@@ -6,7 +6,6 @@
   "scripts": {
     "prod-build": "esbuild entry.js --bundle --minify --outfile=out.js --target=chrome58,firefox57,safari11,edge16",
     "build": "esbuild entry.js --bundle --sourcemap --outfile=dist/out.js --watch"
-    
   },
   "repository": {
     "type": "git",
@@ -19,6 +18,7 @@
   },
   "homepage": "https://github.com/Cris415/f1laptimes#readme",
   "dependencies": {
+    "d3": "^6.7.0",
     "esbuild": "^0.11.15"
   }
 }
