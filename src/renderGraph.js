@@ -33,7 +33,7 @@ function renderGraph(svg, lapData, driver, race) {
     .range([innerHeight, 0])
     .nice();
 
-  //
+  // create main group
   const g = svg
     .append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
@@ -43,7 +43,9 @@ function renderGraph(svg, lapData, driver, race) {
   g.append("text").attr("class", "title").attr("y", -10).text(title);
 
   // set axis
-  const xAxis = axisBottom(xScale).tickSize(-innerHeight).tickPadding(15);
+  const xAxis = axisBottom(xScale)
+    .tickSize(-innerHeight)
+    .tickPadding(15);
 
   const yAxis = axisLeft(yScale)
     .tickFormat((d) => d + "s")
@@ -51,9 +53,18 @@ function renderGraph(svg, lapData, driver, race) {
     .tickPadding(10);
 
   // set axis label
-  const yAxisG = g.append("g").call(yAxis).attr("class", "axis");
-  yAxisG.selectAll(".domain").remove();
+  const yAxisG = g
+    .append("g")
+    .call(yAxis)
+    .attr("class", "axis");
 
+  const xAxisG = g
+    .append("g")
+    .call(xAxis)
+    .attr("class", "axis")
+    .attr("transform", `translate(0, ${innerHeight})`);
+    
+  // append axis labels
   yAxisG
     .append("text")
     .attr("class", "axis-label")
@@ -64,14 +75,6 @@ function renderGraph(svg, lapData, driver, race) {
     .attr("text-anchor", "middle")
     .text(yAxisLabel);
 
-  const xAxisG = g
-    .append("g")
-    .call(xAxis)
-    .attr("class", "axis")
-    .attr("transform", `translate(0, ${innerHeight})`);
-
-  xAxisG.select(".domain").remove();
-
   xAxisG
     .append("text")
     .attr("class", "axis-label")
@@ -80,6 +83,7 @@ function renderGraph(svg, lapData, driver, race) {
     .attr("fill", "black")
     .text(xAxisLabel);
 
+  // Create line
   const lineGenerator = line()
     .x((d) => xScale(xValue(d)))
     .y((d) => yScale(yValue(d)))

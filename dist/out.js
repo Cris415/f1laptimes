@@ -3728,10 +3728,8 @@
     const xAxis = axisBottom(xScale).tickSize(-innerHeight).tickPadding(15);
     const yAxis = axisLeft(yScale).tickFormat((d) => d + "s").tickSize(-innerWidth).tickPadding(10);
     const yAxisG = g.append("g").call(yAxis).attr("class", "axis");
-    yAxisG.selectAll(".domain").remove();
-    yAxisG.append("text").attr("class", "axis-label").attr("y", -60).attr("x", -innerHeight / 2).attr("fill", "black").attr("transform", "rotate(-90)").attr("text-anchor", "middle").text(yAxisLabel);
     const xAxisG = g.append("g").call(xAxis).attr("class", "axis").attr("transform", `translate(0, ${innerHeight})`);
-    xAxisG.select(".domain").remove();
+    yAxisG.append("text").attr("class", "axis-label").attr("y", -60).attr("x", -innerHeight / 2).attr("fill", "black").attr("transform", "rotate(-90)").attr("text-anchor", "middle").text(yAxisLabel);
     xAxisG.append("text").attr("class", "axis-label").attr("y", 50).attr("x", innerWidth / 2).attr("fill", "black").text(xAxisLabel);
     const lineGenerator = line_default().x((d) => xScale(xValue(d))).y((d) => yScale(yValue(d))).curve(monotoneX);
     const path2 = g.append("path").attr("class", "line-path").attr("d", lineGenerator(lapData));
