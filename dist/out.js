@@ -3765,15 +3765,22 @@
   var renderGraph_default = renderGraph;
 
   // src/loadData.js
-  function loadData(svg, raceId2) {
+  function loadData(svg, raceId, driver1Id, driver2Id) {
     csv2("data/races.csv").then((races) => {
+      const selectEl = document.getElementById("race-select");
+      races.sort((a, b) => b.year > a.year).forEach((race) => {
+        option = document.createElement("option");
+        option.setAttribute("value", race.raceId);
+        option.appendChild(document.createTextNode(`${race.name} ${race.year}`));
+        selectEl.appendChild(option);
+      });
       csv2("data/drivers.csv").then((drivers) => {
         csv2("data/lap_times.csv").then((laps) => {
-          const race = races.filter((race2) => race2.raceId === raceId2)[0];
-          const driver = drivers.filter((driver3) => driver3.driverId === "1")[0];
-          const driver2 = drivers.filter((driver3) => driver3.driverId === "847")[0];
-          const drivers1LapData = laps.filter((lap) => lap.driverId === "1" && lap.raceId === "1033");
-          const drivers2LapData = laps.filter((lap) => lap.driverId === "154" && lap.raceId === "1033");
+          const race = races.filter((race2) => race2.raceId === raceId)[0];
+          const driver = drivers.filter((driver3) => driver3.driverId === driver1Id)[0];
+          const driver2 = drivers.filter((driver3) => driver3.driverId === driver2Id)[0];
+          const drivers1LapData = laps.filter((lap) => lap.driverId === driver1Id && lap.raceId === raceId);
+          const drivers2LapData = laps.filter((lap) => lap.driverId === driver2Id && lap.raceId === raceId);
           const driverData = {
             laps: drivers1LapData,
             driver
@@ -3810,8 +3817,10 @@
   // entry.js
   document.addEventListener("DOMContentLoaded", () => {
     const svg = select_default2("svg");
-    raceId = "1033";
-    loadData_default(svg, raceId);
+    const raceId = "1033";
+    const driver1Id = "1";
+    const driver2Id = "847";
+    loadData_default(svg, raceId, driver1Id, driver2Id);
   });
 })();
 //# sourceMappingURL=out.js.map
