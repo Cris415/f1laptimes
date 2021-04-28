@@ -3753,8 +3753,8 @@
             d.lap = +d.lap;
             d.position = +d.position;
             d.seconds = +d.milliseconds / 1e3;
-            delete d.milliseconds;
             d.time = d.time;
+            delete d.milliseconds;
             delete d.driverId;
             delete d.raceId;
           });

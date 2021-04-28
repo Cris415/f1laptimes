@@ -9,7 +9,6 @@ import {
 } from "d3";
 
 function renderGraph(svg, lapData, driver, race) {
-
   // set the dimensions and margins of the graph
   const height = +svg.attr("height");
   const width = +svg.attr("width");

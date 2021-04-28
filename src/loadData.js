@@ -11,12 +11,13 @@ function loadData(svg) {
         const driver = drivers.filter((driver) => driver.driverId === "1")[0];
         const driverslaps = laps.filter((lap) => lap.driverId === "1" && lap.raceId === "1033");
 
+        // process data
         laps.forEach((d) => {
           d.lap = +d.lap;
           d.position = +d.position;
           d.seconds = +d.milliseconds / 1000;
-          delete d.milliseconds;
           d.time = d.time;
+          delete d.milliseconds;
           delete d.driverId;
           delete d.raceId;
         });
