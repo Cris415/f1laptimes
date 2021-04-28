@@ -10,6 +10,9 @@ body {
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   color: var(--main-text-color, black);
   background-color: var(--main-bg-color, white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 h1 {
@@ -24,19 +27,18 @@ h1 {
 }
 .axis {
   color: rgb(70, 70, 70);
-  
 }
 
 svg{
-  fill: orange;
+  fill: rgb(255, 166, 0);
   /* background-color: #eff5f9; */
-  background-color: rgb(4, 4, 4);
+  background-color: rgb(40, 40, 40);
 }
 
 .line-path {
   fill: none;
-  stroke: #03BFB5;
+  /* stroke: #03BFB5; */
   stroke-width: 3px;
-  /* stroke-linejoin: round; */
-  /* stroke-linejoin: round; */
+  stroke-linejoin: round;
+  stroke-linejoin: round;
 }

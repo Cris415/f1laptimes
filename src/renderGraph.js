@@ -3,18 +3,18 @@ import {
   extent,
   axisLeft,
   axisBottom,
-  line,
-  easePoly,
-  curveMonotoneX,
 } from "d3";
 
-function renderGraph(svg, lapData, driver, race) {
+import { createLine } from './createLine';
+
+function renderGraph(svg, race, ...drivers) {
   // set the dimensions and margins of the graph
   const height = +svg.attr("height");
   const width = +svg.attr("width");
   const margin = { top: 50, right: 20, bottom: 70, left: 80 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
+  const allLapData = [].concat(drivers[1].laps, drivers[0].laps);
 
   const xValue = (d) => d.lap;
   const xAxisLabel = "Lap";
@@ -24,12 +24,13 @@ function renderGraph(svg, lapData, driver, race) {
 
   // set the ranges
   const xScale = scaleLinear()
-    .domain(extent(lapData, xValue))
+    .domain(extent(allLapData, xValue))
     .range([0, innerWidth])
     .nice();
 
+
   const yScale = scaleLinear()
-    .domain(extent(lapData, yValue))
+    .domain(extent(allLapData, yValue))
     .range([innerHeight, 0])
     .nice();
 
@@ -39,7 +40,7 @@ function renderGraph(svg, lapData, driver, race) {
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
   // set title
-  const title = "Lap times for one race / driver";
+  const title = `Lap times for ${drivers[0].driver.surname} and ${drivers[1].driver.surname} at the ${race.name} ${race.year}`;
   g.append("text").attr("class", "title").attr("y", -10).text(title);
 
   // set axis
@@ -83,30 +84,19 @@ function renderGraph(svg, lapData, driver, race) {
     .attr("fill", "black")
     .text(xAxisLabel);
 
-  // Create line
-  const lineGenerator = line()
-    .x((d) => xScale(xValue(d)))
-    .y((d) => yScale(yValue(d)))
-    .curve(curveMonotoneX);
+    // Iterate over driver data and create line for each driver
+    // store in a lines object
+    const lines = {}
+    drivers.forEach(driver => {
+      lines[driver.driver.code] = new createLine(g, driver.laps, xScale, yScale, xValue, yValue);
+      lines[driver.driver.code].render();
+      lines[driver.driver.code].animate();
+    })
 
-  const path = g
-    .append("path")
-    .attr("class", "line-path")
-    .attr("d", lineGenerator(lapData));
-
-  // Animation code
-  const totalLength = path.node().getTotalLength();
-  path
-    .attr("stroke-dasharray", totalLength + " " + totalLength)
-    .attr("stroke-dashoffset", totalLength)
-    .transition()
-    .duration(4000)
-    .ease(easePoly)
-    .attr("stroke-dashoffset", 0);
 
   // Circles for scatter plot
   g.selectAll("circle")
-    .data(lapData)
+    .data(allLapData)
     .enter()
     .append("circle")
     .attr("cy", (d) => yScale(yValue(d)))

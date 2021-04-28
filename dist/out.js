@@ -3709,21 +3709,44 @@
     return node.__zoom;
   }
 
+  // src/createLine.js
+  var createLine = class {
+    constructor(group, data, xScale, yScale, xValue, yValue, color2 = "white") {
+      this.group = group;
+      this.data = data;
+      this.color = color2;
+      this.lineGeneratorOutput;
+      this.lineGenerator(xScale, yScale, xValue, yValue);
+    }
+    lineGenerator(xScale, yScale, xValue, yValue) {
+      this.lineGeneratorOutput = line_default().x((d) => xScale(xValue(d))).y((d) => yScale(yValue(d))).curve(monotoneX);
+    }
+    animate() {
+      const totalLength = this.path.node().getTotalLength();
+      this.path.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(5e3).ease(polyInOut).attr("stroke-dashoffset", 0);
+    }
+    render() {
+      this.path = this.group.append("path").attr("class", "line-path").style("stroke", this.color).attr("d", this.lineGeneratorOutput(this.data));
+      return this.path;
+    }
+  };
+
   // src/renderGraph.js
-  function renderGraph(svg, lapData, driver, race) {
+  function renderGraph(svg, race, ...drivers) {
     const height = +svg.attr("height");
     const width = +svg.attr("width");
     const margin = {top: 50, right: 20, bottom: 70, left: 80};
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
+    const allLapData = [].concat(drivers[1].laps, drivers[0].laps);
     const xValue = (d) => d.lap;
     const xAxisLabel = "Lap";
     const yValue = (d) => d.seconds;
     const yAxisLabel = "Lap time";
-    const xScale = linear2().domain(extent_default(lapData, xValue)).range([0, innerWidth]).nice();
-    const yScale = linear2().domain(extent_default(lapData, yValue)).range([innerHeight, 0]).nice();
+    const xScale = linear2().domain(extent_default(allLapData, xValue)).range([0, innerWidth]).nice();
+    const yScale = linear2().domain(extent_default(allLapData, yValue)).range([innerHeight, 0]).nice();
     const g = svg.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
-    const title = "Lap times for one race / driver";
+    const title = `Lap times for ${drivers[0].driver.surname} and ${drivers[1].driver.surname} at the ${race.name} ${race.year}`;
     g.append("text").attr("class", "title").attr("y", -10).text(title);
     const xAxis = axisBottom(xScale).tickSize(-innerHeight).tickPadding(15);
     const yAxis = axisLeft(yScale).tickFormat((d) => d + "s").tickSize(-innerWidth).tickPadding(10);
@@ -3731,23 +3754,35 @@
     const xAxisG = g.append("g").call(xAxis).attr("class", "axis").attr("transform", `translate(0, ${innerHeight})`);
     yAxisG.append("text").attr("class", "axis-label").attr("y", -60).attr("x", -innerHeight / 2).attr("fill", "black").attr("transform", "rotate(-90)").attr("text-anchor", "middle").text(yAxisLabel);
     xAxisG.append("text").attr("class", "axis-label").attr("y", 50).attr("x", innerWidth / 2).attr("fill", "black").text(xAxisLabel);
-    const lineGenerator = line_default().x((d) => xScale(xValue(d))).y((d) => yScale(yValue(d))).curve(monotoneX);
-    const path2 = g.append("path").attr("class", "line-path").attr("d", lineGenerator(lapData));
-    const totalLength = path2.node().getTotalLength();
-    path2.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(4e3).ease(polyInOut).attr("stroke-dashoffset", 0);
-    g.selectAll("circle").data(lapData).enter().append("circle").attr("cy", (d) => yScale(yValue(d))).attr("cx", (d) => xScale(xValue(d))).attr("r", 2);
+    const lines = {};
+    drivers.forEach((driver) => {
+      lines[driver.driver.code] = new createLine(g, driver.laps, xScale, yScale, xValue, yValue);
+      lines[driver.driver.code].render();
+      lines[driver.driver.code].animate();
+    });
+    g.selectAll("circle").data(allLapData).enter().append("circle").attr("cy", (d) => yScale(yValue(d))).attr("cx", (d) => xScale(xValue(d))).attr("r", 2);
   }
   var renderGraph_default = renderGraph;
 
   // src/loadData.js
-  function loadData(svg) {
+  function loadData(svg, raceId2) {
     csv2("data/races.csv").then((races) => {
       csv2("data/drivers.csv").then((drivers) => {
         csv2("data/lap_times.csv").then((laps) => {
-          const race = races.filter((race2) => race2.raceId === "1033")[0];
-          const driver = drivers.filter((driver2) => driver2.driverId === "1")[0];
-          const driverslaps = laps.filter((lap) => lap.driverId === "1" && lap.raceId === "1033");
-          laps.forEach((d) => {
+          const race = races.filter((race2) => race2.raceId === raceId2)[0];
+          const driver = drivers.filter((driver3) => driver3.driverId === "1")[0];
+          const driver2 = drivers.filter((driver3) => driver3.driverId === "847")[0];
+          const drivers1LapData = laps.filter((lap) => lap.driverId === "1" && lap.raceId === "1033");
+          const drivers2LapData = laps.filter((lap) => lap.driverId === "154" && lap.raceId === "1033");
+          const driverData = {
+            laps: drivers1LapData,
+            driver
+          };
+          const driver2Data = {
+            laps: drivers2LapData,
+            driver: driver2
+          };
+          driverData.laps.forEach((d) => {
             d.lap = +d.lap;
             d.position = +d.position;
             d.seconds = +d.milliseconds / 1e3;
@@ -3756,7 +3791,16 @@
             delete d.driverId;
             delete d.raceId;
           });
-          renderGraph_default(svg, driverslaps, driver, race);
+          driver2Data.laps.forEach((d) => {
+            d.lap = +d.lap;
+            d.position = +d.position;
+            d.seconds = +d.milliseconds / 1e3;
+            d.time = d.time;
+            delete d.milliseconds;
+            delete d.driverId;
+            delete d.raceId;
+          });
+          renderGraph_default(svg, race, driver2Data, driverData);
         });
       });
     });
@@ -3766,7 +3810,8 @@
   // entry.js
   document.addEventListener("DOMContentLoaded", () => {
     const svg = select_default2("svg");
-    loadData_default(svg);
+    raceId = "1033";
+    loadData_default(svg, raceId);
   });
 })();
 //# sourceMappingURL=out.js.map
