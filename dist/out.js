@@ -1,4 +1,264 @@
 (() => {
+  // node_modules/d3-array/src/ascending.js
+  function ascending_default(a, b) {
+    return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
+  }
+
+  // node_modules/d3-array/src/bisector.js
+  function bisector_default(f) {
+    let delta = f;
+    let compare = f;
+    if (f.length === 1) {
+      delta = (d, x2) => f(d) - x2;
+      compare = ascendingComparator(f);
+    }
+    function left2(a, x2, lo, hi) {
+      if (lo == null)
+        lo = 0;
+      if (hi == null)
+        hi = a.length;
+      while (lo < hi) {
+        const mid = lo + hi >>> 1;
+        if (compare(a[mid], x2) < 0)
+          lo = mid + 1;
+        else
+          hi = mid;
+      }
+      return lo;
+    }
+    function right2(a, x2, lo, hi) {
+      if (lo == null)
+        lo = 0;
+      if (hi == null)
+        hi = a.length;
+      while (lo < hi) {
+        const mid = lo + hi >>> 1;
+        if (compare(a[mid], x2) > 0)
+          hi = mid;
+        else
+          lo = mid + 1;
+      }
+      return lo;
+    }
+    function center2(a, x2, lo, hi) {
+      if (lo == null)
+        lo = 0;
+      if (hi == null)
+        hi = a.length;
+      const i = left2(a, x2, lo, hi - 1);
+      return i > lo && delta(a[i - 1], x2) > -delta(a[i], x2) ? i - 1 : i;
+    }
+    return {left: left2, center: center2, right: right2};
+  }
+  function ascendingComparator(f) {
+    return (d, x2) => ascending_default(f(d), x2);
+  }
+
+  // node_modules/d3-array/src/number.js
+  function number_default(x2) {
+    return x2 === null ? NaN : +x2;
+  }
+
+  // node_modules/d3-array/src/bisect.js
+  var ascendingBisect = bisector_default(ascending_default);
+  var bisectRight = ascendingBisect.right;
+  var bisectLeft = ascendingBisect.left;
+  var bisectCenter = bisector_default(number_default).center;
+  var bisect_default = bisectRight;
+
+  // node_modules/d3-array/src/extent.js
+  function extent_default(values, valueof) {
+    let min;
+    let max;
+    if (valueof === void 0) {
+      for (const value of values) {
+        if (value != null) {
+          if (min === void 0) {
+            if (value >= value)
+              min = max = value;
+          } else {
+            if (min > value)
+              min = value;
+            if (max < value)
+              max = value;
+          }
+        }
+      }
+    } else {
+      let index = -1;
+      for (let value of values) {
+        if ((value = valueof(value, ++index, values)) != null) {
+          if (min === void 0) {
+            if (value >= value)
+              min = max = value;
+          } else {
+            if (min > value)
+              min = value;
+            if (max < value)
+              max = value;
+          }
+        }
+      }
+    }
+    return [min, max];
+  }
+
+  // node_modules/d3-array/src/ticks.js
+  var e10 = Math.sqrt(50);
+  var e5 = Math.sqrt(10);
+  var e2 = Math.sqrt(2);
+  function ticks_default(start2, stop, count) {
+    var reverse, i = -1, n, ticks, step;
+    stop = +stop, start2 = +start2, count = +count;
+    if (start2 === stop && count > 0)
+      return [start2];
+    if (reverse = stop < start2)
+      n = start2, start2 = stop, stop = n;
+    if ((step = tickIncrement(start2, stop, count)) === 0 || !isFinite(step))
+      return [];
+    if (step > 0) {
+      let r0 = Math.round(start2 / step), r1 = Math.round(stop / step);
+      if (r0 * step < start2)
+        ++r0;
+      if (r1 * step > stop)
+        --r1;
+      ticks = new Array(n = r1 - r0 + 1);
+      while (++i < n)
+        ticks[i] = (r0 + i) * step;
+    } else {
+      step = -step;
+      let r0 = Math.round(start2 * step), r1 = Math.round(stop * step);
+      if (r0 / step < start2)
+        ++r0;
+      if (r1 / step > stop)
+        --r1;
+      ticks = new Array(n = r1 - r0 + 1);
+      while (++i < n)
+        ticks[i] = (r0 + i) / step;
+    }
+    if (reverse)
+      ticks.reverse();
+    return ticks;
+  }
+  function tickIncrement(start2, stop, count) {
+    var step = (stop - start2) / Math.max(0, count), power = Math.floor(Math.log(step) / Math.LN10), error = step / Math.pow(10, power);
+    return power >= 0 ? (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1) * Math.pow(10, power) : -Math.pow(10, -power) / (error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1);
+  }
+  function tickStep(start2, stop, count) {
+    var step0 = Math.abs(stop - start2) / Math.max(0, count), step1 = Math.pow(10, Math.floor(Math.log(step0) / Math.LN10)), error = step0 / step1;
+    if (error >= e10)
+      step1 *= 10;
+    else if (error >= e5)
+      step1 *= 5;
+    else if (error >= e2)
+      step1 *= 2;
+    return stop < start2 ? -step1 : step1;
+  }
+
+  // node_modules/d3-axis/src/array.js
+  var slice = Array.prototype.slice;
+
+  // node_modules/d3-axis/src/identity.js
+  function identity_default(x2) {
+    return x2;
+  }
+
+  // node_modules/d3-axis/src/axis.js
+  var top = 1;
+  var right = 2;
+  var bottom = 3;
+  var left = 4;
+  var epsilon = 1e-6;
+  function translateX(x2) {
+    return "translate(" + x2 + ",0)";
+  }
+  function translateY(y2) {
+    return "translate(0," + y2 + ")";
+  }
+  function number(scale) {
+    return (d) => +scale(d);
+  }
+  function center(scale, offset) {
+    offset = Math.max(0, scale.bandwidth() - offset * 2) / 2;
+    if (scale.round())
+      offset = Math.round(offset);
+    return (d) => +scale(d) + offset;
+  }
+  function entering() {
+    return !this.__axis;
+  }
+  function axis(orient, scale) {
+    var tickArguments = [], tickValues = null, tickFormat2 = null, tickSizeInner = 6, tickSizeOuter = 6, tickPadding = 3, offset = typeof window !== "undefined" && window.devicePixelRatio > 1 ? 0 : 0.5, k = orient === top || orient === left ? -1 : 1, x2 = orient === left || orient === right ? "x" : "y", transform2 = orient === top || orient === bottom ? translateX : translateY;
+    function axis2(context) {
+      var values = tickValues == null ? scale.ticks ? scale.ticks.apply(scale, tickArguments) : scale.domain() : tickValues, format2 = tickFormat2 == null ? scale.tickFormat ? scale.tickFormat.apply(scale, tickArguments) : identity_default : tickFormat2, spacing = Math.max(tickSizeInner, 0) + tickPadding, range = scale.range(), range0 = +range[0] + offset, range1 = +range[range.length - 1] + offset, position = (scale.bandwidth ? center : number)(scale.copy(), offset), selection2 = context.selection ? context.selection() : context, path2 = selection2.selectAll(".domain").data([null]), tick = selection2.selectAll(".tick").data(values, scale).order(), tickExit = tick.exit(), tickEnter = tick.enter().append("g").attr("class", "tick"), line = tick.select("line"), text = tick.select("text");
+      path2 = path2.merge(path2.enter().insert("path", ".tick").attr("class", "domain").attr("stroke", "currentColor"));
+      tick = tick.merge(tickEnter);
+      line = line.merge(tickEnter.append("line").attr("stroke", "currentColor").attr(x2 + "2", k * tickSizeInner));
+      text = text.merge(tickEnter.append("text").attr("fill", "currentColor").attr(x2, k * spacing).attr("dy", orient === top ? "0em" : orient === bottom ? "0.71em" : "0.32em"));
+      if (context !== selection2) {
+        path2 = path2.transition(context);
+        tick = tick.transition(context);
+        line = line.transition(context);
+        text = text.transition(context);
+        tickExit = tickExit.transition(context).attr("opacity", epsilon).attr("transform", function(d) {
+          return isFinite(d = position(d)) ? transform2(d + offset) : this.getAttribute("transform");
+        });
+        tickEnter.attr("opacity", epsilon).attr("transform", function(d) {
+          var p = this.parentNode.__axis;
+          return transform2((p && isFinite(p = p(d)) ? p : position(d)) + offset);
+        });
+      }
+      tickExit.remove();
+      path2.attr("d", orient === left || orient === right ? tickSizeOuter ? "M" + k * tickSizeOuter + "," + range0 + "H" + offset + "V" + range1 + "H" + k * tickSizeOuter : "M" + offset + "," + range0 + "V" + range1 : tickSizeOuter ? "M" + range0 + "," + k * tickSizeOuter + "V" + offset + "H" + range1 + "V" + k * tickSizeOuter : "M" + range0 + "," + offset + "H" + range1);
+      tick.attr("opacity", 1).attr("transform", function(d) {
+        return transform2(position(d) + offset);
+      });
+      line.attr(x2 + "2", k * tickSizeInner);
+      text.attr(x2, k * spacing).text(format2);
+      selection2.filter(entering).attr("fill", "none").attr("font-size", 10).attr("font-family", "sans-serif").attr("text-anchor", orient === right ? "start" : orient === left ? "end" : "middle");
+      selection2.each(function() {
+        this.__axis = position;
+      });
+    }
+    axis2.scale = function(_) {
+      return arguments.length ? (scale = _, axis2) : scale;
+    };
+    axis2.ticks = function() {
+      return tickArguments = slice.call(arguments), axis2;
+    };
+    axis2.tickArguments = function(_) {
+      return arguments.length ? (tickArguments = _ == null ? [] : slice.call(_), axis2) : tickArguments.slice();
+    };
+    axis2.tickValues = function(_) {
+      return arguments.length ? (tickValues = _ == null ? null : slice.call(_), axis2) : tickValues && tickValues.slice();
+    };
+    axis2.tickFormat = function(_) {
+      return arguments.length ? (tickFormat2 = _, axis2) : tickFormat2;
+    };
+    axis2.tickSize = function(_) {
+      return arguments.length ? (tickSizeInner = tickSizeOuter = +_, axis2) : tickSizeInner;
+    };
+    axis2.tickSizeInner = function(_) {
+      return arguments.length ? (tickSizeInner = +_, axis2) : tickSizeInner;
+    };
+    axis2.tickSizeOuter = function(_) {
+      return arguments.length ? (tickSizeOuter = +_, axis2) : tickSizeOuter;
+    };
+    axis2.tickPadding = function(_) {
+      return arguments.length ? (tickPadding = +_, axis2) : tickPadding;
+    };
+    axis2.offset = function(_) {
+      return arguments.length ? (offset = +_, axis2) : offset;
+    };
+    return axis2;
+  }
+  function axisBottom(scale) {
+    return axis(bottom, scale);
+  }
+  function axisLeft(scale) {
+    return axis(left, scale);
+  }
+
   // node_modules/d3-dispatch/src/dispatch.js
   var noop = {value: () => {
   }};
@@ -45,10 +305,10 @@
       return this;
     },
     copy: function() {
-      var copy = {}, _ = this._;
+      var copy2 = {}, _ = this._;
       for (var t in _)
-        copy[t] = _[t].slice();
-      return new Dispatch(copy);
+        copy2[t] = _[t].slice();
+      return new Dispatch(copy2);
     },
     call: function(type2, that) {
       if ((n = arguments.length - 2) > 0)
@@ -147,8 +407,8 @@
   }
 
   // node_modules/d3-selection/src/array.js
-  function array_default(x) {
-    return typeof x === "object" && "length" in x ? x : Array.from(x);
+  function array_default(x2) {
+    return typeof x2 === "object" && "length" in x2 ? x2 : Array.from(x2);
   }
 
   // node_modules/d3-selection/src/selectorAll.js
@@ -271,9 +531,9 @@
   };
 
   // node_modules/d3-selection/src/constant.js
-  function constant_default(x) {
+  function constant_default(x2) {
     return function() {
-      return x;
+      return x2;
     };
   }
 
@@ -905,6 +1165,11 @@
   };
   var selection_default = selection;
 
+  // node_modules/d3-selection/src/select.js
+  function select_default2(selector) {
+    return typeof selector === "string" ? new Selection([[document.querySelector(selector)]], [document.documentElement]) : new Selection([[selector]], root);
+  }
+
   // node_modules/d3-color/src/define.js
   function define_default(constructor, factory, prototype) {
     constructor.prototype = factory.prototype = prototype;
@@ -1104,10 +1369,10 @@
   function color_formatRgb() {
     return this.rgb().formatRgb();
   }
-  function color(format) {
+  function color(format2) {
     var m, l;
-    format = (format + "").trim().toLowerCase();
-    return (m = reHex.exec(format)) ? (l = m[1].length, m = parseInt(m[1], 16), l === 6 ? rgbn(m) : l === 3 ? new Rgb(m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, (m & 15) << 4 | m & 15, 1) : l === 8 ? rgba(m >> 24 & 255, m >> 16 & 255, m >> 8 & 255, (m & 255) / 255) : l === 4 ? rgba(m >> 12 & 15 | m >> 8 & 240, m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, ((m & 15) << 4 | m & 15) / 255) : null) : (m = reRgbInteger.exec(format)) ? new Rgb(m[1], m[2], m[3], 1) : (m = reRgbPercent.exec(format)) ? new Rgb(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, 1) : (m = reRgbaInteger.exec(format)) ? rgba(m[1], m[2], m[3], m[4]) : (m = reRgbaPercent.exec(format)) ? rgba(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, m[4]) : (m = reHslPercent.exec(format)) ? hsla(m[1], m[2] / 100, m[3] / 100, 1) : (m = reHslaPercent.exec(format)) ? hsla(m[1], m[2] / 100, m[3] / 100, m[4]) : named.hasOwnProperty(format) ? rgbn(named[format]) : format === "transparent" ? new Rgb(NaN, NaN, NaN, 0) : null;
+    format2 = (format2 + "").trim().toLowerCase();
+    return (m = reHex.exec(format2)) ? (l = m[1].length, m = parseInt(m[1], 16), l === 6 ? rgbn(m) : l === 3 ? new Rgb(m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, (m & 15) << 4 | m & 15, 1) : l === 8 ? rgba(m >> 24 & 255, m >> 16 & 255, m >> 8 & 255, (m & 255) / 255) : l === 4 ? rgba(m >> 12 & 15 | m >> 8 & 240, m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, ((m & 15) << 4 | m & 15) / 255) : null) : (m = reRgbInteger.exec(format2)) ? new Rgb(m[1], m[2], m[3], 1) : (m = reRgbPercent.exec(format2)) ? new Rgb(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, 1) : (m = reRgbaInteger.exec(format2)) ? rgba(m[1], m[2], m[3], m[4]) : (m = reRgbaPercent.exec(format2)) ? rgba(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, m[4]) : (m = reHslPercent.exec(format2)) ? hsla(m[1], m[2] / 100, m[3] / 100, 1) : (m = reHslaPercent.exec(format2)) ? hsla(m[1], m[2] / 100, m[3] / 100, m[4]) : named.hasOwnProperty(format2) ? rgbn(named[format2]) : format2 === "transparent" ? new Rgb(NaN, NaN, NaN, 0) : null;
   }
   function rgbn(n) {
     return new Rgb(n >> 16 & 255, n >> 8 & 255, n & 255, 1);
@@ -1258,7 +1523,7 @@
   }
 
   // node_modules/d3-interpolate/src/constant.js
-  var constant_default2 = (x) => () => x;
+  var constant_default2 = (x2) => () => x2;
 
   // node_modules/d3-interpolate/src/color.js
   function linear(a, d) {
@@ -1266,14 +1531,14 @@
       return a + t * d;
     };
   }
-  function exponential(a, b, y) {
-    return a = Math.pow(a, y), b = Math.pow(b, y) - a, y = 1 / y, function(t) {
-      return Math.pow(a + t * b, y);
+  function exponential(a, b, y2) {
+    return a = Math.pow(a, y2), b = Math.pow(b, y2) - a, y2 = 1 / y2, function(t) {
+      return Math.pow(a + t * b, y2);
     };
   }
-  function gamma(y) {
-    return (y = +y) === 1 ? nogamma : function(a, b) {
-      return b - a ? exponential(a, b, y) : constant_default2(isNaN(a) ? b : a);
+  function gamma(y2) {
+    return (y2 = +y2) === 1 ? nogamma : function(a, b) {
+      return b - a ? exponential(a, b, y2) : constant_default2(isNaN(a) ? b : a);
     };
   }
   function nogamma(a, b) {
@@ -1282,8 +1547,8 @@
   }
 
   // node_modules/d3-interpolate/src/rgb.js
-  var rgb_default = function rgbGamma(y) {
-    var color2 = gamma(y);
+  var rgb_default = function rgbGamma(y2) {
+    var color2 = gamma(y2);
     function rgb2(start2, end) {
       var r = color2((start2 = rgb(start2)).r, (end = rgb(end)).r), g = color2(start2.g, end.g), b = color2(start2.b, end.b), opacity = nogamma(start2.opacity, end.opacity);
       return function(t) {
@@ -1321,10 +1586,68 @@
   var rgbBasis = rgbSpline(basis_default);
   var rgbBasisClosed = rgbSpline(basisClosed_default);
 
+  // node_modules/d3-interpolate/src/numberArray.js
+  function numberArray_default(a, b) {
+    if (!b)
+      b = [];
+    var n = a ? Math.min(b.length, a.length) : 0, c = b.slice(), i;
+    return function(t) {
+      for (i = 0; i < n; ++i)
+        c[i] = a[i] * (1 - t) + b[i] * t;
+      return c;
+    };
+  }
+  function isNumberArray(x2) {
+    return ArrayBuffer.isView(x2) && !(x2 instanceof DataView);
+  }
+
+  // node_modules/d3-interpolate/src/array.js
+  function genericArray(a, b) {
+    var nb = b ? b.length : 0, na = a ? Math.min(nb, a.length) : 0, x2 = new Array(na), c = new Array(nb), i;
+    for (i = 0; i < na; ++i)
+      x2[i] = value_default(a[i], b[i]);
+    for (; i < nb; ++i)
+      c[i] = b[i];
+    return function(t) {
+      for (i = 0; i < na; ++i)
+        c[i] = x2[i](t);
+      return c;
+    };
+  }
+
+  // node_modules/d3-interpolate/src/date.js
+  function date_default(a, b) {
+    var d = new Date();
+    return a = +a, b = +b, function(t) {
+      return d.setTime(a * (1 - t) + b * t), d;
+    };
+  }
+
   // node_modules/d3-interpolate/src/number.js
-  function number_default(a, b) {
+  function number_default2(a, b) {
     return a = +a, b = +b, function(t) {
       return a * (1 - t) + b * t;
+    };
+  }
+
+  // node_modules/d3-interpolate/src/object.js
+  function object_default(a, b) {
+    var i = {}, c = {}, k;
+    if (a === null || typeof a !== "object")
+      a = {};
+    if (b === null || typeof b !== "object")
+      b = {};
+    for (k in b) {
+      if (k in a) {
+        i[k] = value_default(a[k], b[k]);
+      } else {
+        c[k] = b[k];
+      }
+    }
+    return function(t) {
+      for (k in i)
+        c[k] = i[k](t);
+      return c;
     };
   }
 
@@ -1359,7 +1682,7 @@
           s[++i] = bm;
       } else {
         s[++i] = null;
-        q.push({i, x: number_default(am, bm)});
+        q.push({i, x: number_default2(am, bm)});
       }
       bi = reB.lastIndex;
     }
@@ -1375,6 +1698,19 @@
         s[(o = q[i2]).i] = o.x(t);
       return s.join("");
     });
+  }
+
+  // node_modules/d3-interpolate/src/value.js
+  function value_default(a, b) {
+    var t = typeof b, c;
+    return b == null || t === "boolean" ? constant_default2(b) : (t === "number" ? number_default2 : t === "string" ? (c = color(b)) ? (b = c, rgb_default) : string_default : b instanceof color ? rgb_default : b instanceof Date ? date_default : isNumberArray(b) ? numberArray_default : Array.isArray(b) ? genericArray : typeof b.valueOf !== "function" && typeof b.toString !== "function" || isNaN(b) ? object_default : number_default2)(a, b);
+  }
+
+  // node_modules/d3-interpolate/src/round.js
+  function round_default(a, b) {
+    return a = +a, b = +b, function(t) {
+      return Math.round(a * (1 - t) + b * t);
+    };
   }
 
   // node_modules/d3-interpolate/src/transform/decompose.js
@@ -1433,7 +1769,7 @@
     function translate(xa, ya, xb, yb, s, q) {
       if (xa !== xb || ya !== yb) {
         var i = s.push("translate(", null, pxComma, null, pxParen);
-        q.push({i: i - 4, x: number_default(xa, xb)}, {i: i - 2, x: number_default(ya, yb)});
+        q.push({i: i - 4, x: number_default2(xa, xb)}, {i: i - 2, x: number_default2(ya, yb)});
       } else if (xb || yb) {
         s.push("translate(" + xb + pxComma + yb + pxParen);
       }
@@ -1444,14 +1780,14 @@
           b += 360;
         else if (b - a > 180)
           a += 360;
-        q.push({i: s.push(pop(s) + "rotate(", null, degParen) - 2, x: number_default(a, b)});
+        q.push({i: s.push(pop(s) + "rotate(", null, degParen) - 2, x: number_default2(a, b)});
       } else if (b) {
         s.push(pop(s) + "rotate(" + b + degParen);
       }
     }
     function skewX(a, b, s, q) {
       if (a !== b) {
-        q.push({i: s.push(pop(s) + "skewX(", null, degParen) - 2, x: number_default(a, b)});
+        q.push({i: s.push(pop(s) + "skewX(", null, degParen) - 2, x: number_default2(a, b)});
       } else if (b) {
         s.push(pop(s) + "skewX(" + b + degParen);
       }
@@ -1459,7 +1795,7 @@
     function scale(xa, ya, xb, yb, s, q) {
       if (xa !== xb || ya !== yb) {
         var i = s.push(pop(s) + "scale(", null, ",", null, ")");
-        q.push({i: i - 4, x: number_default(xa, xb)}, {i: i - 2, x: number_default(ya, yb)});
+        q.push({i: i - 4, x: number_default2(xa, xb)}, {i: i - 2, x: number_default2(ya, yb)});
       } else if (xb !== 1 || yb !== 1) {
         s.push(pop(s) + "scale(" + xb + "," + yb + ")");
       }
@@ -1821,7 +2157,7 @@
   // node_modules/d3-transition/src/transition/interpolate.js
   function interpolate_default(a, b) {
     var c;
-    return (typeof b === "number" ? number_default : b instanceof color ? rgb_default : (c = color(b)) ? (b = c, rgb_default) : string_default)(a, b);
+    return (typeof b === "number" ? number_default2 : b instanceof color ? rgb_default : (c = color(b)) ? (b = c, rgb_default) : string_default)(a, b);
   }
 
   // node_modules/d3-transition/src/transition/attr.js
@@ -2051,7 +2387,7 @@
   }
 
   // node_modules/d3-transition/src/transition/select.js
-  function select_default2(select) {
+  function select_default3(select) {
     var name = this._name, id2 = this._id;
     if (typeof select !== "function")
       select = selector_default(select);
@@ -2269,7 +2605,7 @@
   var selection_prototype = selection_default.prototype;
   Transition.prototype = transition.prototype = {
     constructor: Transition,
-    select: select_default2,
+    select: select_default3,
     selectAll: selectAll_default2,
     filter: filter_default2,
     merge: merge_default2,
@@ -2350,8 +2686,8 @@
   var X = {
     name: "x",
     handles: ["w", "e"].map(type),
-    input: function(x, e) {
-      return x == null ? null : [[+x[0], e[0][1]], [+x[1], e[1][1]]];
+    input: function(x2, e) {
+      return x2 == null ? null : [[+x2[0], e[0][1]], [+x2[1], e[1][1]]];
     },
     output: function(xy) {
       return xy && [xy[0][0], xy[1][0]];
@@ -2360,8 +2696,8 @@
   var Y = {
     name: "y",
     handles: ["n", "s"].map(type),
-    input: function(y, e) {
-      return y == null ? null : [[e[0][0], +y[0]], [e[1][0], +y[1]]];
+    input: function(y2, e) {
+      return y2 == null ? null : [[e[0][0], +y2[0]], [e[1][0], +y2[1]]];
     },
     output: function(xy) {
       return xy && [xy[0][1], xy[1][1]];
@@ -2381,64 +2717,977 @@
     return {type: t};
   }
 
+  // node_modules/d3-path/src/path.js
+  var pi = Math.PI;
+  var tau = 2 * pi;
+  var epsilon2 = 1e-6;
+  var tauEpsilon = tau - epsilon2;
+  function Path() {
+    this._x0 = this._y0 = this._x1 = this._y1 = null;
+    this._ = "";
+  }
+  function path() {
+    return new Path();
+  }
+  Path.prototype = path.prototype = {
+    constructor: Path,
+    moveTo: function(x2, y2) {
+      this._ += "M" + (this._x0 = this._x1 = +x2) + "," + (this._y0 = this._y1 = +y2);
+    },
+    closePath: function() {
+      if (this._x1 !== null) {
+        this._x1 = this._x0, this._y1 = this._y0;
+        this._ += "Z";
+      }
+    },
+    lineTo: function(x2, y2) {
+      this._ += "L" + (this._x1 = +x2) + "," + (this._y1 = +y2);
+    },
+    quadraticCurveTo: function(x1, y1, x2, y2) {
+      this._ += "Q" + +x1 + "," + +y1 + "," + (this._x1 = +x2) + "," + (this._y1 = +y2);
+    },
+    bezierCurveTo: function(x1, y1, x2, y2, x3, y3) {
+      this._ += "C" + +x1 + "," + +y1 + "," + +x2 + "," + +y2 + "," + (this._x1 = +x3) + "," + (this._y1 = +y3);
+    },
+    arcTo: function(x1, y1, x2, y2, r) {
+      x1 = +x1, y1 = +y1, x2 = +x2, y2 = +y2, r = +r;
+      var x0 = this._x1, y0 = this._y1, x21 = x2 - x1, y21 = y2 - y1, x01 = x0 - x1, y01 = y0 - y1, l01_2 = x01 * x01 + y01 * y01;
+      if (r < 0)
+        throw new Error("negative radius: " + r);
+      if (this._x1 === null) {
+        this._ += "M" + (this._x1 = x1) + "," + (this._y1 = y1);
+      } else if (!(l01_2 > epsilon2))
+        ;
+      else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon2) || !r) {
+        this._ += "L" + (this._x1 = x1) + "," + (this._y1 = y1);
+      } else {
+        var x20 = x2 - x0, y20 = y2 - y0, l21_2 = x21 * x21 + y21 * y21, l20_2 = x20 * x20 + y20 * y20, l21 = Math.sqrt(l21_2), l01 = Math.sqrt(l01_2), l = r * Math.tan((pi - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2), t01 = l / l01, t21 = l / l21;
+        if (Math.abs(t01 - 1) > epsilon2) {
+          this._ += "L" + (x1 + t01 * x01) + "," + (y1 + t01 * y01);
+        }
+        this._ += "A" + r + "," + r + ",0,0," + +(y01 * x20 > x01 * y20) + "," + (this._x1 = x1 + t21 * x21) + "," + (this._y1 = y1 + t21 * y21);
+      }
+    },
+    arc: function(x2, y2, r, a0, a1, ccw) {
+      x2 = +x2, y2 = +y2, r = +r, ccw = !!ccw;
+      var dx = r * Math.cos(a0), dy = r * Math.sin(a0), x0 = x2 + dx, y0 = y2 + dy, cw = 1 ^ ccw, da = ccw ? a0 - a1 : a1 - a0;
+      if (r < 0)
+        throw new Error("negative radius: " + r);
+      if (this._x1 === null) {
+        this._ += "M" + x0 + "," + y0;
+      } else if (Math.abs(this._x1 - x0) > epsilon2 || Math.abs(this._y1 - y0) > epsilon2) {
+        this._ += "L" + x0 + "," + y0;
+      }
+      if (!r)
+        return;
+      if (da < 0)
+        da = da % tau + tau;
+      if (da > tauEpsilon) {
+        this._ += "A" + r + "," + r + ",0,1," + cw + "," + (x2 - dx) + "," + (y2 - dy) + "A" + r + "," + r + ",0,1," + cw + "," + (this._x1 = x0) + "," + (this._y1 = y0);
+      } else if (da > epsilon2) {
+        this._ += "A" + r + "," + r + ",0," + +(da >= pi) + "," + cw + "," + (this._x1 = x2 + r * Math.cos(a1)) + "," + (this._y1 = y2 + r * Math.sin(a1));
+      }
+    },
+    rect: function(x2, y2, w, h) {
+      this._ += "M" + (this._x0 = this._x1 = +x2) + "," + (this._y0 = this._y1 = +y2) + "h" + +w + "v" + +h + "h" + -w + "Z";
+    },
+    toString: function() {
+      return this._;
+    }
+  };
+  var path_default = path;
+
+  // node_modules/d3-dsv/src/dsv.js
+  var EOL = {};
+  var EOF = {};
+  var QUOTE = 34;
+  var NEWLINE = 10;
+  var RETURN = 13;
+  function objectConverter(columns) {
+    return new Function("d", "return {" + columns.map(function(name, i) {
+      return JSON.stringify(name) + ": d[" + i + '] || ""';
+    }).join(",") + "}");
+  }
+  function customConverter(columns, f) {
+    var object = objectConverter(columns);
+    return function(row, i) {
+      return f(object(row), i, columns);
+    };
+  }
+  function inferColumns(rows) {
+    var columnSet = Object.create(null), columns = [];
+    rows.forEach(function(row) {
+      for (var column in row) {
+        if (!(column in columnSet)) {
+          columns.push(columnSet[column] = column);
+        }
+      }
+    });
+    return columns;
+  }
+  function pad(value, width) {
+    var s = value + "", length = s.length;
+    return length < width ? new Array(width - length + 1).join(0) + s : s;
+  }
+  function formatYear(year) {
+    return year < 0 ? "-" + pad(-year, 6) : year > 9999 ? "+" + pad(year, 6) : pad(year, 4);
+  }
+  function formatDate(date) {
+    var hours = date.getUTCHours(), minutes = date.getUTCMinutes(), seconds = date.getUTCSeconds(), milliseconds = date.getUTCMilliseconds();
+    return isNaN(date) ? "Invalid Date" : formatYear(date.getUTCFullYear(), 4) + "-" + pad(date.getUTCMonth() + 1, 2) + "-" + pad(date.getUTCDate(), 2) + (milliseconds ? "T" + pad(hours, 2) + ":" + pad(minutes, 2) + ":" + pad(seconds, 2) + "." + pad(milliseconds, 3) + "Z" : seconds ? "T" + pad(hours, 2) + ":" + pad(minutes, 2) + ":" + pad(seconds, 2) + "Z" : minutes || hours ? "T" + pad(hours, 2) + ":" + pad(minutes, 2) + "Z" : "");
+  }
+  function dsv_default(delimiter) {
+    var reFormat = new RegExp('["' + delimiter + "\n\r]"), DELIMITER = delimiter.charCodeAt(0);
+    function parse(text, f) {
+      var convert, columns, rows = parseRows(text, function(row, i) {
+        if (convert)
+          return convert(row, i - 1);
+        columns = row, convert = f ? customConverter(row, f) : objectConverter(row);
+      });
+      rows.columns = columns || [];
+      return rows;
+    }
+    function parseRows(text, f) {
+      var rows = [], N = text.length, I = 0, n = 0, t, eof = N <= 0, eol = false;
+      if (text.charCodeAt(N - 1) === NEWLINE)
+        --N;
+      if (text.charCodeAt(N - 1) === RETURN)
+        --N;
+      function token() {
+        if (eof)
+          return EOF;
+        if (eol)
+          return eol = false, EOL;
+        var i, j = I, c;
+        if (text.charCodeAt(j) === QUOTE) {
+          while (I++ < N && text.charCodeAt(I) !== QUOTE || text.charCodeAt(++I) === QUOTE)
+            ;
+          if ((i = I) >= N)
+            eof = true;
+          else if ((c = text.charCodeAt(I++)) === NEWLINE)
+            eol = true;
+          else if (c === RETURN) {
+            eol = true;
+            if (text.charCodeAt(I) === NEWLINE)
+              ++I;
+          }
+          return text.slice(j + 1, i - 1).replace(/""/g, '"');
+        }
+        while (I < N) {
+          if ((c = text.charCodeAt(i = I++)) === NEWLINE)
+            eol = true;
+          else if (c === RETURN) {
+            eol = true;
+            if (text.charCodeAt(I) === NEWLINE)
+              ++I;
+          } else if (c !== DELIMITER)
+            continue;
+          return text.slice(j, i);
+        }
+        return eof = true, text.slice(j, N);
+      }
+      while ((t = token()) !== EOF) {
+        var row = [];
+        while (t !== EOL && t !== EOF)
+          row.push(t), t = token();
+        if (f && (row = f(row, n++)) == null)
+          continue;
+        rows.push(row);
+      }
+      return rows;
+    }
+    function preformatBody(rows, columns) {
+      return rows.map(function(row) {
+        return columns.map(function(column) {
+          return formatValue(row[column]);
+        }).join(delimiter);
+      });
+    }
+    function format2(rows, columns) {
+      if (columns == null)
+        columns = inferColumns(rows);
+      return [columns.map(formatValue).join(delimiter)].concat(preformatBody(rows, columns)).join("\n");
+    }
+    function formatBody(rows, columns) {
+      if (columns == null)
+        columns = inferColumns(rows);
+      return preformatBody(rows, columns).join("\n");
+    }
+    function formatRows(rows) {
+      return rows.map(formatRow).join("\n");
+    }
+    function formatRow(row) {
+      return row.map(formatValue).join(delimiter);
+    }
+    function formatValue(value) {
+      return value == null ? "" : value instanceof Date ? formatDate(value) : reFormat.test(value += "") ? '"' + value.replace(/"/g, '""') + '"' : value;
+    }
+    return {
+      parse,
+      parseRows,
+      format: format2,
+      formatBody,
+      formatRows,
+      formatRow,
+      formatValue
+    };
+  }
+
+  // node_modules/d3-dsv/src/csv.js
+  var csv = dsv_default(",");
+  var csvParse = csv.parse;
+  var csvParseRows = csv.parseRows;
+  var csvFormat = csv.format;
+  var csvFormatBody = csv.formatBody;
+  var csvFormatRows = csv.formatRows;
+  var csvFormatRow = csv.formatRow;
+  var csvFormatValue = csv.formatValue;
+
+  // node_modules/d3-dsv/src/tsv.js
+  var tsv = dsv_default("	");
+  var tsvParse = tsv.parse;
+  var tsvParseRows = tsv.parseRows;
+  var tsvFormat = tsv.format;
+  var tsvFormatBody = tsv.formatBody;
+  var tsvFormatRows = tsv.formatRows;
+  var tsvFormatRow = tsv.formatRow;
+  var tsvFormatValue = tsv.formatValue;
+
+  // node_modules/d3-fetch/src/text.js
+  function responseText(response) {
+    if (!response.ok)
+      throw new Error(response.status + " " + response.statusText);
+    return response.text();
+  }
+  function text_default3(input, init2) {
+    return fetch(input, init2).then(responseText);
+  }
+
+  // node_modules/d3-fetch/src/dsv.js
+  function dsvParse(parse) {
+    return function(input, init2, row) {
+      if (arguments.length === 2 && typeof init2 === "function")
+        row = init2, init2 = void 0;
+      return text_default3(input, init2).then(function(response) {
+        return parse(response, row);
+      });
+    };
+  }
+  var csv2 = dsvParse(csvParse);
+  var tsv2 = dsvParse(tsvParse);
+
+  // node_modules/d3-format/src/formatDecimal.js
+  function formatDecimal_default(x2) {
+    return Math.abs(x2 = Math.round(x2)) >= 1e21 ? x2.toLocaleString("en").replace(/,/g, "") : x2.toString(10);
+  }
+  function formatDecimalParts(x2, p) {
+    if ((i = (x2 = p ? x2.toExponential(p - 1) : x2.toExponential()).indexOf("e")) < 0)
+      return null;
+    var i, coefficient = x2.slice(0, i);
+    return [
+      coefficient.length > 1 ? coefficient[0] + coefficient.slice(2) : coefficient,
+      +x2.slice(i + 1)
+    ];
+  }
+
+  // node_modules/d3-format/src/exponent.js
+  function exponent_default(x2) {
+    return x2 = formatDecimalParts(Math.abs(x2)), x2 ? x2[1] : NaN;
+  }
+
+  // node_modules/d3-format/src/formatGroup.js
+  function formatGroup_default(grouping, thousands) {
+    return function(value, width) {
+      var i = value.length, t = [], j = 0, g = grouping[0], length = 0;
+      while (i > 0 && g > 0) {
+        if (length + g + 1 > width)
+          g = Math.max(1, width - length);
+        t.push(value.substring(i -= g, i + g));
+        if ((length += g + 1) > width)
+          break;
+        g = grouping[j = (j + 1) % grouping.length];
+      }
+      return t.reverse().join(thousands);
+    };
+  }
+
+  // node_modules/d3-format/src/formatNumerals.js
+  function formatNumerals_default(numerals) {
+    return function(value) {
+      return value.replace(/[0-9]/g, function(i) {
+        return numerals[+i];
+      });
+    };
+  }
+
+  // node_modules/d3-format/src/formatSpecifier.js
+  var re = /^(?:(.)?([<>=^]))?([+\-( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?(~)?([a-z%])?$/i;
+  function formatSpecifier(specifier) {
+    if (!(match = re.exec(specifier)))
+      throw new Error("invalid format: " + specifier);
+    var match;
+    return new FormatSpecifier({
+      fill: match[1],
+      align: match[2],
+      sign: match[3],
+      symbol: match[4],
+      zero: match[5],
+      width: match[6],
+      comma: match[7],
+      precision: match[8] && match[8].slice(1),
+      trim: match[9],
+      type: match[10]
+    });
+  }
+  formatSpecifier.prototype = FormatSpecifier.prototype;
+  function FormatSpecifier(specifier) {
+    this.fill = specifier.fill === void 0 ? " " : specifier.fill + "";
+    this.align = specifier.align === void 0 ? ">" : specifier.align + "";
+    this.sign = specifier.sign === void 0 ? "-" : specifier.sign + "";
+    this.symbol = specifier.symbol === void 0 ? "" : specifier.symbol + "";
+    this.zero = !!specifier.zero;
+    this.width = specifier.width === void 0 ? void 0 : +specifier.width;
+    this.comma = !!specifier.comma;
+    this.precision = specifier.precision === void 0 ? void 0 : +specifier.precision;
+    this.trim = !!specifier.trim;
+    this.type = specifier.type === void 0 ? "" : specifier.type + "";
+  }
+  FormatSpecifier.prototype.toString = function() {
+    return this.fill + this.align + this.sign + this.symbol + (this.zero ? "0" : "") + (this.width === void 0 ? "" : Math.max(1, this.width | 0)) + (this.comma ? "," : "") + (this.precision === void 0 ? "" : "." + Math.max(0, this.precision | 0)) + (this.trim ? "~" : "") + this.type;
+  };
+
+  // node_modules/d3-format/src/formatTrim.js
+  function formatTrim_default(s) {
+    out:
+      for (var n = s.length, i = 1, i0 = -1, i1; i < n; ++i) {
+        switch (s[i]) {
+          case ".":
+            i0 = i1 = i;
+            break;
+          case "0":
+            if (i0 === 0)
+              i0 = i;
+            i1 = i;
+            break;
+          default:
+            if (!+s[i])
+              break out;
+            if (i0 > 0)
+              i0 = 0;
+            break;
+        }
+      }
+    return i0 > 0 ? s.slice(0, i0) + s.slice(i1 + 1) : s;
+  }
+
+  // node_modules/d3-format/src/formatPrefixAuto.js
+  var prefixExponent;
+  function formatPrefixAuto_default(x2, p) {
+    var d = formatDecimalParts(x2, p);
+    if (!d)
+      return x2 + "";
+    var coefficient = d[0], exponent = d[1], i = exponent - (prefixExponent = Math.max(-8, Math.min(8, Math.floor(exponent / 3))) * 3) + 1, n = coefficient.length;
+    return i === n ? coefficient : i > n ? coefficient + new Array(i - n + 1).join("0") : i > 0 ? coefficient.slice(0, i) + "." + coefficient.slice(i) : "0." + new Array(1 - i).join("0") + formatDecimalParts(x2, Math.max(0, p + i - 1))[0];
+  }
+
+  // node_modules/d3-format/src/formatRounded.js
+  function formatRounded_default(x2, p) {
+    var d = formatDecimalParts(x2, p);
+    if (!d)
+      return x2 + "";
+    var coefficient = d[0], exponent = d[1];
+    return exponent < 0 ? "0." + new Array(-exponent).join("0") + coefficient : coefficient.length > exponent + 1 ? coefficient.slice(0, exponent + 1) + "." + coefficient.slice(exponent + 1) : coefficient + new Array(exponent - coefficient.length + 2).join("0");
+  }
+
+  // node_modules/d3-format/src/formatTypes.js
+  var formatTypes_default = {
+    "%": (x2, p) => (x2 * 100).toFixed(p),
+    b: (x2) => Math.round(x2).toString(2),
+    c: (x2) => x2 + "",
+    d: formatDecimal_default,
+    e: (x2, p) => x2.toExponential(p),
+    f: (x2, p) => x2.toFixed(p),
+    g: (x2, p) => x2.toPrecision(p),
+    o: (x2) => Math.round(x2).toString(8),
+    p: (x2, p) => formatRounded_default(x2 * 100, p),
+    r: formatRounded_default,
+    s: formatPrefixAuto_default,
+    X: (x2) => Math.round(x2).toString(16).toUpperCase(),
+    x: (x2) => Math.round(x2).toString(16)
+  };
+
+  // node_modules/d3-format/src/identity.js
+  function identity_default2(x2) {
+    return x2;
+  }
+
+  // node_modules/d3-format/src/locale.js
+  var map = Array.prototype.map;
+  var prefixes = ["y", "z", "a", "f", "p", "n", "\xB5", "m", "", "k", "M", "G", "T", "P", "E", "Z", "Y"];
+  function locale_default(locale2) {
+    var group = locale2.grouping === void 0 || locale2.thousands === void 0 ? identity_default2 : formatGroup_default(map.call(locale2.grouping, Number), locale2.thousands + ""), currencyPrefix = locale2.currency === void 0 ? "" : locale2.currency[0] + "", currencySuffix = locale2.currency === void 0 ? "" : locale2.currency[1] + "", decimal = locale2.decimal === void 0 ? "." : locale2.decimal + "", numerals = locale2.numerals === void 0 ? identity_default2 : formatNumerals_default(map.call(locale2.numerals, String)), percent = locale2.percent === void 0 ? "%" : locale2.percent + "", minus = locale2.minus === void 0 ? "\u2212" : locale2.minus + "", nan = locale2.nan === void 0 ? "NaN" : locale2.nan + "";
+    function newFormat(specifier) {
+      specifier = formatSpecifier(specifier);
+      var fill = specifier.fill, align = specifier.align, sign = specifier.sign, symbol = specifier.symbol, zero2 = specifier.zero, width = specifier.width, comma = specifier.comma, precision = specifier.precision, trim = specifier.trim, type2 = specifier.type;
+      if (type2 === "n")
+        comma = true, type2 = "g";
+      else if (!formatTypes_default[type2])
+        precision === void 0 && (precision = 12), trim = true, type2 = "g";
+      if (zero2 || fill === "0" && align === "=")
+        zero2 = true, fill = "0", align = "=";
+      var prefix = symbol === "$" ? currencyPrefix : symbol === "#" && /[boxX]/.test(type2) ? "0" + type2.toLowerCase() : "", suffix = symbol === "$" ? currencySuffix : /[%p]/.test(type2) ? percent : "";
+      var formatType = formatTypes_default[type2], maybeSuffix = /[defgprs%]/.test(type2);
+      precision = precision === void 0 ? 6 : /[gprs]/.test(type2) ? Math.max(1, Math.min(21, precision)) : Math.max(0, Math.min(20, precision));
+      function format2(value) {
+        var valuePrefix = prefix, valueSuffix = suffix, i, n, c;
+        if (type2 === "c") {
+          valueSuffix = formatType(value) + valueSuffix;
+          value = "";
+        } else {
+          value = +value;
+          var valueNegative = value < 0 || 1 / value < 0;
+          value = isNaN(value) ? nan : formatType(Math.abs(value), precision);
+          if (trim)
+            value = formatTrim_default(value);
+          if (valueNegative && +value === 0 && sign !== "+")
+            valueNegative = false;
+          valuePrefix = (valueNegative ? sign === "(" ? sign : minus : sign === "-" || sign === "(" ? "" : sign) + valuePrefix;
+          valueSuffix = (type2 === "s" ? prefixes[8 + prefixExponent / 3] : "") + valueSuffix + (valueNegative && sign === "(" ? ")" : "");
+          if (maybeSuffix) {
+            i = -1, n = value.length;
+            while (++i < n) {
+              if (c = value.charCodeAt(i), 48 > c || c > 57) {
+                valueSuffix = (c === 46 ? decimal + value.slice(i + 1) : value.slice(i)) + valueSuffix;
+                value = value.slice(0, i);
+                break;
+              }
+            }
+          }
+        }
+        if (comma && !zero2)
+          value = group(value, Infinity);
+        var length = valuePrefix.length + value.length + valueSuffix.length, padding = length < width ? new Array(width - length + 1).join(fill) : "";
+        if (comma && zero2)
+          value = group(padding + value, padding.length ? width - valueSuffix.length : Infinity), padding = "";
+        switch (align) {
+          case "<":
+            value = valuePrefix + value + valueSuffix + padding;
+            break;
+          case "=":
+            value = valuePrefix + padding + value + valueSuffix;
+            break;
+          case "^":
+            value = padding.slice(0, length = padding.length >> 1) + valuePrefix + value + valueSuffix + padding.slice(length);
+            break;
+          default:
+            value = padding + valuePrefix + value + valueSuffix;
+            break;
+        }
+        return numerals(value);
+      }
+      format2.toString = function() {
+        return specifier + "";
+      };
+      return format2;
+    }
+    function formatPrefix2(specifier, value) {
+      var f = newFormat((specifier = formatSpecifier(specifier), specifier.type = "f", specifier)), e = Math.max(-8, Math.min(8, Math.floor(exponent_default(value) / 3))) * 3, k = Math.pow(10, -e), prefix = prefixes[8 + e / 3];
+      return function(value2) {
+        return f(k * value2) + prefix;
+      };
+    }
+    return {
+      format: newFormat,
+      formatPrefix: formatPrefix2
+    };
+  }
+
+  // node_modules/d3-format/src/defaultLocale.js
+  var locale;
+  var format;
+  var formatPrefix;
+  defaultLocale({
+    thousands: ",",
+    grouping: [3],
+    currency: ["$", ""]
+  });
+  function defaultLocale(definition) {
+    locale = locale_default(definition);
+    format = locale.format;
+    formatPrefix = locale.formatPrefix;
+    return locale;
+  }
+
+  // node_modules/d3-format/src/precisionFixed.js
+  function precisionFixed_default(step) {
+    return Math.max(0, -exponent_default(Math.abs(step)));
+  }
+
+  // node_modules/d3-format/src/precisionPrefix.js
+  function precisionPrefix_default(step, value) {
+    return Math.max(0, Math.max(-8, Math.min(8, Math.floor(exponent_default(value) / 3))) * 3 - exponent_default(Math.abs(step)));
+  }
+
+  // node_modules/d3-format/src/precisionRound.js
+  function precisionRound_default(step, max) {
+    step = Math.abs(step), max = Math.abs(max) - step;
+    return Math.max(0, exponent_default(max) - exponent_default(step)) + 1;
+  }
+
+  // node_modules/d3-scale/src/init.js
+  function initRange(domain, range) {
+    switch (arguments.length) {
+      case 0:
+        break;
+      case 1:
+        this.range(domain);
+        break;
+      default:
+        this.range(range).domain(domain);
+        break;
+    }
+    return this;
+  }
+
+  // node_modules/d3-scale/src/constant.js
+  function constants(x2) {
+    return function() {
+      return x2;
+    };
+  }
+
+  // node_modules/d3-scale/src/number.js
+  function number3(x2) {
+    return +x2;
+  }
+
+  // node_modules/d3-scale/src/continuous.js
+  var unit = [0, 1];
+  function identity2(x2) {
+    return x2;
+  }
+  function normalize(a, b) {
+    return (b -= a = +a) ? function(x2) {
+      return (x2 - a) / b;
+    } : constants(isNaN(b) ? NaN : 0.5);
+  }
+  function clamper(a, b) {
+    var t;
+    if (a > b)
+      t = a, a = b, b = t;
+    return function(x2) {
+      return Math.max(a, Math.min(b, x2));
+    };
+  }
+  function bimap(domain, range, interpolate) {
+    var d0 = domain[0], d1 = domain[1], r0 = range[0], r1 = range[1];
+    if (d1 < d0)
+      d0 = normalize(d1, d0), r0 = interpolate(r1, r0);
+    else
+      d0 = normalize(d0, d1), r0 = interpolate(r0, r1);
+    return function(x2) {
+      return r0(d0(x2));
+    };
+  }
+  function polymap(domain, range, interpolate) {
+    var j = Math.min(domain.length, range.length) - 1, d = new Array(j), r = new Array(j), i = -1;
+    if (domain[j] < domain[0]) {
+      domain = domain.slice().reverse();
+      range = range.slice().reverse();
+    }
+    while (++i < j) {
+      d[i] = normalize(domain[i], domain[i + 1]);
+      r[i] = interpolate(range[i], range[i + 1]);
+    }
+    return function(x2) {
+      var i2 = bisect_default(domain, x2, 1, j) - 1;
+      return r[i2](d[i2](x2));
+    };
+  }
+  function copy(source, target) {
+    return target.domain(source.domain()).range(source.range()).interpolate(source.interpolate()).clamp(source.clamp()).unknown(source.unknown());
+  }
+  function transformer() {
+    var domain = unit, range = unit, interpolate = value_default, transform2, untransform, unknown, clamp = identity2, piecewise, output, input;
+    function rescale() {
+      var n = Math.min(domain.length, range.length);
+      if (clamp !== identity2)
+        clamp = clamper(domain[0], domain[n - 1]);
+      piecewise = n > 2 ? polymap : bimap;
+      output = input = null;
+      return scale;
+    }
+    function scale(x2) {
+      return x2 == null || isNaN(x2 = +x2) ? unknown : (output || (output = piecewise(domain.map(transform2), range, interpolate)))(transform2(clamp(x2)));
+    }
+    scale.invert = function(y2) {
+      return clamp(untransform((input || (input = piecewise(range, domain.map(transform2), number_default2)))(y2)));
+    };
+    scale.domain = function(_) {
+      return arguments.length ? (domain = Array.from(_, number3), rescale()) : domain.slice();
+    };
+    scale.range = function(_) {
+      return arguments.length ? (range = Array.from(_), rescale()) : range.slice();
+    };
+    scale.rangeRound = function(_) {
+      return range = Array.from(_), interpolate = round_default, rescale();
+    };
+    scale.clamp = function(_) {
+      return arguments.length ? (clamp = _ ? true : identity2, rescale()) : clamp !== identity2;
+    };
+    scale.interpolate = function(_) {
+      return arguments.length ? (interpolate = _, rescale()) : interpolate;
+    };
+    scale.unknown = function(_) {
+      return arguments.length ? (unknown = _, scale) : unknown;
+    };
+    return function(t, u) {
+      transform2 = t, untransform = u;
+      return rescale();
+    };
+  }
+  function continuous() {
+    return transformer()(identity2, identity2);
+  }
+
+  // node_modules/d3-scale/src/tickFormat.js
+  function tickFormat(start2, stop, count, specifier) {
+    var step = tickStep(start2, stop, count), precision;
+    specifier = formatSpecifier(specifier == null ? ",f" : specifier);
+    switch (specifier.type) {
+      case "s": {
+        var value = Math.max(Math.abs(start2), Math.abs(stop));
+        if (specifier.precision == null && !isNaN(precision = precisionPrefix_default(step, value)))
+          specifier.precision = precision;
+        return formatPrefix(specifier, value);
+      }
+      case "":
+      case "e":
+      case "g":
+      case "p":
+      case "r": {
+        if (specifier.precision == null && !isNaN(precision = precisionRound_default(step, Math.max(Math.abs(start2), Math.abs(stop)))))
+          specifier.precision = precision - (specifier.type === "e");
+        break;
+      }
+      case "f":
+      case "%": {
+        if (specifier.precision == null && !isNaN(precision = precisionFixed_default(step)))
+          specifier.precision = precision - (specifier.type === "%") * 2;
+        break;
+      }
+    }
+    return format(specifier);
+  }
+
+  // node_modules/d3-scale/src/linear.js
+  function linearish(scale) {
+    var domain = scale.domain;
+    scale.ticks = function(count) {
+      var d = domain();
+      return ticks_default(d[0], d[d.length - 1], count == null ? 10 : count);
+    };
+    scale.tickFormat = function(count, specifier) {
+      var d = domain();
+      return tickFormat(d[0], d[d.length - 1], count == null ? 10 : count, specifier);
+    };
+    scale.nice = function(count) {
+      if (count == null)
+        count = 10;
+      var d = domain();
+      var i0 = 0;
+      var i1 = d.length - 1;
+      var start2 = d[i0];
+      var stop = d[i1];
+      var prestep;
+      var step;
+      var maxIter = 10;
+      if (stop < start2) {
+        step = start2, start2 = stop, stop = step;
+        step = i0, i0 = i1, i1 = step;
+      }
+      while (maxIter-- > 0) {
+        step = tickIncrement(start2, stop, count);
+        if (step === prestep) {
+          d[i0] = start2;
+          d[i1] = stop;
+          return domain(d);
+        } else if (step > 0) {
+          start2 = Math.floor(start2 / step) * step;
+          stop = Math.ceil(stop / step) * step;
+        } else if (step < 0) {
+          start2 = Math.ceil(start2 * step) / step;
+          stop = Math.floor(stop * step) / step;
+        } else {
+          break;
+        }
+        prestep = step;
+      }
+      return scale;
+    };
+    return scale;
+  }
+  function linear2() {
+    var scale = continuous();
+    scale.copy = function() {
+      return copy(scale, linear2());
+    };
+    initRange.apply(scale, arguments);
+    return linearish(scale);
+  }
+
+  // node_modules/d3-shape/src/constant.js
+  function constant_default4(x2) {
+    return function constant() {
+      return x2;
+    };
+  }
+
+  // node_modules/d3-shape/src/array.js
+  var slice2 = Array.prototype.slice;
+  function array_default2(x2) {
+    return typeof x2 === "object" && "length" in x2 ? x2 : Array.from(x2);
+  }
+
+  // node_modules/d3-shape/src/curve/linear.js
+  function Linear(context) {
+    this._context = context;
+  }
+  Linear.prototype = {
+    areaStart: function() {
+      this._line = 0;
+    },
+    areaEnd: function() {
+      this._line = NaN;
+    },
+    lineStart: function() {
+      this._point = 0;
+    },
+    lineEnd: function() {
+      if (this._line || this._line !== 0 && this._point === 1)
+        this._context.closePath();
+      this._line = 1 - this._line;
+    },
+    point: function(x2, y2) {
+      x2 = +x2, y2 = +y2;
+      switch (this._point) {
+        case 0:
+          this._point = 1;
+          this._line ? this._context.lineTo(x2, y2) : this._context.moveTo(x2, y2);
+          break;
+        case 1:
+          this._point = 2;
+        default:
+          this._context.lineTo(x2, y2);
+          break;
+      }
+    }
+  };
+  function linear_default(context) {
+    return new Linear(context);
+  }
+
+  // node_modules/d3-shape/src/point.js
+  function x(p) {
+    return p[0];
+  }
+  function y(p) {
+    return p[1];
+  }
+
+  // node_modules/d3-shape/src/line.js
+  function line_default(x2, y2) {
+    var defined = constant_default4(true), context = null, curve = linear_default, output = null;
+    x2 = typeof x2 === "function" ? x2 : x2 === void 0 ? x : constant_default4(x2);
+    y2 = typeof y2 === "function" ? y2 : y2 === void 0 ? y : constant_default4(y2);
+    function line(data) {
+      var i, n = (data = array_default2(data)).length, d, defined0 = false, buffer;
+      if (context == null)
+        output = curve(buffer = path_default());
+      for (i = 0; i <= n; ++i) {
+        if (!(i < n && defined(d = data[i], i, data)) === defined0) {
+          if (defined0 = !defined0)
+            output.lineStart();
+          else
+            output.lineEnd();
+        }
+        if (defined0)
+          output.point(+x2(d, i, data), +y2(d, i, data));
+      }
+      if (buffer)
+        return output = null, buffer + "" || null;
+    }
+    line.x = function(_) {
+      return arguments.length ? (x2 = typeof _ === "function" ? _ : constant_default4(+_), line) : x2;
+    };
+    line.y = function(_) {
+      return arguments.length ? (y2 = typeof _ === "function" ? _ : constant_default4(+_), line) : y2;
+    };
+    line.defined = function(_) {
+      return arguments.length ? (defined = typeof _ === "function" ? _ : constant_default4(!!_), line) : defined;
+    };
+    line.curve = function(_) {
+      return arguments.length ? (curve = _, context != null && (output = curve(context)), line) : curve;
+    };
+    line.context = function(_) {
+      return arguments.length ? (_ == null ? context = output = null : output = curve(context = _), line) : context;
+    };
+    return line;
+  }
+
+  // node_modules/d3-shape/src/curve/basis.js
+  function point(that, x2, y2) {
+    that._context.bezierCurveTo((2 * that._x0 + that._x1) / 3, (2 * that._y0 + that._y1) / 3, (that._x0 + 2 * that._x1) / 3, (that._y0 + 2 * that._y1) / 3, (that._x0 + 4 * that._x1 + x2) / 6, (that._y0 + 4 * that._y1 + y2) / 6);
+  }
+  function Basis(context) {
+    this._context = context;
+  }
+  Basis.prototype = {
+    areaStart: function() {
+      this._line = 0;
+    },
+    areaEnd: function() {
+      this._line = NaN;
+    },
+    lineStart: function() {
+      this._x0 = this._x1 = this._y0 = this._y1 = NaN;
+      this._point = 0;
+    },
+    lineEnd: function() {
+      switch (this._point) {
+        case 3:
+          point(this, this._x1, this._y1);
+        case 2:
+          this._context.lineTo(this._x1, this._y1);
+          break;
+      }
+      if (this._line || this._line !== 0 && this._point === 1)
+        this._context.closePath();
+      this._line = 1 - this._line;
+    },
+    point: function(x2, y2) {
+      x2 = +x2, y2 = +y2;
+      switch (this._point) {
+        case 0:
+          this._point = 1;
+          this._line ? this._context.lineTo(x2, y2) : this._context.moveTo(x2, y2);
+          break;
+        case 1:
+          this._point = 2;
+          break;
+        case 2:
+          this._point = 3;
+          this._context.lineTo((5 * this._x0 + this._x1) / 6, (5 * this._y0 + this._y1) / 6);
+        default:
+          point(this, x2, y2);
+          break;
+      }
+      this._x0 = this._x1, this._x1 = x2;
+      this._y0 = this._y1, this._y1 = y2;
+    }
+  };
+  function basis_default2(context) {
+    return new Basis(context);
+  }
+
   // node_modules/d3-zoom/src/transform.js
-  function Transform(k, x, y) {
+  function Transform(k, x2, y2) {
     this.k = k;
-    this.x = x;
-    this.y = y;
+    this.x = x2;
+    this.y = y2;
   }
   Transform.prototype = {
     constructor: Transform,
     scale: function(k) {
       return k === 1 ? this : new Transform(this.k * k, this.x, this.y);
     },
-    translate: function(x, y) {
-      return x === 0 & y === 0 ? this : new Transform(this.k, this.x + this.k * x, this.y + this.k * y);
+    translate: function(x2, y2) {
+      return x2 === 0 & y2 === 0 ? this : new Transform(this.k, this.x + this.k * x2, this.y + this.k * y2);
     },
-    apply: function(point) {
-      return [point[0] * this.k + this.x, point[1] * this.k + this.y];
+    apply: function(point2) {
+      return [point2[0] * this.k + this.x, point2[1] * this.k + this.y];
     },
-    applyX: function(x) {
-      return x * this.k + this.x;
+    applyX: function(x2) {
+      return x2 * this.k + this.x;
     },
-    applyY: function(y) {
-      return y * this.k + this.y;
+    applyY: function(y2) {
+      return y2 * this.k + this.y;
     },
     invert: function(location) {
       return [(location[0] - this.x) / this.k, (location[1] - this.y) / this.k];
     },
-    invertX: function(x) {
-      return (x - this.x) / this.k;
+    invertX: function(x2) {
+      return (x2 - this.x) / this.k;
     },
-    invertY: function(y) {
-      return (y - this.y) / this.k;
+    invertY: function(y2) {
+      return (y2 - this.y) / this.k;
     },
-    rescaleX: function(x) {
-      return x.copy().domain(x.range().map(this.invertX, this).map(x.invert, x));
+    rescaleX: function(x2) {
+      return x2.copy().domain(x2.range().map(this.invertX, this).map(x2.invert, x2));
     },
-    rescaleY: function(y) {
-      return y.copy().domain(y.range().map(this.invertY, this).map(y.invert, y));
+    rescaleY: function(y2) {
+      return y2.copy().domain(y2.range().map(this.invertY, this).map(y2.invert, y2));
     },
     toString: function() {
       return "translate(" + this.x + "," + this.y + ") scale(" + this.k + ")";
     }
   };
-  var identity2 = new Transform(1, 0, 0);
+  var identity3 = new Transform(1, 0, 0);
   transform.prototype = Transform.prototype;
   function transform(node) {
     while (!node.__zoom)
       if (!(node = node.parentNode))
-        return identity2;
+        return identity3;
     return node.__zoom;
   }
 
   // entry.js
   document.addEventListener("DOMContentLoaded", () => {
-    const pTag = document.createElement("p");
-    const text = document.createTextNode("Welcome!");
-    pTag.appendChild(text);
-    const element = document.getElementById("root");
-    element.appendChild(pTag);
+    const svg = select_default2("svg");
+    const height = +svg.attr("height");
+    const width = +svg.attr("width");
+    const render = (data) => {
+      const title = "Lap times for one race / driver";
+      const xValue = (d) => d.lap;
+      const xAxisLabel = "Lap";
+      const yValue = (d) => d.milliseconds;
+      const yAxisLabel = "Lap time";
+      const margin = {top: 20, right: 20, bottom: 100, left: 100};
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+      const xScale = linear2().domain(extent_default(data, xValue)).range([1, innerWidth]).nice();
+      const yScale = linear2().domain(extent_default(data, yValue)).range([innerHeight, 0]).nice();
+      const g = svg.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
+      const xAxis = axisBottom(xScale).tickSize(-innerHeight).tickPadding(15);
+      const yAxis = axisLeft(yScale).tickSize(-innerWidth).tickPadding(10);
+      const yAxisG = g.append("g").call(yAxis);
+      yAxisG.selectAll(".domain").remove();
+      yAxisG.append("text").attr("class", "axis-label").attr("y", -10).attr("x", -innerHeight / 2).attr("fill", "black").attr("transform", "rotate(-90").attr("text-anchor", "middle").text(yAxisLabel);
+      const xAxisG = g.append("g").call(xAxis).attr("transform", `translate(0, ${innerHeight})`);
+      xAxisG.select(".domain").remove();
+      xAxisG.append("text").attr("class", "axis-label").attr("y", 75).attr("x", innerWidth / 2).attr("fill", "black").text(xAxisLabel);
+      const lineGenerator = line_default().x((d) => xScale(xValue(d))).y((d) => yScale(yValue(d))).curve(basis_default2);
+      g.append("path").attr("class", "line-path").attr("d", lineGenerator(data));
+      g.append("text").attr("class", "title").attr("y", -10).text(title);
+    };
+    csv2("data/races.csv").then((races) => {
+      csv2("data/drivers.csv").then((drivers) => {
+        const race = races.filter((race2) => race2.raceId === "1033")[0];
+        const driver = drivers.filter((driver2) => driver2.driverId === "1")[0];
+        csv2("data/lap_times.csv").then((laps) => {
+          const driverslaps = laps.filter((lap) => lap.driverId === "1" && lap.raceId === "1033");
+          laps.forEach((d) => {
+            d.lap = +d.lap;
+            d.position = +d.position;
+            d.milliseconds = +d.milliseconds;
+            d.time = d.time;
+            delete d.driverId;
+            delete d.raceId;
+          });
+          render(driverslaps, driver, race);
+        });
+      });
+    });
   });
 })();
 //# sourceMappingURL=out.js.map
