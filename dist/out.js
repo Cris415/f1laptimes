@@ -2639,6 +2639,33 @@
     return ((t *= 2) <= 1 ? t * t * t : (t -= 2) * t * t + 2) / 2;
   }
 
+  // node_modules/d3-ease/src/poly.js
+  var exponent = 3;
+  var polyIn = function custom(e) {
+    e = +e;
+    function polyIn2(t) {
+      return Math.pow(t, e);
+    }
+    polyIn2.exponent = custom;
+    return polyIn2;
+  }(exponent);
+  var polyOut = function custom2(e) {
+    e = +e;
+    function polyOut2(t) {
+      return 1 - Math.pow(1 - t, e);
+    }
+    polyOut2.exponent = custom2;
+    return polyOut2;
+  }(exponent);
+  var polyInOut = function custom3(e) {
+    e = +e;
+    function polyInOut2(t) {
+      return ((t *= 2) <= 1 ? Math.pow(t, e) : 2 - Math.pow(2 - t, e)) / 2;
+    }
+    polyInOut2.exponent = custom3;
+    return polyInOut2;
+  }(exponent);
+
   // node_modules/d3-transition/src/selection/transition.js
   var defaultTiming = {
     time: null,
@@ -3086,7 +3113,7 @@
     var d = formatDecimalParts(x2, p);
     if (!d)
       return x2 + "";
-    var coefficient = d[0], exponent = d[1], i = exponent - (prefixExponent = Math.max(-8, Math.min(8, Math.floor(exponent / 3))) * 3) + 1, n = coefficient.length;
+    var coefficient = d[0], exponent2 = d[1], i = exponent2 - (prefixExponent = Math.max(-8, Math.min(8, Math.floor(exponent2 / 3))) * 3) + 1, n = coefficient.length;
     return i === n ? coefficient : i > n ? coefficient + new Array(i - n + 1).join("0") : i > 0 ? coefficient.slice(0, i) + "." + coefficient.slice(i) : "0." + new Array(1 - i).join("0") + formatDecimalParts(x2, Math.max(0, p + i - 1))[0];
   }
 
@@ -3095,8 +3122,8 @@
     var d = formatDecimalParts(x2, p);
     if (!d)
       return x2 + "";
-    var coefficient = d[0], exponent = d[1];
-    return exponent < 0 ? "0." + new Array(-exponent).join("0") + coefficient : coefficient.length > exponent + 1 ? coefficient.slice(0, exponent + 1) + "." + coefficient.slice(exponent + 1) : coefficient + new Array(exponent - coefficient.length + 2).join("0");
+    var coefficient = d[0], exponent2 = d[1];
+    return exponent2 < 0 ? "0." + new Array(-exponent2).join("0") + coefficient : coefficient.length > exponent2 + 1 ? coefficient.slice(0, exponent2 + 1) + "." + coefficient.slice(exponent2 + 1) : coefficient + new Array(exponent2 - coefficient.length + 2).join("0");
   }
 
   // node_modules/d3-format/src/formatTypes.js
@@ -3128,7 +3155,7 @@
     var group = locale2.grouping === void 0 || locale2.thousands === void 0 ? identity_default2 : formatGroup_default(map.call(locale2.grouping, Number), locale2.thousands + ""), currencyPrefix = locale2.currency === void 0 ? "" : locale2.currency[0] + "", currencySuffix = locale2.currency === void 0 ? "" : locale2.currency[1] + "", decimal = locale2.decimal === void 0 ? "." : locale2.decimal + "", numerals = locale2.numerals === void 0 ? identity_default2 : formatNumerals_default(map.call(locale2.numerals, String)), percent = locale2.percent === void 0 ? "%" : locale2.percent + "", minus = locale2.minus === void 0 ? "\u2212" : locale2.minus + "", nan = locale2.nan === void 0 ? "NaN" : locale2.nan + "";
     function newFormat(specifier) {
       specifier = formatSpecifier(specifier);
-      var fill = specifier.fill, align = specifier.align, sign = specifier.sign, symbol = specifier.symbol, zero2 = specifier.zero, width = specifier.width, comma = specifier.comma, precision = specifier.precision, trim = specifier.trim, type2 = specifier.type;
+      var fill = specifier.fill, align = specifier.align, sign2 = specifier.sign, symbol = specifier.symbol, zero2 = specifier.zero, width = specifier.width, comma = specifier.comma, precision = specifier.precision, trim = specifier.trim, type2 = specifier.type;
       if (type2 === "n")
         comma = true, type2 = "g";
       else if (!formatTypes_default[type2])
@@ -3149,10 +3176,10 @@
           value = isNaN(value) ? nan : formatType(Math.abs(value), precision);
           if (trim)
             value = formatTrim_default(value);
-          if (valueNegative && +value === 0 && sign !== "+")
+          if (valueNegative && +value === 0 && sign2 !== "+")
             valueNegative = false;
-          valuePrefix = (valueNegative ? sign === "(" ? sign : minus : sign === "-" || sign === "(" ? "" : sign) + valuePrefix;
-          valueSuffix = (type2 === "s" ? prefixes[8 + prefixExponent / 3] : "") + valueSuffix + (valueNegative && sign === "(" ? ")" : "");
+          valuePrefix = (valueNegative ? sign2 === "(" ? sign2 : minus : sign2 === "-" || sign2 === "(" ? "" : sign2) + valuePrefix;
+          valueSuffix = (type2 === "s" ? prefixes[8 + prefixExponent / 3] : "") + valueSuffix + (valueNegative && sign2 === "(" ? ")" : "");
           if (maybeSuffix) {
             i = -1, n = value.length;
             while (++i < n) {
@@ -3535,14 +3562,26 @@
     return line;
   }
 
-  // node_modules/d3-shape/src/curve/basis.js
-  function point(that, x2, y2) {
-    that._context.bezierCurveTo((2 * that._x0 + that._x1) / 3, (2 * that._y0 + that._y1) / 3, (that._x0 + 2 * that._x1) / 3, (that._y0 + 2 * that._y1) / 3, (that._x0 + 4 * that._x1 + x2) / 6, (that._y0 + 4 * that._y1 + y2) / 6);
+  // node_modules/d3-shape/src/curve/monotone.js
+  function sign(x2) {
+    return x2 < 0 ? -1 : 1;
   }
-  function Basis(context) {
+  function slope3(that, x2, y2) {
+    var h0 = that._x1 - that._x0, h1 = x2 - that._x1, s0 = (that._y1 - that._y0) / (h0 || h1 < 0 && -0), s1 = (y2 - that._y1) / (h1 || h0 < 0 && -0), p = (s0 * h1 + s1 * h0) / (h0 + h1);
+    return (sign(s0) + sign(s1)) * Math.min(Math.abs(s0), Math.abs(s1), 0.5 * Math.abs(p)) || 0;
+  }
+  function slope2(that, t) {
+    var h = that._x1 - that._x0;
+    return h ? (3 * (that._y1 - that._y0) / h - t) / 2 : t;
+  }
+  function point(that, t0, t1) {
+    var x0 = that._x0, y0 = that._y0, x1 = that._x1, y1 = that._y1, dx = (x1 - x0) / 3;
+    that._context.bezierCurveTo(x0 + dx, y0 + dx * t0, x1 - dx, y1 - dx * t1, x1, y1);
+  }
+  function MonotoneX(context) {
     this._context = context;
   }
-  Basis.prototype = {
+  MonotoneX.prototype = {
     areaStart: function() {
       this._line = 0;
     },
@@ -3550,15 +3589,16 @@
       this._line = NaN;
     },
     lineStart: function() {
-      this._x0 = this._x1 = this._y0 = this._y1 = NaN;
+      this._x0 = this._x1 = this._y0 = this._y1 = this._t0 = NaN;
       this._point = 0;
     },
     lineEnd: function() {
       switch (this._point) {
-        case 3:
-          point(this, this._x1, this._y1);
         case 2:
           this._context.lineTo(this._x1, this._y1);
+          break;
+        case 3:
+          point(this, this._t0, slope2(this, this._t0));
           break;
       }
       if (this._line || this._line !== 0 && this._point === 1)
@@ -3566,7 +3606,10 @@
       this._line = 1 - this._line;
     },
     point: function(x2, y2) {
+      var t1 = NaN;
       x2 = +x2, y2 = +y2;
+      if (x2 === this._x1 && y2 === this._y1)
+        return;
       switch (this._point) {
         case 0:
           this._point = 1;
@@ -3577,17 +3620,42 @@
           break;
         case 2:
           this._point = 3;
-          this._context.lineTo((5 * this._x0 + this._x1) / 6, (5 * this._y0 + this._y1) / 6);
+          point(this, slope2(this, t1 = slope3(this, x2, y2)), t1);
+          break;
         default:
-          point(this, x2, y2);
+          point(this, this._t0, t1 = slope3(this, x2, y2));
           break;
       }
       this._x0 = this._x1, this._x1 = x2;
       this._y0 = this._y1, this._y1 = y2;
+      this._t0 = t1;
     }
   };
-  function basis_default2(context) {
-    return new Basis(context);
+  function MonotoneY(context) {
+    this._context = new ReflectContext(context);
+  }
+  (MonotoneY.prototype = Object.create(MonotoneX.prototype)).point = function(x2, y2) {
+    MonotoneX.prototype.point.call(this, y2, x2);
+  };
+  function ReflectContext(context) {
+    this._context = context;
+  }
+  ReflectContext.prototype = {
+    moveTo: function(x2, y2) {
+      this._context.moveTo(y2, x2);
+    },
+    closePath: function() {
+      this._context.closePath();
+    },
+    lineTo: function(x2, y2) {
+      this._context.lineTo(y2, x2);
+    },
+    bezierCurveTo: function(x1, y1, x2, y2, x3, y3) {
+      this._context.bezierCurveTo(y1, x1, y2, x2, y3, x3);
+    }
+  };
+  function monotoneX(context) {
+    return new MonotoneX(context);
   }
 
   // node_modules/d3-zoom/src/transform.js
@@ -3641,53 +3709,66 @@
     return node.__zoom;
   }
 
-  // entry.js
-  document.addEventListener("DOMContentLoaded", () => {
-    const svg = select_default2("svg");
+  // src/renderGraph.js
+  function renderGraph(svg, lapData, driver, race) {
     const height = +svg.attr("height");
     const width = +svg.attr("width");
-    const render = (data) => {
-      const title = "Lap times for one race / driver";
-      const xValue = (d) => d.lap;
-      const xAxisLabel = "Lap";
-      const yValue = (d) => d.milliseconds;
-      const yAxisLabel = "Lap time";
-      const margin = {top: 20, right: 20, bottom: 100, left: 100};
-      const innerWidth = width - margin.left - margin.right;
-      const innerHeight = height - margin.top - margin.bottom;
-      const xScale = linear2().domain(extent_default(data, xValue)).range([1, innerWidth]).nice();
-      const yScale = linear2().domain(extent_default(data, yValue)).range([innerHeight, 0]).nice();
-      const g = svg.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
-      const xAxis = axisBottom(xScale).tickSize(-innerHeight).tickPadding(15);
-      const yAxis = axisLeft(yScale).tickSize(-innerWidth).tickPadding(10);
-      const yAxisG = g.append("g").call(yAxis);
-      yAxisG.selectAll(".domain").remove();
-      yAxisG.append("text").attr("class", "axis-label").attr("y", -10).attr("x", -innerHeight / 2).attr("fill", "black").attr("transform", "rotate(-90").attr("text-anchor", "middle").text(yAxisLabel);
-      const xAxisG = g.append("g").call(xAxis).attr("transform", `translate(0, ${innerHeight})`);
-      xAxisG.select(".domain").remove();
-      xAxisG.append("text").attr("class", "axis-label").attr("y", 75).attr("x", innerWidth / 2).attr("fill", "black").text(xAxisLabel);
-      const lineGenerator = line_default().x((d) => xScale(xValue(d))).y((d) => yScale(yValue(d))).curve(basis_default2);
-      g.append("path").attr("class", "line-path").attr("d", lineGenerator(data));
-      g.append("text").attr("class", "title").attr("y", -10).text(title);
-    };
+    const margin = {top: 50, right: 20, bottom: 70, left: 80};
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+    const xValue = (d) => d.lap;
+    const xAxisLabel = "Lap";
+    const yValue = (d) => d.seconds;
+    const yAxisLabel = "Lap time";
+    const xScale = linear2().domain(extent_default(lapData, xValue)).range([0, innerWidth]).nice();
+    const yScale = linear2().domain(extent_default(lapData, yValue)).range([innerHeight, 0]).nice();
+    const g = svg.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
+    const title = "Lap times for one race / driver";
+    g.append("text").attr("class", "title").attr("y", -10).text(title);
+    const xAxis = axisBottom(xScale).tickSize(-innerHeight).tickPadding(15);
+    const yAxis = axisLeft(yScale).tickFormat((d) => d + "s").tickSize(-innerWidth).tickPadding(10);
+    const yAxisG = g.append("g").call(yAxis).attr("class", "axis");
+    yAxisG.selectAll(".domain").remove();
+    yAxisG.append("text").attr("class", "axis-label").attr("y", -60).attr("x", -innerHeight / 2).attr("fill", "black").attr("transform", "rotate(-90)").attr("text-anchor", "middle").text(yAxisLabel);
+    const xAxisG = g.append("g").call(xAxis).attr("class", "axis").attr("transform", `translate(0, ${innerHeight})`);
+    xAxisG.select(".domain").remove();
+    xAxisG.append("text").attr("class", "axis-label").attr("y", 50).attr("x", innerWidth / 2).attr("fill", "black").text(xAxisLabel);
+    const lineGenerator = line_default().x((d) => xScale(xValue(d))).y((d) => yScale(yValue(d))).curve(monotoneX);
+    const path2 = g.append("path").attr("class", "line-path").attr("d", lineGenerator(lapData));
+    const totalLength = path2.node().getTotalLength();
+    path2.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(4e3).ease(polyInOut).attr("stroke-dashoffset", 0);
+    g.selectAll("circle").data(lapData).enter().append("circle").attr("cy", (d) => yScale(yValue(d))).attr("cx", (d) => xScale(xValue(d))).attr("r", 2);
+  }
+  var renderGraph_default = renderGraph;
+
+  // src/loadData.js
+  function loadData(svg) {
     csv2("data/races.csv").then((races) => {
       csv2("data/drivers.csv").then((drivers) => {
-        const race = races.filter((race2) => race2.raceId === "1033")[0];
-        const driver = drivers.filter((driver2) => driver2.driverId === "1")[0];
         csv2("data/lap_times.csv").then((laps) => {
+          const race = races.filter((race2) => race2.raceId === "1033")[0];
+          const driver = drivers.filter((driver2) => driver2.driverId === "1")[0];
           const driverslaps = laps.filter((lap) => lap.driverId === "1" && lap.raceId === "1033");
           laps.forEach((d) => {
             d.lap = +d.lap;
             d.position = +d.position;
-            d.milliseconds = +d.milliseconds;
+            d.seconds = +d.milliseconds / 1e3;
+            delete d.milliseconds;
             d.time = d.time;
             delete d.driverId;
             delete d.raceId;
           });
-          render(driverslaps, driver, race);
+          renderGraph_default(svg, driverslaps, driver, race);
         });
       });
     });
+  }
+  var loadData_default = loadData;
+
+  // entry.js
+  document.addEventListener("DOMContentLoaded", () => {
+    const svg = select_default2("svg");
+    loadData_default(svg);
   });
 })();
 //# sourceMappingURL=out.js.map

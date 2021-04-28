@@ -16,9 +16,27 @@ h1 {
   font-size: 2.4rem;
 }
 
+.title {
+  font-size: 1.6rem;
+}
+.axis-label {
+  fill: white;
+}
+.axis {
+  color: rgb(70, 70, 70);
+  
+}
+
+svg{
+  fill: orange;
+  /* background-color: #eff5f9; */
+  background-color: rgb(4, 4, 4);
+}
+
 .line-path {
   fill: none;
-  stroke: steelblue;
-  stroke-width: 4px;
-  stroke-linejoin: round;
+  stroke: #03BFB5;
+  stroke-width: 3px;
+  /* stroke-linejoin: round; */
+  /* stroke-linejoin: round; */
 }
