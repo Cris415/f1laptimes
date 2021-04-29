@@ -3764,43 +3764,59 @@
   }
   var renderGraph_default = renderGraph;
 
-  // src/selectFill.js
-  function selectFill(element, data, value, textCb, sortCb = (a, b) => a > b) {
+  // src/fillSelectElement.js
+  function fillSelectElement(element, data, value, id2, textCb, sortCb = (a, b) => a > b) {
     data.sort((a, b) => sortCb(a, b)).forEach((item) => {
       option = document.createElement("option");
       option.setAttribute("value", item[value]);
       option.appendChild(document.createTextNode(textCb(item)));
       element.appendChild(option);
+      if (id2) {
+        element.value = id2;
+      }
     });
   }
-  var selectFill_default = selectFill;
+  var fillSelectElement_default = fillSelectElement;
+
+  // src/selectUtil.js
+  function selectDriversFromRace(lapsArray, drivers, raceId) {
+    const lapsFromRace = lapsArray.filter((lap) => lap.raceId === raceId);
+    const distinctDrivers = [...new Set(lapsFromRace.map((lap) => lap.driverId))];
+    const filteredDrivers = drivers.filter((driver) => distinctDrivers.includes(driver.driverId));
+    return filteredDrivers;
+  }
+  function selectByDriverandRace(laps, driverId, raceId) {
+    return laps.filter((lap) => lap.driverId === driverId && lap.raceId === raceId);
+  }
+  function selectDriverById(drivers, driverId) {
+    return drivers.filter((driver) => driver.driverId === driverId)[0];
+  }
+  function selectRaceById(races, raceId) {
+    return races.filter((race) => race.raceId === raceId)[0];
+  }
 
   // src/loadData.js
-  function loadData(svg, raceId, driver1Id, driver2Id) {
+  function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
     csv2("data/races.csv").then((races) => {
       csv2("data/drivers.csv").then((drivers) => {
         csv2("data/lap_times.csv").then((laps) => {
-          const race = races.filter((race2) => race2.raceId === raceId)[0];
-          const driver = drivers.filter((driver3) => driver3.driverId === driver1Id)[0];
-          const driver2 = drivers.filter((driver3) => driver3.driverId === driver2Id)[0];
-          const drivers1LapData = laps.filter((lap) => lap.driverId === driver1Id && lap.raceId === raceId);
-          const drivers2LapData = laps.filter((lap) => lap.driverId === driver2Id && lap.raceId === raceId);
-          const lapsFromRace = laps.filter((lap) => lap.raceId === raceId);
-          const distinctDrivers = [...new Set(lapsFromRace.map((lap) => lap.driverId))];
-          const filteredDrivers = drivers.filter((driver3) => distinctDrivers.includes(driver3.driverId));
-          const raceEl = document.getElementById("race-select");
+          const race = selectRaceById(races, raceId);
+          const driver1 = selectDriverById(drivers, driver1Id);
+          const driver2 = selectDriverById(drivers, driver2Id);
+          const drivers1LapData = selectByDriverandRace(laps, driver1.driverId, raceId);
+          const drivers2LapData = selectByDriverandRace(laps, driver2.driverId, raceId);
+          const filteredDrivers = selectDriversFromRace(laps, drivers, raceId);
+          const filteredRaces = races.filter((race2) => race2.year !== "2021");
           const selectRaceText = (item) => `${item.name} ${item.year}`;
           const sortCb = (a, b) => b.year > a.year;
-          selectFill_default(raceEl, races, raceId, selectRaceText, sortCb);
+          fillSelectElement_default(selectFormItems.race, filteredRaces, "raceId", null, selectRaceText, sortCb);
           const selectDriverNameText = (item) => `${item.surname} ${item.forename}`;
           const driverSortCb = (a, b) => b.surname > a.surname;
-          const driver1El = document.getElementById("driver1-select");
-          selectFill_default(driver1El, filteredDrivers, raceId, selectDriverNameText, driverSortCb);
-          const driver2El = document.getElementById("driver2-select");
-          selectFill_default(driver2El, filteredDrivers, raceId, selectDriverNameText, driverSortCb);
+          fillSelectElement_default(selectFormItems.driver1, filteredDrivers, "driverId", driver1.driverId, selectDriverNameText, driverSortCb);
+          fillSelectElement_default(selectFormItems.driver2, filteredDrivers, "driverId", driver2.driverId, selectDriverNameText, driverSortCb);
           const driverData = {
             laps: drivers1LapData,
-            driver
+            driver: driver1
           };
           const driver2Data = {
             laps: drivers2LapData,
@@ -3811,13 +3827,21 @@
             d.position = +d.position;
             d.seconds = +d.milliseconds / 1e3;
             d.time = d.time;
+            delete d.milliseconds;
+            delete d.driverId;
+            delete d.raceId;
           });
           driver2Data.laps.forEach((d) => {
             d.lap = +d.lap;
             d.position = +d.position;
             d.seconds = +d.milliseconds / 1e3;
             d.time = d.time;
+            delete d.milliseconds;
+            delete d.driverId;
+            delete d.raceId;
           });
+          driver2Data.laps.sort((a, b) => a.lap > b.lap);
+          driverData.laps.sort((a, b) => a.lap > b.lap);
           renderGraph_default(svg, race, driver2Data, driverData);
         });
       });
@@ -3828,10 +3852,41 @@
   // entry.js
   document.addEventListener("DOMContentLoaded", () => {
     const svg = select_default2("svg");
-    const raceId = "1033";
-    const driver1Id = "1";
-    const driver2Id = "847";
-    loadData_default(svg, raceId, driver1Id, driver2Id);
+    const raceEl = document.getElementById("race-select");
+    const driver1El = document.getElementById("driver1-select");
+    const driver2El = document.getElementById("driver2-select");
+    const selectFormItems = {
+      race: raceEl,
+      driver1: driver1El,
+      driver2: driver2El
+    };
+    function resetForms() {
+      svg.selectChildren().remove();
+      [...driver1El.children].forEach((child) => child.remove());
+      [...driver2El.children].forEach((child) => child.remove());
+    }
+    raceEl.addEventListener("change", (e) => {
+      e.preventDefault();
+      raceId = e.currentTarget.value;
+      resetForms();
+      loadData_default(svg, raceId, driver1Id, driver2Id, selectFormItems);
+    });
+    driver1El.addEventListener("change", (e) => {
+      e.preventDefault();
+      driver1Id = e.currentTarget.value;
+      resetForms();
+      loadData_default(svg, raceId, driver1Id, driver2Id, selectFormItems);
+    });
+    driver2El.addEventListener("change", (e) => {
+      e.preventDefault();
+      driver2Id = e.currentTarget.value;
+      resetForms();
+      loadData_default(svg, raceId, driver1Id, driver2Id, selectFormItems);
+    });
+    let raceId = "1033";
+    let driver1Id = "1";
+    let driver2Id = "847";
+    loadData_default(svg, raceId, driver1Id, driver2Id, selectFormItems);
   });
 })();
 //# sourceMappingURL=out.js.map

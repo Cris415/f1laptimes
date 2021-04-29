@@ -1,4 +1,4 @@
-function selectFill(element, data, value, textCb, sortCb = (a, b) => a > b) {
+function fillSelectElement(element, data, value, id, textCb, sortCb = (a, b) => a > b) {
   data
     .sort((a, b) => sortCb(a, b))
     .forEach((item) => {
@@ -6,7 +6,12 @@ function selectFill(element, data, value, textCb, sortCb = (a, b) => a > b) {
       option.setAttribute("value", item[value]);
       option.appendChild(document.createTextNode(textCb(item)));
       element.appendChild(option);
+
+      if (id){
+        element.value = id
+      }
+      
     });
 }
 
-export default selectFill;
+export default fillSelectElement;

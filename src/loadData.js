@@ -1,55 +1,66 @@
 import { csv } from "d3";
 import renderGraph from "./renderGraph";
-import selectFill from './selectFill';
+import fillSelectElement from "./fillSelectElement";
+import {
+  selectDriversFromRace,
+  selectByDriverandRace,
+  selectDriverById,
+  selectRaceById,
+} from "./selectUtil";
 
-function loadData(svg, raceId, driver1Id, driver2Id) {
+function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
   csv("data/races.csv").then((races) => {
     csv("data/drivers.csv").then((drivers) => {
       csv("data/lap_times.csv").then((laps) => {
-        
-        // Temporary filters
-        const race = races.filter((race) => race.raceId === raceId)[0];
+        const race = selectRaceById(races, raceId);
 
-        const driver = drivers.filter(
-          (driver) => driver.driverId === driver1Id
-        )[0];
-        const driver2 = drivers.filter(
-          (driver) => driver.driverId === driver2Id
-        )[0];
+        const driver1 = selectDriverById(drivers, driver1Id);
+        const driver2 = selectDriverById(drivers, driver2Id);
 
-        const drivers1LapData = laps.filter(
-          (lap) => lap.driverId === driver1Id && lap.raceId === raceId
-        );
-        const drivers2LapData = laps.filter(
-          (lap) => lap.driverId === driver2Id && lap.raceId === raceId
-        );
+        const drivers1LapData = selectByDriverandRace(laps, driver1.driverId, raceId)
+        const drivers2LapData = selectByDriverandRace(laps, driver2.driverId, raceId)
 
-        const lapsFromRace = laps.filter((lap) => lap.raceId === raceId);
-        
-        const distinctDrivers = [...new Set(lapsFromRace.map(lap => lap.driverId))]
-        
-        const filteredDrivers = drivers.filter(driver => distinctDrivers.includes(driver.driverId))
+        const filteredDrivers = selectDriversFromRace(laps, drivers, raceId);
 
         // fill race select box
-        const raceEl = document.getElementById("race-select");
+        const filteredRaces = races.filter((race) => race.year !== "2021"); 
         const selectRaceText = (item) => `${item.name} ${item.year}`;
         const sortCb = (a, b) => b.year > a.year;
-        selectFill(raceEl, races, raceId, selectRaceText, sortCb);
+        fillSelectElement(
+          selectFormItems.race,
+          filteredRaces,
+          "raceId",
+          null,
+          selectRaceText,
+          sortCb
+        );
 
         // fill driver's select box
         const selectDriverNameText = (item) => `${item.surname} ${item.forename}`;
         const driverSortCb = (a, b) => b.surname > a.surname;
 
-        const driver1El = document.getElementById("driver1-select");
-        selectFill(driver1El, filteredDrivers, raceId, selectDriverNameText, driverSortCb);
+        fillSelectElement(
+          selectFormItems.driver1,
+          filteredDrivers,
+          "driverId",
+          driver1.driverId,
+          selectDriverNameText,
+          driverSortCb
+        );
 
-        const driver2El = document.getElementById("driver2-select");
-        selectFill(driver2El, filteredDrivers, raceId, selectDriverNameText, driverSortCb);
+        fillSelectElement(
+          selectFormItems.driver2,
+          filteredDrivers,
+          "driverId",
+          driver2.driverId,
+          selectDriverNameText,
+          driverSortCb
+        );
 
         // package information
         const driverData = {
           laps: drivers1LapData,
-          driver: driver,
+          driver: driver1,
         };
         const driver2Data = {
           laps: drivers2LapData,
@@ -62,9 +73,9 @@ function loadData(svg, raceId, driver1Id, driver2Id) {
           d.position = +d.position;
           d.seconds = +d.milliseconds / 1000;
           d.time = d.time;
-          // delete d.milliseconds;
-          // delete d.driverId;
-          // delete d.raceId;
+          delete d.milliseconds;
+          delete d.driverId;
+          delete d.raceId;
         });
 
         driver2Data.laps.forEach((d) => {
@@ -72,11 +83,13 @@ function loadData(svg, raceId, driver1Id, driver2Id) {
           d.position = +d.position;
           d.seconds = +d.milliseconds / 1000;
           d.time = d.time;
-          // delete d.milliseconds;
-          // delete d.driverId;
-          // delete d.raceId;
+          delete d.milliseconds;
+          delete d.driverId;
+          delete d.raceId;
         });
 
+        driver2Data.laps.sort((a,b) => a.lap > b.lap);
+        driverData.laps.sort((a,b) => a.lap > b.lap);
         renderGraph(svg, race, driver2Data, driverData);
       });
     });

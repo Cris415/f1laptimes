@@ -38,7 +38,7 @@ svg{
 .line-path {
   fill: none;
   /* stroke: #03BFB5; */
-  stroke-width: 3px;
+  stroke-width: 2px;
   stroke-linejoin: round;
   stroke-linejoin: round;
 }
