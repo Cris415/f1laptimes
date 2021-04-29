@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     svg.selectChildren().remove();
     [...driver1El.children].forEach((child) => child.remove());
     [...driver2El.children].forEach((child) => child.remove());
+    [...raceEl.children].forEach((child) => child.remove());
   }
 
   raceEl.addEventListener("change", (e) => {

@@ -3807,10 +3807,10 @@
           const filteredDrivers2 = selectDriversFromRace(laps, drivers, raceId, driver1.driverId);
           const filteredRaces = races.filter((race2) => race2.year !== "2021");
           const selectRaceText = (item) => `${item.name} ${item.year}`;
-          const sortCb = (a, b) => b.year > a.year;
+          const sortCb = (a, b) => b.year - a.year;
           fillSelectElement_default(selectFormItems.race, filteredRaces, "raceId", raceId, selectRaceText, sortCb);
           const selectDriverNameText = (item) => `${item.surname} ${item.forename}`;
-          const driverSortCb = (a, b) => b.surname > a.surname;
+          const driverSortCb = (a, b) => b.surname - a.surname;
           fillSelectElement_default(selectFormItems.driver1, filteredDrivers1, "driverId", driver1.driverId, selectDriverNameText, driverSortCb);
           fillSelectElement_default(selectFormItems.driver2, filteredDrivers2, "driverId", driver2.driverId, selectDriverNameText, driverSortCb);
           const driverData = {
@@ -3826,21 +3826,15 @@
             d.position = +d.position;
             d.seconds = +d.milliseconds / 1e3;
             d.time = d.time;
-            delete d.milliseconds;
-            delete d.driverId;
-            delete d.raceId;
           });
           driver2Data.laps.forEach((d) => {
             d.lap = +d.lap;
             d.position = +d.position;
             d.seconds = +d.milliseconds / 1e3;
             d.time = d.time;
-            delete d.milliseconds;
-            delete d.driverId;
-            delete d.raceId;
           });
-          driver2Data.laps.sort((a, b) => a.lap > b.lap);
-          driverData.laps.sort((a, b) => a.lap > b.lap);
+          driver2Data.laps.sort((a, b) => a.lap - b.lap);
+          driverData.laps.sort((a, b) => a.lap - b.lap);
           renderGraph_default(svg, race, driver2Data, driverData);
         });
       });
@@ -3863,6 +3857,7 @@
       svg.selectChildren().remove();
       [...driver1El.children].forEach((child) => child.remove());
       [...driver2El.children].forEach((child) => child.remove());
+      [...raceEl.children].forEach((child) => child.remove());
     }
     raceEl.addEventListener("change", (e) => {
       e.preventDefault();

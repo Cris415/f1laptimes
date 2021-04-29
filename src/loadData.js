@@ -26,7 +26,7 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
         // fill race select box
         const filteredRaces = races.filter((race) => race.year !== "2021"); 
         const selectRaceText = (item) => `${item.name} ${item.year}`;
-        const sortCb = (a, b) => b.year > a.year;
+        const sortCb = (a, b) => b.year - a.year;
         fillSelectElement(
           selectFormItems.race,
           filteredRaces,
@@ -38,7 +38,7 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
 
         // fill driver's select box
         const selectDriverNameText = (item) => `${item.surname} ${item.forename}`;
-        const driverSortCb = (a, b) => b.surname > a.surname;
+        const driverSortCb = (a, b) => b.surname - a.surname;
 
         fillSelectElement(
           selectFormItems.driver1,
@@ -74,9 +74,9 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
           d.position = +d.position;
           d.seconds = +d.milliseconds / 1000;
           d.time = d.time;
-          delete d.milliseconds;
-          delete d.driverId;
-          delete d.raceId;
+          // delete d.milliseconds;
+          // delete d.driverId;
+          // delete d.raceId;
         });
 
         driver2Data.laps.forEach((d) => {
@@ -84,13 +84,13 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
           d.position = +d.position;
           d.seconds = +d.milliseconds / 1000;
           d.time = d.time;
-          delete d.milliseconds;
-          delete d.driverId;
-          delete d.raceId;
+          // delete d.milliseconds;
+          // delete d.driverId;
+          // delete d.raceId;
         });
 
-        driver2Data.laps.sort((a,b) => a.lap > b.lap);
-        driverData.laps.sort((a,b) => a.lap > b.lap);
+        driver2Data.laps.sort((a,b) => a.lap - b.lap);
+        driverData.laps.sort((a,b) => a.lap - b.lap);
         renderGraph(svg, race, driver2Data, driverData);
       });
     });
