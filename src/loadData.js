@@ -20,7 +20,8 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
         const drivers1LapData = selectByDriverandRace(laps, driver1.driverId, raceId)
         const drivers2LapData = selectByDriverandRace(laps, driver2.driverId, raceId)
 
-        const filteredDrivers = selectDriversFromRace(laps, drivers, raceId);
+        const filteredDrivers1 = selectDriversFromRace(laps, drivers, raceId, driver2.driverId);
+        const filteredDrivers2 = selectDriversFromRace(laps, drivers, raceId, driver1.driverId);
 
         // fill race select box
         const filteredRaces = races.filter((race) => race.year !== "2021"); 
@@ -30,7 +31,7 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
           selectFormItems.race,
           filteredRaces,
           "raceId",
-          null,
+          raceId,
           selectRaceText,
           sortCb
         );
@@ -41,7 +42,7 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
 
         fillSelectElement(
           selectFormItems.driver1,
-          filteredDrivers,
+          filteredDrivers1,
           "driverId",
           driver1.driverId,
           selectDriverNameText,
@@ -50,7 +51,7 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
 
         fillSelectElement(
           selectFormItems.driver2,
-          filteredDrivers,
+          filteredDrivers2,
           "driverId",
           driver2.driverId,
           selectDriverNameText,

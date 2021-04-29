@@ -3771,18 +3771,16 @@
       option.setAttribute("value", item[value]);
       option.appendChild(document.createTextNode(textCb(item)));
       element.appendChild(option);
-      if (id2) {
-        element.value = id2;
-      }
     });
+    element.value = id2;
   }
   var fillSelectElement_default = fillSelectElement;
 
   // src/selectUtil.js
-  function selectDriversFromRace(lapsArray, drivers, raceId) {
+  function selectDriversFromRace(lapsArray, drivers, raceId, excludedDriverId) {
     const lapsFromRace = lapsArray.filter((lap) => lap.raceId === raceId);
     const distinctDrivers = [...new Set(lapsFromRace.map((lap) => lap.driverId))];
-    const filteredDrivers = drivers.filter((driver) => distinctDrivers.includes(driver.driverId));
+    const filteredDrivers = drivers.filter((driver) => distinctDrivers.includes(driver.driverId) && driver.driverId !== excludedDriverId);
     return filteredDrivers;
   }
   function selectByDriverandRace(laps, driverId, raceId) {
@@ -3805,15 +3803,16 @@
           const driver2 = selectDriverById(drivers, driver2Id);
           const drivers1LapData = selectByDriverandRace(laps, driver1.driverId, raceId);
           const drivers2LapData = selectByDriverandRace(laps, driver2.driverId, raceId);
-          const filteredDrivers = selectDriversFromRace(laps, drivers, raceId);
+          const filteredDrivers1 = selectDriversFromRace(laps, drivers, raceId, driver2.driverId);
+          const filteredDrivers2 = selectDriversFromRace(laps, drivers, raceId, driver1.driverId);
           const filteredRaces = races.filter((race2) => race2.year !== "2021");
           const selectRaceText = (item) => `${item.name} ${item.year}`;
           const sortCb = (a, b) => b.year > a.year;
-          fillSelectElement_default(selectFormItems.race, filteredRaces, "raceId", null, selectRaceText, sortCb);
+          fillSelectElement_default(selectFormItems.race, filteredRaces, "raceId", raceId, selectRaceText, sortCb);
           const selectDriverNameText = (item) => `${item.surname} ${item.forename}`;
           const driverSortCb = (a, b) => b.surname > a.surname;
-          fillSelectElement_default(selectFormItems.driver1, filteredDrivers, "driverId", driver1.driverId, selectDriverNameText, driverSortCb);
-          fillSelectElement_default(selectFormItems.driver2, filteredDrivers, "driverId", driver2.driverId, selectDriverNameText, driverSortCb);
+          fillSelectElement_default(selectFormItems.driver1, filteredDrivers1, "driverId", driver1.driverId, selectDriverNameText, driverSortCb);
+          fillSelectElement_default(selectFormItems.driver2, filteredDrivers2, "driverId", driver2.driverId, selectDriverNameText, driverSortCb);
           const driverData = {
             laps: drivers1LapData,
             driver: driver1
