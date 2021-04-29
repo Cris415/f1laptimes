@@ -23,7 +23,7 @@ export class createLine {
       .attr("stroke-dasharray", totalLength + " " + totalLength)
       .attr("stroke-dashoffset", totalLength)
       .transition()
-      .duration(5000)
+      .duration(4500)
       .ease(easePoly)
       .attr("stroke-dashoffset", 0);
   }

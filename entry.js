@@ -5,9 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const svg = select('svg');
 
 
-
-
-
   const raceId = "1033";
   const driver1Id = "1";
   const driver2Id = "847";

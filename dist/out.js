@@ -3723,7 +3723,7 @@
     }
     animate() {
       const totalLength = this.path.node().getTotalLength();
-      this.path.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(5e3).ease(polyInOut).attr("stroke-dashoffset", 0);
+      this.path.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(4500).ease(polyInOut).attr("stroke-dashoffset", 0);
     }
     render() {
       this.path = this.group.append("path").attr("class", "line-path").style("stroke", this.color).attr("d", this.lineGeneratorOutput(this.data));
@@ -3764,16 +3764,20 @@
   }
   var renderGraph_default = renderGraph;
 
+  // src/selectFill.js
+  function selectFill(element, data, value, textCb, sortCb = (a, b) => a > b) {
+    data.sort((a, b) => sortCb(a, b)).forEach((item) => {
+      option = document.createElement("option");
+      option.setAttribute("value", item[value]);
+      option.appendChild(document.createTextNode(textCb(item)));
+      element.appendChild(option);
+    });
+  }
+  var selectFill_default = selectFill;
+
   // src/loadData.js
   function loadData(svg, raceId, driver1Id, driver2Id) {
     csv2("data/races.csv").then((races) => {
-      const selectEl = document.getElementById("race-select");
-      races.sort((a, b) => b.year > a.year).forEach((race) => {
-        option = document.createElement("option");
-        option.setAttribute("value", race.raceId);
-        option.appendChild(document.createTextNode(`${race.name} ${race.year}`));
-        selectEl.appendChild(option);
-      });
       csv2("data/drivers.csv").then((drivers) => {
         csv2("data/lap_times.csv").then((laps) => {
           const race = races.filter((race2) => race2.raceId === raceId)[0];
@@ -3781,6 +3785,19 @@
           const driver2 = drivers.filter((driver3) => driver3.driverId === driver2Id)[0];
           const drivers1LapData = laps.filter((lap) => lap.driverId === driver1Id && lap.raceId === raceId);
           const drivers2LapData = laps.filter((lap) => lap.driverId === driver2Id && lap.raceId === raceId);
+          const lapsFromRace = laps.filter((lap) => lap.raceId === raceId);
+          const distinctDrivers = [...new Set(lapsFromRace.map((lap) => lap.driverId))];
+          const filteredDrivers = drivers.filter((driver3) => distinctDrivers.includes(driver3.driverId));
+          const raceEl = document.getElementById("race-select");
+          const selectRaceText = (item) => `${item.name} ${item.year}`;
+          const sortCb = (a, b) => b.year > a.year;
+          selectFill_default(raceEl, races, raceId, selectRaceText, sortCb);
+          const selectDriverNameText = (item) => `${item.surname} ${item.forename}`;
+          const driverSortCb = (a, b) => b.surname > a.surname;
+          const driver1El = document.getElementById("driver1-select");
+          selectFill_default(driver1El, filteredDrivers, raceId, selectDriverNameText, driverSortCb);
+          const driver2El = document.getElementById("driver2-select");
+          selectFill_default(driver2El, filteredDrivers, raceId, selectDriverNameText, driverSortCb);
           const driverData = {
             laps: drivers1LapData,
             driver
@@ -3794,18 +3811,12 @@
             d.position = +d.position;
             d.seconds = +d.milliseconds / 1e3;
             d.time = d.time;
-            delete d.milliseconds;
-            delete d.driverId;
-            delete d.raceId;
           });
           driver2Data.laps.forEach((d) => {
             d.lap = +d.lap;
             d.position = +d.position;
             d.seconds = +d.milliseconds / 1e3;
             d.time = d.time;
-            delete d.milliseconds;
-            delete d.driverId;
-            delete d.raceId;
           });
           renderGraph_default(svg, race, driver2Data, driverData);
         });
