@@ -1,7 +1,5 @@
 export function selectDriversFromRace(lapsArray, drivers ,raceId, excludedDriverId){
-  // selecting drivers from a given race
   const lapsFromRace = lapsArray.filter((lap) => lap.raceId === raceId);
-
   const distinctDrivers = [...new Set(lapsFromRace.map((lap) => lap.driverId))];
 
   const filteredDrivers = drivers.filter(
