@@ -3,11 +3,17 @@ import {
   extent,
   axisLeft,
   axisBottom,
+  select
 } from "d3";
 
 import { createLine } from './createLine';
 
 function renderGraph(svg, race, ...drivers) {
+  select("#graph-container")
+    .append("div")
+    .attr("id", "tooltip")
+    .attr("style", "position: absolute; opacity: 0;");
+
   // set the dimensions and margins of the graph
   const height = +svg.attr("height");
   const width = +svg.attr("width");
@@ -26,8 +32,8 @@ function renderGraph(svg, race, ...drivers) {
   const xScale = scaleLinear()
     .domain(extent(allLapData, xValue))
     .range([0, innerWidth])
+    .clamp(true)
     .nice();
-
 
   const yScale = scaleLinear()
     .domain(extent(allLapData, yValue))
@@ -44,9 +50,7 @@ function renderGraph(svg, race, ...drivers) {
   g.append("text").attr("class", "title").attr("y", -10).text(title);
 
   // set axis
-  const xAxis = axisBottom(xScale)
-    .tickSize(-innerHeight)
-    .tickPadding(15);
+  const xAxis = axisBottom(xScale).tickSize(-innerHeight).tickPadding(15);
 
   const yAxis = axisLeft(yScale)
     .tickFormat((d) => d + "s")
@@ -54,17 +58,14 @@ function renderGraph(svg, race, ...drivers) {
     .tickPadding(10);
 
   // set axis label
-  const yAxisG = g
-    .append("g")
-    .call(yAxis)
-    .attr("class", "axis");
+  const yAxisG = g.append("g").call(yAxis).attr("class", "axis");
 
   const xAxisG = g
     .append("g")
     .call(xAxis)
     .attr("class", "axis")
     .attr("transform", `translate(0, ${innerHeight})`);
-    
+
   // append axis labels
   yAxisG
     .append("text")
@@ -84,15 +85,24 @@ function renderGraph(svg, race, ...drivers) {
     .attr("fill", "black")
     .text(xAxisLabel);
 
-    // Iterate over driver data and create line for each driver
-    // store in a lines object
-    const lines = {}
-    drivers.forEach(driver => {
-      lines[driver.driver.code] = new createLine(g, driver.laps, xScale, yScale, xValue, yValue);
-      lines[driver.driver.code].render();
-      lines[driver.driver.code].animate();
-    })
+  // Iterate over driver data and create line for each driver
+  // store in a lines object
+  colors = ["#03BFB5", "red"];
 
+  const lines = {};
+  drivers.forEach((driver, i) => {
+    lines[driver.driver.code] = new createLine(
+      g,
+      driver.laps,
+      xScale,
+      yScale,
+      xValue,
+      yValue,
+      colors[i]
+    );
+    lines[driver.driver.code].render();
+    lines[driver.driver.code].animate();
+  });
 
   // Circles for scatter plot
   g.selectAll("circle")
@@ -101,7 +111,61 @@ function renderGraph(svg, race, ...drivers) {
     .append("circle")
     .attr("cy", (d) => yScale(yValue(d)))
     .attr("cx", (d) => xScale(xValue(d)))
-    .attr("r", 2);
+    .attr("r", 4)
+    .on("mouseover", function (event, d) { 
+      select("#tooltip")
+      .transition()
+      .duration(200)
+      .style("opacity", 1)
+      .text(`DRIVER: ${d.code} TIME: ${d.time},   POS: ${d.position},   LAP: ${d.lap} `);
+    })
+    .on("mouseout", function () {
+      select("#tooltip").style("opacity", 0);
+    })
+    .on("mousemove", function (event) {
+      select("#tooltip")
+        .style("left", event.pageX + 10 + "px")
+        .style("top", event.pageY + 10 + "px");
+    });
+  const legendG = g.append("g").attr("class", "legend");
+
+  const filter = legendG.append("filter").attr("id", "glow");
+  filter
+    .append("feGaussianBlur")
+    .attr("stdDeviation", "0.9")
+
+  legendG
+    .append("rect")
+    .attr("class", "legend-box")
+    .attr("x", innerWidth - 115)
+    .attr("y", 5)
+    .attr("rx", 4) 
+    .style("filter", "url(#glow)");
+
+  legendG
+    .append("circle")
+    .attr("cx", innerWidth - 100)
+    .attr("cy", 30)
+    .attr("r", 6)
+    .style("fill", colors[0]);
+  legendG
+    .append("circle")
+    .attr("cx", innerWidth - 100)
+    .attr("cy", 60)
+    .attr("r", 6)
+    .style("fill", colors[1]);
+  legendG
+    .append("text")
+    .attr("x", innerWidth - 80)
+    .attr("y", 30)
+    .text(drivers[0].driver.surname)
+    .attr("alignment-baseline", "middle");
+  legendG
+    .append("text")
+    .attr("x", innerWidth - 80)
+    .attr("y", 60)
+    .text(drivers[1].driver.surname)
+    .attr("alignment-baseline", "middle");
 }
 
 export default renderGraph;

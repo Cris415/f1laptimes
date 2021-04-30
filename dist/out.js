@@ -1563,10 +1563,10 @@
     return rgb2;
   }(1);
   function rgbSpline(spline) {
-    return function(colors) {
-      var n = colors.length, r = new Array(n), g = new Array(n), b = new Array(n), i, color2;
+    return function(colors2) {
+      var n = colors2.length, r = new Array(n), g = new Array(n), b = new Array(n), i, color2;
       for (i = 0; i < n; ++i) {
-        color2 = rgb(colors[i]);
+        color2 = rgb(colors2[i]);
         r[i] = color2.r || 0;
         g[i] = color2.g || 0;
         b[i] = color2.b || 0;
@@ -3711,7 +3711,7 @@
 
   // src/createLine.js
   var createLine = class {
-    constructor(group, data, xScale, yScale, xValue, yValue, color2 = "white") {
+    constructor(group, data, xScale, yScale, xValue, yValue, color2 = "black") {
       this.group = group;
       this.data = data;
       this.color = color2;
@@ -3733,6 +3733,7 @@
 
   // src/renderGraph.js
   function renderGraph(svg, race, ...drivers) {
+    select_default2("#graph-container").append("div").attr("id", "tooltip").attr("style", "position: absolute; opacity: 0;");
     const height = +svg.attr("height");
     const width = +svg.attr("width");
     const margin = {top: 50, right: 20, bottom: 70, left: 80};
@@ -3743,7 +3744,7 @@
     const xAxisLabel = "Lap";
     const yValue = (d) => d.seconds;
     const yAxisLabel = "Lap time";
-    const xScale = linear2().domain(extent_default(allLapData, xValue)).range([0, innerWidth]).nice();
+    const xScale = linear2().domain(extent_default(allLapData, xValue)).range([0, innerWidth]).clamp(true).nice();
     const yScale = linear2().domain(extent_default(allLapData, yValue)).range([innerHeight, 0]).nice();
     const g = svg.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
     const title = `Lap times for ${drivers[0].driver.surname} and ${drivers[1].driver.surname} at the ${race.name} ${race.year}`;
@@ -3754,13 +3755,28 @@
     const xAxisG = g.append("g").call(xAxis).attr("class", "axis").attr("transform", `translate(0, ${innerHeight})`);
     yAxisG.append("text").attr("class", "axis-label").attr("y", -60).attr("x", -innerHeight / 2).attr("fill", "black").attr("transform", "rotate(-90)").attr("text-anchor", "middle").text(yAxisLabel);
     xAxisG.append("text").attr("class", "axis-label").attr("y", 50).attr("x", innerWidth / 2).attr("fill", "black").text(xAxisLabel);
+    colors = ["#03BFB5", "red"];
     const lines = {};
-    drivers.forEach((driver) => {
-      lines[driver.driver.code] = new createLine(g, driver.laps, xScale, yScale, xValue, yValue);
+    drivers.forEach((driver, i) => {
+      lines[driver.driver.code] = new createLine(g, driver.laps, xScale, yScale, xValue, yValue, colors[i]);
       lines[driver.driver.code].render();
       lines[driver.driver.code].animate();
     });
-    g.selectAll("circle").data(allLapData).enter().append("circle").attr("cy", (d) => yScale(yValue(d))).attr("cx", (d) => xScale(xValue(d))).attr("r", 2);
+    g.selectAll("circle").data(allLapData).enter().append("circle").attr("cy", (d) => yScale(yValue(d))).attr("cx", (d) => xScale(xValue(d))).attr("r", 4).on("mouseover", function(event, d) {
+      select_default2("#tooltip").transition().duration(200).style("opacity", 1).text(`DRIVER: ${d.code} TIME: ${d.time},   POS: ${d.position},   LAP: ${d.lap} `);
+    }).on("mouseout", function() {
+      select_default2("#tooltip").style("opacity", 0);
+    }).on("mousemove", function(event) {
+      select_default2("#tooltip").style("left", event.pageX + 10 + "px").style("top", event.pageY + 10 + "px");
+    });
+    const legendG = g.append("g").attr("class", "legend");
+    const filter2 = legendG.append("filter").attr("id", "glow");
+    filter2.append("feGaussianBlur").attr("stdDeviation", "0.9");
+    legendG.append("rect").attr("class", "legend-box").attr("x", innerWidth - 115).attr("y", 5).attr("rx", 4).style("filter", "url(#glow)");
+    legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 30).attr("r", 6).style("fill", colors[0]);
+    legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 60).attr("r", 6).style("fill", colors[1]);
+    legendG.append("text").attr("x", innerWidth - 80).attr("y", 30).text(drivers[0].driver.surname).attr("alignment-baseline", "middle");
+    legendG.append("text").attr("x", innerWidth - 80).attr("y", 60).text(drivers[1].driver.surname).attr("alignment-baseline", "middle");
   }
   var renderGraph_default = renderGraph;
 
@@ -3834,6 +3850,7 @@
             d.position = +d.position;
             d.seconds = +d.milliseconds / 1e3;
             d.time = d.time;
+            d.code = driver1.code;
             delete d.milliseconds;
             delete d.driverId;
             delete d.raceId;
@@ -3843,6 +3860,7 @@
             d.position = +d.position;
             d.seconds = +d.milliseconds / 1e3;
             d.time = d.time;
+            d.code = driver2.code;
             delete d.milliseconds;
             delete d.driverId;
             delete d.raceId;

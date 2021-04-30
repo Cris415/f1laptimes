@@ -87,6 +87,7 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
           d.position = +d.position;
           d.seconds = +d.milliseconds / 1000;
           d.time = d.time;
+          d.code = driver1.code
           delete d.milliseconds;
           delete d.driverId;
           delete d.raceId;
@@ -97,6 +98,7 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
           d.position = +d.position;
           d.seconds = +d.milliseconds / 1000;
           d.time = d.time;
+          d.code = driver2.code;
           delete d.milliseconds;
           delete d.driverId;
           delete d.raceId;
