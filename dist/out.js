@@ -3772,7 +3772,8 @@
     const legendG = g.append("g").attr("class", "legend");
     const filter2 = legendG.append("filter").attr("id", "glow");
     filter2.append("feGaussianBlur").attr("stdDeviation", "0.9");
-    legendG.append("rect").attr("class", "legend-box").attr("x", innerWidth - 115).attr("y", 5).attr("rx", 4).style("filter", "url(#glow)");
+    https:
+      legendG.append("rect").attr("class", "legend-box").attr("x", innerWidth - 115).attr("y", 5).attr("rx", 4).style("filter", "url(#glow)");
     legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 30).attr("r", 6).style("fill", colors[0]);
     legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 60).attr("r", 6).style("fill", colors[1]);
     legendG.append("text").attr("x", innerWidth - 80).attr("y", 30).text(drivers[0].driver.surname).attr("alignment-baseline", "middle");
@@ -3809,67 +3810,137 @@
     return races.filter((race) => race.raceId === raceId)[0];
   }
 
+  // src/raceResults.js
+  function createRow(datum2, header) {
+    datum2 = Object.values(datum2);
+    const newRow = document.createElement("tr");
+    datum2.forEach((d) => {
+      const box = header ? document.createElement("th") : document.createElement("td");
+      const content = document.createTextNode(d);
+      box.appendChild(content);
+      newRow.appendChild(box);
+    });
+    return newRow;
+  }
+  var headerItems = ["driver", "constructor", "number", "position", "laps", "fastest lap time", "fastest lap speed", "status"];
+  function raceResults(results, status, drivers, constructors) {
+    const table = document.getElementById("race-results");
+    table.append(createRow(headerItems, true));
+    results.forEach((result) => {
+      const driver = drivers.filter((driver2) => driver2.driverId === result.driverId)[0];
+      if (driver) {
+        result.driverId = `${driver.forename} ${driver.surname}`;
+      } else {
+        result.driverId = "\\N";
+      }
+      result.constructorId = constructors.filter((team) => team.constructorId === result.constructorId)[0].name;
+      result.status = status.filter((status2) => status2.statusId === result.statusId)[0].status;
+      if (Number.isInteger(+result.fastestLapSpeed)) {
+        result.fastestLapSpeed = (+result.fastestLapSpeed / 1.609).toFixed(2) + " mph";
+      }
+      delete result.grid;
+      delete result.raceId;
+      delete result.resultId;
+      delete result.statusId;
+      delete result.position;
+      delete result.positionOrder;
+      delete result.points;
+      delete result.milliseconds;
+      delete result.rank;
+      delete result.fastestLap;
+      delete result.time;
+      table.append(createRow(result));
+    });
+  }
+  var raceResults_default = raceResults;
+
+  // src/loadResults.js
+  var raceData = [
+    csv2("data/lap_times.csv"),
+    csv2("data/circuits.csv"),
+    csv2("data/constructors.csv"),
+    csv2("data/drivers.csv"),
+    csv2("data/races.csv"),
+    csv2("data/results.csv"),
+    csv2("data/status.csv")
+  ];
+  function loadResults(raceId) {
+    Promise.all(raceData).then(function(raceData3) {
+      const [laps, circuits, constructors, drivers, races, results, status] = raceData3;
+      let filteredResults = results.filter((result) => result.raceId === raceId);
+      const filteredDrivers = selectDriversFromRace(laps, drivers, raceId);
+      raceResults_default(filteredResults, status, filteredDrivers, constructors);
+    });
+  }
+  var loadResults_default = loadResults;
+
   // src/loadData.js
+  var raceData2 = [
+    csv2("data/lap_times.csv"),
+    csv2("data/circuits.csv"),
+    csv2("data/constructors.csv"),
+    csv2("data/drivers.csv"),
+    csv2("data/races.csv"),
+    csv2("data/results.csv"),
+    csv2("data/status.csv")
+  ];
   function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
-    csv2("data/races.csv").then((races) => {
-      csv2("data/drivers.csv").then((drivers) => {
-        csv2("data/lap_times.csv").then((laps) => {
-          const race = selectRaceById(races, raceId);
-          let driver1 = selectDriverById(drivers, driver1Id);
-          let driver2 = selectDriverById(drivers, driver2Id);
-          let filteredDrivers1 = selectDriversFromRace(laps, drivers, raceId, driver2.driverId);
-          let filteredDrivers2 = selectDriversFromRace(laps, drivers, raceId, driver1.driverId);
-          if (!filteredDrivers1.includes(driver1)) {
-            driver1 = filteredDrivers1[0];
-            filteredDrivers2 = filteredDrivers2.filter((driver) => driver.driverId !== filteredDrivers1[0].driverId);
-          }
-          if (!filteredDrivers2.includes(driver2)) {
-            driver2 = filteredDrivers2[1];
-            filteredDrivers1 = filteredDrivers1.filter((driver) => driver.driverId !== filteredDrivers2[1].driverId);
-          }
-          const drivers1LapData = selectByDriverandRace(laps, driver1.driverId, raceId);
-          const drivers2LapData = selectByDriverandRace(laps, driver2.driverId, raceId);
-          const filteredRaces = races.filter((race2) => race2.year !== "2021" && +race2.year > 1995);
-          const selectRaceText = (item) => `${item.name} ${item.year}`;
-          const sortCb = (a, b) => b.year - a.year;
-          fillSelectElement_default(selectFormItems.race, filteredRaces, "raceId", raceId, selectRaceText, sortCb);
-          const selectDriverNameText = (item) => `${item.forename} ${item.surname}`;
-          const driverSortCb = (a, b) => b.surname - a.surname;
-          fillSelectElement_default(selectFormItems.driver1, filteredDrivers1, "driverId", driver1.driverId, selectDriverNameText, driverSortCb);
-          fillSelectElement_default(selectFormItems.driver2, filteredDrivers2, "driverId", driver2.driverId, selectDriverNameText, driverSortCb);
-          const driverData = {
-            laps: drivers1LapData,
-            driver: driver1
-          };
-          const driver2Data = {
-            laps: drivers2LapData,
-            driver: driver2
-          };
-          driverData.laps.forEach((d) => {
-            d.lap = +d.lap;
-            d.position = +d.position;
-            d.seconds = +d.milliseconds / 1e3;
-            d.time = d.time;
-            d.code = driver1.code;
-            delete d.milliseconds;
-            delete d.driverId;
-            delete d.raceId;
-          });
-          driver2Data.laps.forEach((d) => {
-            d.lap = +d.lap;
-            d.position = +d.position;
-            d.seconds = +d.milliseconds / 1e3;
-            d.time = d.time;
-            d.code = driver2.code;
-            delete d.milliseconds;
-            delete d.driverId;
-            delete d.raceId;
-          });
-          driver2Data.laps.sort((a, b) => a.lap - b.lap);
-          driverData.laps.sort((a, b) => a.lap - b.lap);
-          renderGraph_default(svg, race, driver2Data, driverData);
-        });
+    Promise.all(raceData2).then(function(raceData3) {
+      const [lapTimes, circuits, constructors, drivers, races, results, status] = raceData3;
+      const race = selectRaceById(races, raceId);
+      let driver1 = selectDriverById(drivers, driver1Id);
+      let driver2 = selectDriverById(drivers, driver2Id);
+      let filteredDrivers1 = selectDriversFromRace(lapTimes, drivers, raceId, driver2.driverId);
+      let filteredDrivers2 = selectDriversFromRace(lapTimes, drivers, raceId, driver1.driverId);
+      if (!filteredDrivers1.includes(driver1)) {
+        driver1 = filteredDrivers1[0];
+        filteredDrivers2 = filteredDrivers2.filter((driver) => driver.driverId !== filteredDrivers1[0].driverId);
+      }
+      if (!filteredDrivers2.includes(driver2)) {
+        driver2 = filteredDrivers2[1];
+        filteredDrivers1 = filteredDrivers1.filter((driver) => driver.driverId !== filteredDrivers2[1].driverId);
+      }
+      const drivers1LapData = selectByDriverandRace(lapTimes, driver1.driverId, raceId);
+      const drivers2LapData = selectByDriverandRace(lapTimes, driver2.driverId, raceId);
+      const filteredRaces = races.filter((race2) => race2.year !== "2021" && +race2.year > 1995);
+      const selectRaceText = (item) => `${item.name} ${item.year}`;
+      const sortCb = (a, b) => b.year - a.year;
+      fillSelectElement_default(selectFormItems.race, filteredRaces, "raceId", raceId, selectRaceText, sortCb);
+      const selectDriverNameText = (item) => `${item.forename} ${item.surname}`;
+      const driverSortCb = (a, b) => b.surname - a.surname;
+      fillSelectElement_default(selectFormItems.driver1, filteredDrivers1, "driverId", driver1.driverId, selectDriverNameText, driverSortCb);
+      fillSelectElement_default(selectFormItems.driver2, filteredDrivers2, "driverId", driver2.driverId, selectDriverNameText, driverSortCb);
+      const driverData = {
+        laps: drivers1LapData,
+        driver: driver1
+      };
+      const driver2Data = {
+        laps: drivers2LapData,
+        driver: driver2
+      };
+      driverData.laps.forEach((d) => {
+        d.lap = +d.lap;
+        d.position = +d.position;
+        d.seconds = +d.milliseconds / 1e3;
+        d.time = d.time;
+        d.code = driver1.code;
+        delete d.milliseconds;
+        delete d.driverId;
       });
+      driver2Data.laps.forEach((d) => {
+        d.lap = +d.lap;
+        d.position = +d.position;
+        d.seconds = +d.milliseconds / 1e3;
+        d.time = d.time;
+        d.code = driver2.code;
+        delete d.milliseconds;
+        delete d.driverId;
+      });
+      driver2Data.laps.sort((a, b) => a.lap - b.lap);
+      driverData.laps.sort((a, b) => a.lap - b.lap);
+      renderGraph_default(svg, race, driver2Data, driverData);
+    }).catch(function(err) {
+      console.log("err", err);
     });
   }
   var loadData_default = loadData;
@@ -3880,38 +3951,44 @@
     const raceEl = document.getElementById("race-select");
     const driver1El = document.getElementById("driver1-select");
     const driver2El = document.getElementById("driver2-select");
+    const table = document.getElementById("race-results");
     const selectFormItems = {
       race: raceEl,
       driver1: driver1El,
       driver2: driver2El
     };
-    function resetForms() {
+    function resetForms(results) {
       svg.selectChildren().remove();
       [...driver1El.children].forEach((child) => child.remove());
       [...driver2El.children].forEach((child) => child.remove());
       [...raceEl.children].forEach((child) => child.remove());
+      if (!results) {
+        [...table.children].forEach((child) => child.remove());
+      }
     }
     raceEl.addEventListener("change", (e) => {
       e.preventDefault();
       raceId = e.currentTarget.value;
       resetForms();
       loadData_default(svg, raceId, driver1Id, driver2Id, selectFormItems);
+      loadResults_default(raceId);
     });
     driver1El.addEventListener("change", (e) => {
       e.preventDefault();
       driver1Id = e.currentTarget.value;
-      resetForms();
+      resetForms("results");
       loadData_default(svg, raceId, driver1Id, driver2Id, selectFormItems);
     });
     driver2El.addEventListener("change", (e) => {
       e.preventDefault();
       driver2Id = e.currentTarget.value;
-      resetForms();
+      resetForms("results");
       loadData_default(svg, raceId, driver1Id, driver2Id, selectFormItems);
     });
     let raceId = "1033";
     let driver1Id = "1";
     let driver2Id = "847";
+    loadResults_default(raceId);
     loadData_default(svg, raceId, driver1Id, driver2Id, selectFormItems);
   });
 })();

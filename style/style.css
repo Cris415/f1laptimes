@@ -33,7 +33,7 @@ svg{
   fill: rgba(42, 42, 42, 0.784);
   /* background-color:   */
   background: #edc0bf;
-  background: linear-gradient(90deg, #edc0bf 0,#c4caef 58%);
+  background: linear-gradient(90deg, #eae0e0 0,#d0e6f2 58%);
 }
 
 .line-path {
@@ -56,7 +56,6 @@ svg{
 }
 
 .legend {                                               
-  background-color: hotpink;
   font-size: 1.4rem;   
 }    
 .legend-box {
@@ -64,5 +63,26 @@ svg{
   height: 80px;
   width: 115px;
 }            
+
+.error{
+  height: 300px;
+  width: 300px;
+}
+
+#race-results {
+  font-size: 1.4rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+#race-results td {
+  padding: 1rem;
+}
+#race-results th {
+  padding: 1rem;
+  text-transform: capitalize;
+  font-weight: 700;
+}
+#race-results tr {
+  border-bottom: black solid 1px;
+}
                               
      

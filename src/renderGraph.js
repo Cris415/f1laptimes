@@ -112,12 +112,14 @@ function renderGraph(svg, race, ...drivers) {
     .attr("cy", (d) => yScale(yValue(d)))
     .attr("cx", (d) => xScale(xValue(d)))
     .attr("r", 4)
-    .on("mouseover", function (event, d) { 
+    .on("mouseover", function (event, d) {
       select("#tooltip")
-      .transition()
-      .duration(200)
-      .style("opacity", 1)
-      .text(`DRIVER: ${d.code} TIME: ${d.time},   POS: ${d.position},   LAP: ${d.lap} `);
+        .transition()
+        .duration(200)
+        .style("opacity", 1)
+        .text(
+          `DRIVER: ${d.code} TIME: ${d.time},   POS: ${d.position},   LAP: ${d.lap} `
+        );
     })
     .on("mouseout", function () {
       select("#tooltip").style("opacity", 0);
@@ -130,16 +132,16 @@ function renderGraph(svg, race, ...drivers) {
   const legendG = g.append("g").attr("class", "legend");
 
   const filter = legendG.append("filter").attr("id", "glow");
-  filter
-    .append("feGaussianBlur")
-    .attr("stdDeviation", "0.9")
+  filter.append("feGaussianBlur").attr("stdDeviation", "0.9");
 
-  legendG
+  // https://www.visualcinnamon.com/2016/06/glow-filter-d3-visualization/
+  // www.d3-graph-gallery.com/graph/custom_legend.html
+  https: legendG
     .append("rect")
     .attr("class", "legend-box")
     .attr("x", innerWidth - 115)
     .attr("y", 5)
-    .attr("rx", 4) 
+    .attr("rx", 4)
     .style("filter", "url(#glow)");
 
   legendG
