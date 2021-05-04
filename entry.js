@@ -40,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
     driver1Id = e.currentTarget.value;
     resetForms("results");
     loadData(svg, raceId, driver1Id, driver2Id, selectFormItems);
-    // loadResults(raceId);
   })
   driver2El.addEventListener("change", (e) => {
     e.preventDefault();
@@ -48,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     resetForms("results");
     loadData(svg, raceId, driver1Id, driver2Id, selectFormItems);
-    // loadResults(raceId);
   })
 
 

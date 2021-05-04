@@ -3810,51 +3810,7 @@
     return races.filter((race) => race.raceId === raceId)[0];
   }
 
-  // src/raceResults.js
-  function createRow(datum2, header) {
-    datum2 = Object.values(datum2);
-    const newRow = document.createElement("tr");
-    datum2.forEach((d) => {
-      const box = header ? document.createElement("th") : document.createElement("td");
-      const content = document.createTextNode(d);
-      box.appendChild(content);
-      newRow.appendChild(box);
-    });
-    return newRow;
-  }
-  var headerItems = ["driver", "constructor", "number", "position", "laps", "fastest lap time", "fastest lap speed", "status"];
-  function raceResults(results, status, drivers, constructors) {
-    const table = document.getElementById("race-results");
-    table.append(createRow(headerItems, true));
-    results.forEach((result) => {
-      const driver = drivers.filter((driver2) => driver2.driverId === result.driverId)[0];
-      if (driver) {
-        result.driverId = `${driver.forename} ${driver.surname}`;
-      } else {
-        result.driverId = "\\N";
-      }
-      result.constructorId = constructors.filter((team) => team.constructorId === result.constructorId)[0].name;
-      result.status = status.filter((status2) => status2.statusId === result.statusId)[0].status;
-      if (Number.isInteger(+result.fastestLapSpeed)) {
-        result.fastestLapSpeed = (+result.fastestLapSpeed / 1.609).toFixed(2) + " mph";
-      }
-      delete result.grid;
-      delete result.raceId;
-      delete result.resultId;
-      delete result.statusId;
-      delete result.position;
-      delete result.positionOrder;
-      delete result.points;
-      delete result.milliseconds;
-      delete result.rank;
-      delete result.fastestLap;
-      delete result.time;
-      table.append(createRow(result));
-    });
-  }
-  var raceResults_default = raceResults;
-
-  // src/loadResults.js
+  // src/loadData.js
   var raceData = [
     csv2("data/lap_times.csv"),
     csv2("data/circuits.csv"),
@@ -3864,28 +3820,8 @@
     csv2("data/results.csv"),
     csv2("data/status.csv")
   ];
-  function loadResults(raceId) {
-    Promise.all(raceData).then(function(raceData3) {
-      const [laps, circuits, constructors, drivers, races, results, status] = raceData3;
-      let filteredResults = results.filter((result) => result.raceId === raceId);
-      const filteredDrivers = selectDriversFromRace(laps, drivers, raceId);
-      raceResults_default(filteredResults, status, filteredDrivers, constructors);
-    });
-  }
-  var loadResults_default = loadResults;
-
-  // src/loadData.js
-  var raceData2 = [
-    csv2("data/lap_times.csv"),
-    csv2("data/circuits.csv"),
-    csv2("data/constructors.csv"),
-    csv2("data/drivers.csv"),
-    csv2("data/races.csv"),
-    csv2("data/results.csv"),
-    csv2("data/status.csv")
-  ];
   function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
-    Promise.all(raceData2).then(function(raceData3) {
+    Promise.all(raceData).then(function(raceData3) {
       const [lapTimes, circuits, constructors, drivers, races, results, status] = raceData3;
       const race = selectRaceById(races, raceId);
       let driver1 = selectDriverById(drivers, driver1Id);
@@ -3944,6 +3880,70 @@
     });
   }
   var loadData_default = loadData;
+
+  // src/raceResults.js
+  function createRow(datum2, header) {
+    datum2 = Object.values(datum2);
+    const newRow = document.createElement("tr");
+    datum2.forEach((d) => {
+      const box = header ? document.createElement("th") : document.createElement("td");
+      const content = document.createTextNode(d);
+      box.appendChild(content);
+      newRow.appendChild(box);
+    });
+    return newRow;
+  }
+  var headerItems = ["driver", "constructor", "number", "position", "laps", "fastest lap time", "fastest lap speed", "status"];
+  function raceResults(results, status, drivers, constructors) {
+    const table = document.getElementById("race-results");
+    table.append(createRow(headerItems, true));
+    results.forEach((result) => {
+      const driver = drivers.filter((driver2) => driver2.driverId === result.driverId)[0];
+      if (driver) {
+        result.driverId = `${driver.forename} ${driver.surname}`;
+      } else {
+        result.driverId = "\\N";
+      }
+      result.constructorId = constructors.filter((team) => team.constructorId === result.constructorId)[0].name;
+      result.status = status.filter((status2) => status2.statusId === result.statusId)[0].status;
+      if (Number.isInteger(+result.fastestLapSpeed)) {
+        result.fastestLapSpeed = (+result.fastestLapSpeed / 1.609).toFixed(2) + " mph";
+      }
+      delete result.grid;
+      delete result.raceId;
+      delete result.resultId;
+      delete result.statusId;
+      delete result.position;
+      delete result.positionOrder;
+      delete result.points;
+      delete result.milliseconds;
+      delete result.rank;
+      delete result.fastestLap;
+      delete result.time;
+      table.append(createRow(result));
+    });
+  }
+  var raceResults_default = raceResults;
+
+  // src/loadResults.js
+  var raceData2 = [
+    csv2("data/lap_times.csv"),
+    csv2("data/circuits.csv"),
+    csv2("data/constructors.csv"),
+    csv2("data/drivers.csv"),
+    csv2("data/races.csv"),
+    csv2("data/results.csv"),
+    csv2("data/status.csv")
+  ];
+  function loadResults(raceId) {
+    Promise.all(raceData2).then(function(raceData3) {
+      const [laps, circuits, constructors, drivers, races, results, status] = raceData3;
+      let filteredResults = results.filter((result) => result.raceId === raceId);
+      const filteredDrivers = selectDriversFromRace(laps, drivers, raceId);
+      raceResults_default(filteredResults, status, filteredDrivers, constructors);
+    });
+  }
+  var loadResults_default = loadResults;
 
   // entry.js
   document.addEventListener("DOMContentLoaded", () => {

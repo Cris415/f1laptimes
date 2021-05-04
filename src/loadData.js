@@ -7,8 +7,6 @@ import {
   selectDriverById,
   selectRaceById,
 } from "./selectUtil";
-// import raceResults from "./raceResults";
-import loadResults from "./loadResults";
 
 const raceData = [
   csv("data/lap_times.csv"),
