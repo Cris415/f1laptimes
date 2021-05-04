@@ -95,9 +95,8 @@ select {
   font-weight: 300;
 }
 #race-results tr:nth-child(even) {
-  /* border-bottom: black solid 1px; */
   background-color: rgb(232, 232, 232);
-
+  margin-bottom: 15rem;
 }
                               
      
