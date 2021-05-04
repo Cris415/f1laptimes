@@ -28,10 +28,6 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
          let driver1 = selectDriverById(drivers, driver1Id);
          let driver2 = selectDriverById(drivers, driver2Id);
 
-
-        //  let filteredResults = results.filter(
-        //    (result) => result.raceId === raceId
-        //  );
          let filteredDrivers1 = selectDriversFromRace(
            lapTimes,
            drivers,
@@ -59,8 +55,6 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
              (driver) => driver.driverId !== filteredDrivers2[1].driverId
            );
          }
-
-        
 
          const drivers1LapData = selectByDriverandRace(
            lapTimes,
