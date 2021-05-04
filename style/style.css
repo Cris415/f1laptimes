@@ -98,5 +98,19 @@ select {
   background-color: rgb(232, 232, 232);
   margin-bottom: 15rem;
 }
+
+.description {
+  font-size: 1.6rem;
+  border: black solid 1px;
+  border-style:outset;
+  padding: 2rem;
+  margin: 2rem 0;
+}
+
+.description h3 {
+  font-size: 2rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
                               
      
