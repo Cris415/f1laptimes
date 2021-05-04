@@ -4,7 +4,7 @@
   "description": "",
   "main": "entry.js",
   "scripts": {
-    "prod-build": "esbuild entry.js --bundle --minify --outfile=dist/out.js",
+    "prod-build": "esbuild entry.js --bundle --minify --sourcemap --outfile=dist/out.js",
     "build": "esbuild entry.js --bundle --sourcemap --outfile=dist/out.js --watch"
   },
   "repository": {
