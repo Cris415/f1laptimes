@@ -40,14 +40,15 @@ document.addEventListener("DOMContentLoaded", () => {
     driver1Id = e.currentTarget.value;
     resetForms("results");
     loadData(svg, raceId, driver1Id, driver2Id, selectFormItems);
-  })
+  });
+
   driver2El.addEventListener("change", (e) => {
     e.preventDefault();
     driver2Id = e.currentTarget.value;
     
     resetForms("results");
     loadData(svg, raceId, driver1Id, driver2Id, selectFormItems);
-  })
+  });
 
 
 

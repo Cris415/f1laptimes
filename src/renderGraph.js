@@ -21,6 +21,7 @@ function renderGraph(svg, race, ...drivers) {
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
   const allLapData = [].concat(drivers[1].laps, drivers[0].laps);
+  // const allLapData = [...drivers[1].laps, ...drivers[0].laps]
 
   const xValue = (d) => d.lap;
   const xAxisLabel = "Lap";
@@ -100,8 +101,8 @@ function renderGraph(svg, race, ...drivers) {
       yValue,
       colors[i]
     );
-    lines[driver.driver.code].render();
-    lines[driver.driver.code].animate();
+    // lines[driver.driver.code].render();
+    // lines[driver.driver.code].animate();
   });
 
   // Circles for scatter plot
@@ -136,7 +137,7 @@ function renderGraph(svg, race, ...drivers) {
 
   // https://www.visualcinnamon.com/2016/06/glow-filter-d3-visualization/
   // www.d3-graph-gallery.com/graph/custom_legend.html
-  https: legendG
+  legendG
     .append("rect")
     .attr("class", "legend-box")
     .attr("x", innerWidth - 115)

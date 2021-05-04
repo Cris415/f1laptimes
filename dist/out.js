@@ -3759,8 +3759,6 @@
     const lines = {};
     drivers.forEach((driver, i) => {
       lines[driver.driver.code] = new createLine(g, driver.laps, xScale, yScale, xValue, yValue, colors[i]);
-      lines[driver.driver.code].render();
-      lines[driver.driver.code].animate();
     });
     g.selectAll("circle").data(allLapData).enter().append("circle").attr("cy", (d) => yScale(yValue(d))).attr("cx", (d) => xScale(xValue(d))).attr("r", 4).on("mouseover", function(event, d) {
       select_default2("#tooltip").transition().duration(200).style("opacity", 1).text(`DRIVER: ${d.code} TIME: ${d.time},   POS: ${d.position},   LAP: ${d.lap} `);
@@ -3772,8 +3770,7 @@
     const legendG = g.append("g").attr("class", "legend");
     const filter2 = legendG.append("filter").attr("id", "glow");
     filter2.append("feGaussianBlur").attr("stdDeviation", "0.9");
-    https:
-      legendG.append("rect").attr("class", "legend-box").attr("x", innerWidth - 115).attr("y", 5).attr("rx", 4).style("filter", "url(#glow)");
+    legendG.append("rect").attr("class", "legend-box").attr("x", innerWidth - 115).attr("y", 5).attr("rx", 4).style("filter", "url(#glow)");
     legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 30).attr("r", 6).style("fill", colors[0]);
     legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 60).attr("r", 6).style("fill", colors[1]);
     legendG.append("text").attr("x", innerWidth - 80).attr("y", 30).text(drivers[0].driver.surname).attr("alignment-baseline", "middle");
@@ -3796,7 +3793,10 @@
   // src/selectUtil.js
   function selectDriversFromRace(lapsArray, drivers, raceId, excludedDriverId) {
     const lapsFromRace = lapsArray.filter((lap) => lap.raceId === raceId);
-    const distinctDrivers = [...new Set(lapsFromRace.map((lap) => lap.driverId))];
+    const listOfDriverIds = lapsFromRace.map((lap) => lap.driverId);
+    const distinctDrivers = listOfDriverIds.reduce((uniqueArr, item) => {
+      return uniqueArr.includes(item) ? uniqueArr : [...uniqueArr, item];
+    }, []);
     const filteredDrivers = drivers.filter((driver) => distinctDrivers.includes(driver.driverId) && driver.driverId !== excludedDriverId);
     return filteredDrivers;
   }
@@ -3861,7 +3861,6 @@
         d.time = d.time;
         d.code = driver1.code;
         delete d.milliseconds;
-        delete d.driverId;
       });
       driver2Data.laps.forEach((d) => {
         d.lap = +d.lap;
@@ -3870,7 +3869,6 @@
         d.time = d.time;
         d.code = driver2.code;
         delete d.milliseconds;
-        delete d.driverId;
       });
       driver2Data.laps.sort((a, b) => a.lap - b.lap);
       driverData.laps.sort((a, b) => a.lap - b.lap);

@@ -33,7 +33,6 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
         //  let filteredResults = results.filter(
         //    (result) => result.raceId === raceId
         //  );
-
          let filteredDrivers1 = selectDriversFromRace(
            lapTimes,
            drivers,
@@ -132,7 +131,7 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
            d.time = d.time;
            d.code = driver1.code;
            delete d.milliseconds;
-           delete d.driverId;
+          //  delete d.driverId;
           //  delete d.raceId;
          });
 
@@ -143,7 +142,7 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
            d.time = d.time;
            d.code = driver2.code;
            delete d.milliseconds;
-           delete d.driverId;
+          //  delete d.driverId;
           //  delete d.raceId;
          });
 
@@ -152,12 +151,6 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
          driver2Data.laps.sort((a, b) => a.lap - b.lap);
          driverData.laps.sort((a, b) => a.lap - b.lap);
          renderGraph(svg, race, driver2Data, driverData);
-        //  loadResults(raceId);
-
-        //  raceResults(filteredResults, status, [
-        //    ...filteredDrivers1,
-        //    ...filteredDrivers2,
-        //  ], constructors);
     })
     .catch(function (err) {
       console.log("err", err);
