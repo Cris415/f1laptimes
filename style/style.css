@@ -75,6 +75,7 @@ svg{
 }
 #race-results td {
   padding: 1rem;
+  text-align: center  ;
 }
 #race-results th {
   padding: 1rem;

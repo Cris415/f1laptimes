@@ -3881,7 +3881,6 @@
 
   // src/raceResults.js
   function createRow(datum2, header) {
-    datum2 = Object.values(datum2);
     const newRow = document.createElement("tr");
     datum2.forEach((d) => {
       const box = header ? document.createElement("th") : document.createElement("td");
@@ -3891,7 +3890,7 @@
     });
     return newRow;
   }
-  var headerItems = ["driver", "constructor", "number", "position", "laps", "fastest lap time", "fastest lap speed", "status"];
+  var headerItems = ["position", "driver", "number", "constructor", "laps", "fastest lap time", "fastest lap speed", "status"];
   function raceResults(results, status, drivers, constructors) {
     const table = document.getElementById("race-results");
     table.append(createRow(headerItems, true));
@@ -3904,8 +3903,9 @@
       }
       result.constructorId = constructors.filter((team) => team.constructorId === result.constructorId)[0].name;
       result.status = status.filter((status2) => status2.statusId === result.statusId)[0].status;
-      if (Number.isInteger(+result.fastestLapSpeed)) {
-        result.fastestLapSpeed = (+result.fastestLapSpeed / 1.609).toFixed(2) + " mph";
+      const speedInt = parseInt(result.fastestLapSpeed);
+      if (speedInt) {
+        result.fastestLapSpeed = (speedInt / 1.609).toFixed(2) + " mph";
       }
       delete result.grid;
       delete result.raceId;
@@ -3918,7 +3918,21 @@
       delete result.rank;
       delete result.fastestLap;
       delete result.time;
-      table.append(createRow(result));
+      const resultDict = {
+        positionText: 0,
+        driverId: 1,
+        number: 2,
+        constructorId: 3,
+        laps: 4,
+        fastestLapTime: 5,
+        fastestLapSpeed: 6,
+        status: 7
+      };
+      const orderedArr = new Array(8);
+      for (const property in result) {
+        orderedArr[resultDict[property]] = result[property];
+      }
+      table.append(createRow(orderedArr));
     });
   }
   var raceResults_default = raceResults;
