@@ -2,12 +2,15 @@ html {
   box-sizing: border-box;
   /* 10px/16px = 62% -> 1rem =>  10px */
   font-size: 62.5%; 
-   --main-bg-color: rgb(237, 237, 237);
+   --main-bg-color: rgb(255, 255, 255);
    --main-text-color: rgb(52, 52, 52);
+   --display-font: 'Racing Sans One', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;;
+
+
 }
 
 body {
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   color: var(--main-text-color, black);
   background-color: var(--main-bg-color, white);
   display: flex;
@@ -16,24 +19,25 @@ body {
 }
 
 h1 {
-  font-size: 2.4rem;
+  font-family: var(--display-font, Impact);
+  font-size: 3.6rem;
 }
 
 .title {
   font-size: 1.6rem;
 }
 .axis-label {
-  fill: black;
+  fill: rgb(16, 16, 16);
 }
 .axis {
-  color: rgb(70, 70, 70);
+  color: rgb(55, 55, 55);
 }
 
 svg{
   fill: rgba(42, 42, 42, 0.784);
-  /* background-color:   */
   background: #edc0bf;
   background: linear-gradient(90deg, #eae0e0 0,#d0e6f2 58%);
+  margin: 5rem 0;
 }
 
 .line-path {
@@ -69,21 +73,31 @@ svg{
   width: 300px;
 }
 
+select {
+  width: 30rem;
+}
+
 #race-results {
   font-size: 1.4rem;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+
 }
 #race-results td {
   padding: 1rem;
-  text-align: center  ;
+  text-align: center;
 }
+
 #race-results th {
   padding: 1rem;
   text-transform: capitalize;
   font-weight: 700;
+  background-color: rgb(205, 45, 30);
+  color: white;
+  font-weight: 300;
 }
-#race-results tr {
-  border-bottom: black solid 1px;
+#race-results tr:nth-child(even) {
+  /* border-bottom: black solid 1px; */
+  background-color: rgb(232, 232, 232);
+
 }
                               
      
