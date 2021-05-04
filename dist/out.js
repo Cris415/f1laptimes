@@ -3759,6 +3759,8 @@
     const lines = {};
     drivers.forEach((driver, i) => {
       lines[driver.driver.code] = new createLine(g, driver.laps, xScale, yScale, xValue, yValue, colors[i]);
+      lines[driver.driver.code].render();
+      lines[driver.driver.code].animate();
     });
     g.selectAll("circle").data(allLapData).enter().append("circle").attr("cy", (d) => yScale(yValue(d))).attr("cx", (d) => xScale(xValue(d))).attr("r", 4).on("mouseover", function(event, d) {
       select_default2("#tooltip").transition().duration(200).style("opacity", 1).text(`DRIVER: ${d.code} TIME: ${d.time},   POS: ${d.position},   LAP: ${d.lap} `);
@@ -3860,7 +3862,6 @@
         d.seconds = +d.milliseconds / 1e3;
         d.time = d.time;
         d.code = driver1.code;
-        delete d.milliseconds;
       });
       driver2Data.laps.forEach((d) => {
         d.lap = +d.lap;
@@ -3868,7 +3869,6 @@
         d.seconds = +d.milliseconds / 1e3;
         d.time = d.time;
         d.code = driver2.code;
-        delete d.milliseconds;
       });
       driver2Data.laps.sort((a, b) => a.lap - b.lap);
       driverData.laps.sort((a, b) => a.lap - b.lap);

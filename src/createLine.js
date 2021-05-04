@@ -30,10 +30,10 @@ export class createLine {
 
   render() {
     this.path = this.group
-      .append("path")
-      .attr("class", "line-path")
-      .style("stroke", this.color)
-      .attr("d", this.lineGeneratorOutput(this.data))
+    .append("path")
+    .attr("class", "line-path")
+    .style("stroke", this.color)
+    .attr("d", this.lineGeneratorOutput(this.data))
     return this.path;
   }
 }

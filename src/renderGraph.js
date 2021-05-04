@@ -21,7 +21,7 @@ function renderGraph(svg, race, ...drivers) {
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
   const allLapData = [].concat(drivers[1].laps, drivers[0].laps);
-  // const allLapData = [...drivers[1].laps, ...drivers[0].laps]
+
 
   const xValue = (d) => d.lap;
   const xAxisLabel = "Lap";
@@ -101,9 +101,21 @@ function renderGraph(svg, race, ...drivers) {
       yValue,
       colors[i]
     );
-    // lines[driver.driver.code].render();
-    // lines[driver.driver.code].animate();
+    lines[driver.driver.code].render();
+    lines[driver.driver.code].animate();
   });
+  // console.log(drivers)
+  // const driver1 = new createLine(
+  //   g,
+  //   drivers[0].laps,
+  //   xScale,
+  //   yScale,
+  //   xValue,
+  //   yValue,
+  //   'orange'
+  // );
+  // driver1.render();
+  // driver1.animate();
 
   // Circles for scatter plot
   g.selectAll("circle")

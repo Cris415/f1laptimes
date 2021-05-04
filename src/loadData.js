@@ -28,7 +28,6 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
          let driver1 = selectDriverById(drivers, driver1Id);
          let driver2 = selectDriverById(drivers, driver2Id);
 
-        //  console.log("raceId",raceId, "results.length>>>", results.length);
 
         //  let filteredResults = results.filter(
         //    (result) => result.raceId === raceId
@@ -130,9 +129,6 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
            d.seconds = +d.milliseconds / 1000;
            d.time = d.time;
            d.code = driver1.code;
-           delete d.milliseconds;
-          //  delete d.driverId;
-          //  delete d.raceId;
          });
 
          driver2Data.laps.forEach((d) => {
@@ -141,12 +137,8 @@ function loadData(svg, raceId, driver1Id, driver2Id, selectFormItems) {
            d.seconds = +d.milliseconds / 1000;
            d.time = d.time;
            d.code = driver2.code;
-           delete d.milliseconds;
-          //  delete d.driverId;
-          //  delete d.raceId;
          });
 
-        
 
          driver2Data.laps.sort((a, b) => a.lap - b.lap);
          driverData.laps.sort((a, b) => a.lap - b.lap);
