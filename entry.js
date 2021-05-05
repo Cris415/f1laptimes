@@ -1,9 +1,11 @@
 import { select } from "d3";
-import loadData from './src/loadData';
+import { clearInputsAndGraph } from "./src/clearInputs";
 import loadResults from "./src/loadResults";
+import loadStats from './src/loadStats';
+import processData from './src/processData';
 
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const svg = select('svg');
   const raceEl = document.getElementById("race-select");
   const driver1El = document.getElementById("driver1-select");
@@ -13,41 +15,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectFormItems = {
     race: raceEl,
     driver1: driver1El,
-    driver2: driver2El
+    driver2: driver2El,
+    table
   }
 
-  function resetForms(results){
-    svg.selectChildren().remove();
-    [...driver1El.children].forEach((child) => child.remove());
-    [...driver2El.children].forEach((child) => child.remove());
-    [...raceEl.children].forEach((child) => child.remove());
-    if (!results){
-      [...table.children].forEach((child) => child.remove());
-    }
-  }
+  const statsArr = await loadStats().catch(console.error);
+
 
   raceEl.addEventListener("change", (e) => {
     e.preventDefault();
     raceId = e.currentTarget.value;
-    resetForms();
+    clearInputsAndGraph(...Object.values(selectFormItems));
 
-    loadData(svg, raceId, driver1Id, driver2Id, selectFormItems);
+    processData(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
     loadResults(raceId);
   });
 
   driver1El.addEventListener("change", (e) => {
     e.preventDefault();
     driver1Id = e.currentTarget.value;
-    resetForms("results");
-    loadData(svg, raceId, driver1Id, driver2Id, selectFormItems);
+    clearInputsAndGraph(driver1El, driver2El, raceEl);
+
+    processData(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
   });
 
   driver2El.addEventListener("change", (e) => {
     e.preventDefault();
     driver2Id = e.currentTarget.value;
     
-    resetForms("results");
-    loadData(svg, raceId, driver1Id, driver2Id, selectFormItems);
+    clearInputsAndGraph(driver1El, driver2El, raceEl);
+    processData(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
   });
 
 
@@ -58,5 +55,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   loadResults(raceId);
-  loadData(svg, raceId, driver1Id, driver2Id, selectFormItems);
+  processData(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
 })

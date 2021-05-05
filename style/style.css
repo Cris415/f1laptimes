@@ -51,12 +51,13 @@ svg{
   background: rgba(255, 255, 255, 0.489);
   -webkit-backdrop-filter: blur(10px);
 	backdrop-filter: blur(10px);
-  width: 10rem;
+  width: 11rem;
   padding: 1.5rem;
   border-radius: 5px;
   font-size: 1.4rem;
   display: flex;
   flex-direction: column;
+  line-height: 2rem;
 }
 
 .legend {                                               
