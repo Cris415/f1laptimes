@@ -51,7 +51,7 @@ svg{
   background: rgba(255, 255, 255, 0.489);
   -webkit-backdrop-filter: blur(10px);
 	backdrop-filter: blur(10px);
-  width: 9rem;
+  width: 10rem;
   padding: 1.5rem;
   border-radius: 5px;
   font-size: 1.4rem;
@@ -79,8 +79,9 @@ select {
 
 #race-results {
   font-size: 1.4rem;
-
+  margin-bottom: 5rem;
 }
+
 #race-results td {
   padding: 1rem;
   text-align: center;
@@ -96,7 +97,6 @@ select {
 }
 #race-results tr:nth-child(even) {
   background-color: rgb(232, 232, 232);
-  margin-bottom: 15rem;
 }
 
 .description {
