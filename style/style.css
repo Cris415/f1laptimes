@@ -37,7 +37,7 @@ svg{
   fill: rgba(42, 42, 42, 0.784);
   background: #edc0bf;
   background: linear-gradient(90deg, #eae0e0 0,#d0e6f2 58%);
-  margin: 5rem 0;
+  margin: 3rem 0;
 }
 
 .line-path {
@@ -81,6 +81,7 @@ select {
 #race-results {
   font-size: 1.4rem;
   margin-bottom: 5rem;
+  border-bottom: solid 2px rgb(232, 232, 232);
 }
 
 #race-results td {
@@ -96,6 +97,7 @@ select {
   color: white;
   font-weight: 300;
 }
+
 #race-results tr:nth-child(even) {
   background-color: rgb(232, 232, 232);
 }

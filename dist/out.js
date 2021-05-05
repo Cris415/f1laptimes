@@ -3800,6 +3800,15 @@
   }
 
   // src/loadResults.js
+  function loadResults(raceId, raceData2) {
+    const [laps, circuits, constructors, drivers, races, results, status] = raceData2;
+    let filteredResults = results.filter((result) => result.raceId === raceId);
+    const filteredDrivers = selectDriversFromRace(laps, drivers, raceId);
+    raceResults_default(filteredResults, status, filteredDrivers, constructors);
+  }
+  var loadResults_default = loadResults;
+
+  // src/loadStats.js
   var raceData = [
     csv2("data/lap_times.csv"),
     csv2("data/circuits.csv"),
@@ -3809,28 +3818,8 @@
     csv2("data/results.csv"),
     csv2("data/status.csv")
   ];
-  function loadResults(raceId) {
-    Promise.all(raceData).then(function(raceData3) {
-      const [laps, circuits, constructors, drivers, races, results, status] = raceData3;
-      let filteredResults = results.filter((result) => result.raceId === raceId);
-      const filteredDrivers = selectDriversFromRace(laps, drivers, raceId);
-      raceResults_default(filteredResults, status, filteredDrivers, constructors);
-    });
-  }
-  var loadResults_default = loadResults;
-
-  // src/loadStats.js
-  var raceData2 = [
-    csv2("data/lap_times.csv"),
-    csv2("data/circuits.csv"),
-    csv2("data/constructors.csv"),
-    csv2("data/drivers.csv"),
-    csv2("data/races.csv"),
-    csv2("data/results.csv"),
-    csv2("data/status.csv")
-  ];
   function loadStats() {
-    return Promise.all(raceData2);
+    return Promise.all(raceData);
   }
   var loadStats_default = loadStats;
 
@@ -3975,7 +3964,10 @@
     const driver1El = document.getElementById("driver1-select");
     const driver2El = document.getElementById("driver2-select");
     const table = document.getElementById("race-results");
-    const selectFormItems = {
+    let raceId = "1033";
+    let driver1Id = "1";
+    let driver2Id = "847";
+    const dropdownElements = {
       race: raceEl,
       driver1: driver1El,
       driver2: driver2El,
@@ -3985,27 +3977,24 @@
     raceEl.addEventListener("change", (e) => {
       e.preventDefault();
       raceId = e.currentTarget.value;
-      clearInputsAndGraph(...Object.values(selectFormItems));
-      processData_default(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
-      loadResults_default(raceId);
+      clearInputsAndGraph(...Object.values(dropdownElements));
+      processData_default(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
+      loadResults_default(raceId, statsArr);
     });
     driver1El.addEventListener("change", (e) => {
       e.preventDefault();
       driver1Id = e.currentTarget.value;
       clearInputsAndGraph(driver1El, driver2El, raceEl);
-      processData_default(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
+      processData_default(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
     });
     driver2El.addEventListener("change", (e) => {
       e.preventDefault();
       driver2Id = e.currentTarget.value;
       clearInputsAndGraph(driver1El, driver2El, raceEl);
-      processData_default(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
+      processData_default(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
     });
-    let raceId = "1033";
-    let driver1Id = "1";
-    let driver2Id = "847";
-    loadResults_default(raceId);
-    processData_default(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
+    processData_default(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
+    loadResults_default(raceId, statsArr);
   });
 })();
 //# sourceMappingURL=out.js.map

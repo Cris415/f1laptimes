@@ -12,7 +12,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const driver2El = document.getElementById("driver2-select");
   const table = document.getElementById("race-results");
 
-  const selectFormItems = {
+  let raceId = "1033";
+  let driver1Id = "1";
+  let driver2Id = "847";
+
+  const dropdownElements = {
     race: raceEl,
     driver1: driver1El,
     driver2: driver2El,
@@ -21,39 +25,33 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const statsArr = await loadStats().catch(console.error);
 
-
   raceEl.addEventListener("change", (e) => {
     e.preventDefault();
     raceId = e.currentTarget.value;
-    clearInputsAndGraph(...Object.values(selectFormItems));
+    
+    clearInputsAndGraph(...Object.values(dropdownElements));
+    processData(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
+    loadResults(raceId, statsArr);
 
-    processData(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
-    loadResults(raceId);
   });
 
   driver1El.addEventListener("change", (e) => {
     e.preventDefault();
     driver1Id = e.currentTarget.value;
-    clearInputsAndGraph(driver1El, driver2El, raceEl);
 
-    processData(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
+    clearInputsAndGraph(driver1El, driver2El, raceEl);
+    processData(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
   });
 
   driver2El.addEventListener("change", (e) => {
     e.preventDefault();
     driver2Id = e.currentTarget.value;
-    
+
     clearInputsAndGraph(driver1El, driver2El, raceEl);
-    processData(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
+    processData(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
   });
 
+  processData(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
+  loadResults(raceId, statsArr);
 
-
-  let raceId = "1033";
-  let driver1Id = "1"
-  let driver2Id = "847";
-
-
-  loadResults(raceId);
-  processData(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems);
 })
