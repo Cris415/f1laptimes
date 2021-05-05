@@ -6,6 +6,7 @@ import {
   selectDriverById,
   selectRaceById,
 } from "./selectUtil";
+import processLapData from "./processLapData";
 
 
 function processData(svg, statsArr ,raceId, driver1Id, driver2Id, selectFormItems) {
@@ -25,6 +26,7 @@ function processData(svg, statsArr ,raceId, driver1Id, driver2Id, selectFormItem
     raceId,
     driver2.driverId // don't want other driver to show up on select
   );
+
   let filteredDrivers2 = selectDriversFromRace(
     lapTimes,
     drivers,
@@ -40,6 +42,7 @@ function processData(svg, statsArr ,raceId, driver1Id, driver2Id, selectFormItem
       (driver) => driver.driverId !== filteredDrivers1[0].driverId
     );
   }
+
   if (!filteredDrivers2.includes(driver2)) {
     driver2 = filteredDrivers2[1];
     filteredDrivers1 = filteredDrivers1.filter(
@@ -47,16 +50,7 @@ function processData(svg, statsArr ,raceId, driver1Id, driver2Id, selectFormItem
     );
   }
 
-  const drivers1LapData = selectByDriverandRace(
-    lapTimes,
-    driver1.driverId,
-    raceId
-  );
-  const drivers2LapData = selectByDriverandRace(
-    lapTimes,
-    driver2.driverId,
-    raceId
-  );
+
 
   // fill race select box
   const filteredRaces = races.filter(
@@ -95,35 +89,18 @@ function processData(svg, statsArr ,raceId, driver1Id, driver2Id, selectFormItem
     driverSortCb
   );
 
-  // package information
-  const driverData = {
-    laps: drivers1LapData,
-    driver: driver1,
+  const d1Data = {
+    laps: selectByDriverandRace(lapTimes, driver1.driverId, raceId),
+    driver: driver1
   };
-  const driver2Data = {
-    laps: drivers2LapData,
-    driver: driver2,
+  const d2Data = {
+    laps: selectByDriverandRace(lapTimes, driver2.driverId, raceId),
+    driver: driver2
   };
 
-  // process data
-  driverData.laps.forEach((d) => {
-    d.lap = +d.lap;
-    d.position = +d.position;
-    d.seconds = +d.milliseconds / 1000;
-    d.time = d.time;
-    d.code = driver1.code;
-  });
+  d1Data.laps = processLapData(d1Data);
+  d2Data.laps = processLapData(d2Data);
 
-  driver2Data.laps.forEach((d) => {
-    d.lap = +d.lap;
-    d.position = +d.position;
-    d.seconds = +d.milliseconds / 1000;
-    d.time = d.time;
-    d.code = driver2.code;
-  });
-
-  driver2Data.laps.sort((a, b) => a.lap - b.lap);
-  driverData.laps.sort((a, b) => a.lap - b.lap);
-  renderGraph(svg, race, driver2Data, driverData);
+  renderGraph(svg, race, d1Data, d2Data);
 }
 export default processData;

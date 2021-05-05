@@ -3917,6 +3917,19 @@
   }
   var fillSelectElement_default = fillSelectElement;
 
+  // src/processLapData.js
+  function processLapData(driverData) {
+    const {laps, driver} = driverData;
+    laps.forEach((d) => {
+      d.lap = +d.lap;
+      d.seconds = +d.milliseconds / 1e3;
+      d.code = driver.code;
+    });
+    laps.sort((a, b) => a.lap - b.lap);
+    return laps;
+  }
+  var processLapData_default = processLapData;
+
   // src/processData.js
   function processData(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems) {
     const [lapTimes, circuits, constructors, drivers, races, results, status] = statsArr;
@@ -3942,8 +3955,6 @@
       driver2 = filteredDrivers2[1];
       filteredDrivers1 = filteredDrivers1.filter((driver) => driver.driverId !== filteredDrivers2[1].driverId);
     }
-    const drivers1LapData = selectByDriverandRace(lapTimes, driver1.driverId, raceId);
-    const drivers2LapData = selectByDriverandRace(lapTimes, driver2.driverId, raceId);
     const filteredRaces = races.filter((race2) => race2.year !== "2021" && +race2.year > 1995);
     const selectRaceText = (item) => `${item.name} ${item.year}`;
     const sortCb = (a, b) => b.year - a.year;
@@ -3952,31 +3963,17 @@
     const driverSortCb = (a, b) => b.surname - a.surname;
     fillSelectElement_default(selectFormItems.driver1, filteredDrivers1, "driverId", driver1.driverId, selectDriverNameText, driverSortCb);
     fillSelectElement_default(selectFormItems.driver2, filteredDrivers2, "driverId", driver2.driverId, selectDriverNameText, driverSortCb);
-    const driverData = {
-      laps: drivers1LapData,
+    const d1Data = {
+      laps: selectByDriverandRace(lapTimes, driver1.driverId, raceId),
       driver: driver1
     };
-    const driver2Data = {
-      laps: drivers2LapData,
+    const d2Data = {
+      laps: selectByDriverandRace(lapTimes, driver2.driverId, raceId),
       driver: driver2
     };
-    driverData.laps.forEach((d) => {
-      d.lap = +d.lap;
-      d.position = +d.position;
-      d.seconds = +d.milliseconds / 1e3;
-      d.time = d.time;
-      d.code = driver1.code;
-    });
-    driver2Data.laps.forEach((d) => {
-      d.lap = +d.lap;
-      d.position = +d.position;
-      d.seconds = +d.milliseconds / 1e3;
-      d.time = d.time;
-      d.code = driver2.code;
-    });
-    driver2Data.laps.sort((a, b) => a.lap - b.lap);
-    driverData.laps.sort((a, b) => a.lap - b.lap);
-    renderGraph_default(svg, race, driver2Data, driverData);
+    d1Data.laps = processLapData_default(d1Data);
+    d2Data.laps = processLapData_default(d2Data);
+    renderGraph_default(svg, race, d1Data, d2Data);
   }
   var processData_default = processData;
 
