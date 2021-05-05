@@ -3789,7 +3789,7 @@
     const filteredDrivers = drivers.filter((driver) => distinctDrivers.includes(driver.driverId) && driver.driverId !== excludedDriverId);
     return filteredDrivers;
   }
-  function selectByDriverandRace(laps, driverId, raceId) {
+  function selectLapsByDriverandRace(laps, driverId, raceId) {
     return laps.filter((lap) => lap.driverId === driverId && lap.raceId === raceId);
   }
   function selectDriverById(drivers, driverId) {
@@ -3933,15 +3933,6 @@
   // src/processData.js
   function processData(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems) {
     const [lapTimes, circuits, constructors, drivers, races, results, status] = statsArr;
-    const stats = {
-      lapTimes,
-      circuits,
-      constructors,
-      drivers,
-      races,
-      results,
-      status
-    };
     const race = selectRaceById(races, raceId);
     let driver1 = selectDriverById(drivers, driver1Id);
     let driver2 = selectDriverById(drivers, driver2Id);
@@ -3964,11 +3955,11 @@
     fillSelectElement_default(selectFormItems.driver1, filteredDrivers1, "driverId", driver1.driverId, selectDriverNameText, driverSortCb);
     fillSelectElement_default(selectFormItems.driver2, filteredDrivers2, "driverId", driver2.driverId, selectDriverNameText, driverSortCb);
     const d1Data = {
-      laps: selectByDriverandRace(lapTimes, driver1.driverId, raceId),
+      laps: selectLapsByDriverandRace(lapTimes, driver1.driverId, raceId),
       driver: driver1
     };
     const d2Data = {
-      laps: selectByDriverandRace(lapTimes, driver2.driverId, raceId),
+      laps: selectLapsByDriverandRace(lapTimes, driver2.driverId, raceId),
       driver: driver2
     };
     d1Data.laps = processLapData_default(d1Data);

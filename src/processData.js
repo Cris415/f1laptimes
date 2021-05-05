@@ -1,19 +1,16 @@
 import renderGraph from "./renderGraph";
 import fillSelectElement from "./fillSelectElement";
+import processLapData from "./processLapData";
 import {
   selectDriversFromRace,
-  selectByDriverandRace,
+  selectLapsByDriverandRace,
   selectDriverById,
   selectRaceById,
 } from "./selectUtil";
-import processLapData from "./processLapData";
 
 
 function processData(svg, statsArr ,raceId, driver1Id, driver2Id, selectFormItems) {
   const [lapTimes, circuits, constructors, drivers, races, results, status] = statsArr;
-  const stats = {
-    lapTimes, circuits, constructors, drivers, races, results, status
-  }
 
   const race = selectRaceById(races, raceId);
 
@@ -50,12 +47,12 @@ function processData(svg, statsArr ,raceId, driver1Id, driver2Id, selectFormItem
     );
   }
 
-
-
-  // fill race select box
+  // 
   const filteredRaces = races.filter(
     (race) => race.year !== "2021" && +race.year > 1995
   );
+     
+    // fill race select box
   const selectRaceText = (item) => `${item.name} ${item.year}`;
   const sortCb = (a, b) => b.year - a.year;
   fillSelectElement(
@@ -90,11 +87,11 @@ function processData(svg, statsArr ,raceId, driver1Id, driver2Id, selectFormItem
   );
 
   const d1Data = {
-    laps: selectByDriverandRace(lapTimes, driver1.driverId, raceId),
+    laps: selectLapsByDriverandRace(lapTimes, driver1.driverId, raceId),
     driver: driver1
   };
   const d2Data = {
-    laps: selectByDriverandRace(lapTimes, driver2.driverId, raceId),
+    laps: selectLapsByDriverandRace(lapTimes, driver2.driverId, raceId),
     driver: driver2
   };
 

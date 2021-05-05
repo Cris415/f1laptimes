@@ -15,7 +15,7 @@ export function selectDriversFromRace(lapsArray, drivers ,raceId, excludedDriver
   return filteredDrivers;
 }
 
-export function selectByDriverandRace(laps, driverId, raceId){
+export function selectLapsByDriverandRace(laps, driverId, raceId){
   return laps.filter((lap) => lap.driverId === driverId && lap.raceId === raceId);
 }
 
