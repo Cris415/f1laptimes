@@ -4,9 +4,7 @@ html {
   font-size: 62.5%; 
    --main-bg-color: rgb(255, 255, 255);
    --main-text-color: rgb(52, 52, 52);
-   --display-font: 'Racing Sans One', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;;
-
-
+   --display-font: 'Racing Sans One', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 body {
@@ -37,7 +35,6 @@ svg{
   fill: rgba(42, 42, 42, 0.784);
   background: #edc0bf;
   background: linear-gradient(90deg, #eae0e0 0,#d0e6f2 58%);
-  margin: 3rem 0;
 }
 
 .line-path {
@@ -110,10 +107,31 @@ select {
   margin: 2rem 0;
 }
 
-.description h3 {
+h3 {
   font-size: 2rem;
   font-weight: 300;
   margin-bottom: 1rem;
 }
                               
-     
+#graph-container{
+  display: flex;
+  margin: 3rem 0;
+}
+
+.explanation {
+  box-sizing: border-box;
+  width: 20rem;
+  font-size: 1.6rem;
+  margin-left: 1rem;
+  padding: 1rem 3rem;
+  border: black solid 1px;
+  color: rgb(58, 58, 58);
+}
+
+.explanation ul {
+  list-style: disc;
+}
+
+.explanation li {
+    margin-bottom: 1rem;
+}
