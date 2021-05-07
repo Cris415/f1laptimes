@@ -99,35 +99,35 @@ select {
   background-color: rgb(232, 232, 232);
 }
 
-.description {
-  font-size: 1.6rem;
-  border: black solid 1px;
-  border-style:outset;
-  padding: 2rem;
-  margin: 2rem 0;
-  border-radius: 5px;
-}
 
 h3 {
   font-size: 2rem;
   font-weight: 300;
   margin-bottom: 1rem;
 }
-                              
+
 #graph-container{
   display: flex;
   margin: 3rem 0;
 }
+.card {
+  border-radius: 10px;
+  box-shadow: 5px 4px 35px -12px rgba(144, 144, 144, 0.5);
+}
 
+.description {
+  font-size: 1.6rem;
+  border-style:outset;
+  padding: 2rem;
+  margin: 2rem 0;
+}
 .explanation {
   box-sizing: border-box;
   width: 20rem;
   font-size: 1.6rem;
   margin-left: 1rem;
   padding: 1rem 3rem;
-  border: black solid 1px;
   color: rgb(58, 58, 58);
-  border-radius: 5px;
 }
 
 .explanation ul {
