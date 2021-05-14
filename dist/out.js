@@ -3895,10 +3895,10 @@
   var renderGraph_default = renderGraph;
 
   // src/fillSelectElement.js
-  function fillSelectElement(element, data, value, id2, textCb, sortCb = (a, b) => a > b) {
+  function fillSelectElement(element, data, value, id2, textCb, sortCb = (a, b) => a - b) {
     data.sort((a, b) => sortCb(a, b)).forEach((item) => {
       option = document.createElement("option");
-      option.setAttribute("value", item[value]);
+      option.setAttribute("value", item[value] ? item[value] : item);
       option.appendChild(document.createTextNode(textCb(item)));
       element.appendChild(option);
     });
@@ -3927,6 +3927,13 @@
     let driver2 = selectDriverById(drivers, driver2Id);
     let filteredDrivers1 = selectDriversFromRace(lapTimes, drivers, raceId, driver2.driverId);
     let filteredDrivers2 = selectDriversFromRace(lapTimes, drivers, raceId, driver1.driverId);
+    let years = races.reduce((yearsArr, currVal) => {
+      if (!yearsArr.includes(currVal.year) && currVal.year > "1995" && currVal.year < "2021") {
+        return [...yearsArr, currVal.year];
+      } else {
+        return yearsArr;
+      }
+    }, []);
     if (!filteredDrivers1.includes(driver1)) {
       driver1 = filteredDrivers1[0];
       filteredDrivers2 = filteredDrivers2.filter((driver) => driver.driverId !== filteredDrivers1[0].driverId);
@@ -3935,10 +3942,13 @@
       driver2 = filteredDrivers2[1];
       filteredDrivers1 = filteredDrivers1.filter((driver) => driver.driverId !== filteredDrivers2[1].driverId);
     }
-    const filteredRaces = races.filter((race2) => race2.year !== "2021" && +race2.year > 1995);
-    const selectRaceText = (item) => `${item.name} ${item.year}`;
+    const filteredRaces = races.filter((race2) => race2.year === year);
+    const selectRaceText = (item) => `${item.name}`;
     const sortCb = (a, b) => b.year - a.year;
     fillSelectElement_default(selectFormItems.race, filteredRaces, "raceId", raceId, selectRaceText, sortCb);
+    const selectYearText = (year2) => `${year2}`;
+    const yearSort = (a, b) => b - a;
+    fillSelectElement_default(selectFormItems.year, years, "year", year.toString(), selectYearText, yearSort);
     const selectDriverNameText = (item) => `${item.forename} ${item.surname}`;
     const driverSortCb = (a, b) => b.surname - a.surname;
     fillSelectElement_default(selectFormItems.driver1, filteredDrivers1, "driverId", driver1.driverId, selectDriverNameText, driverSortCb);
@@ -3977,7 +3987,7 @@
       table
     };
     const statsArr = await loadStats_default().catch(console.error);
-    raceEl.addEventListener("change", (e) => {
+    yearEl.addEventListener("change", (e) => {
       e.preventDefault();
       year = e.currentTarget.value;
       clearInputsAndGraph(...Object.values(dropdownElements));

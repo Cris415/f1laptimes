@@ -10,7 +10,8 @@ import {
 
 
 function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFormItems) {
-  const [lapTimes, circuits, constructors, drivers, races, results, status] = statsArr;
+  const [lapTimes, circuits, constructors, drivers, races, results, status] =
+    statsArr;
 
   const race = selectRaceById(races, raceId);
 
@@ -31,6 +32,15 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
     driver1.driverId
   );
 
+  let years = races.reduce((yearsArr, currVal) => {
+    if (!yearsArr.includes(currVal.year) && currVal.year > "1995" && currVal.year < "2021") {
+      return [...yearsArr, currVal.year]
+    } else {
+      return yearsArr;
+    }
+  }, []);
+
+
   // if the driver's list does not include driverId from input
   // select a driver from the list
   if (!filteredDrivers1.includes(driver1)) {
@@ -47,13 +57,14 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
     );
   }
 
-  // 
+  //
   const filteredRaces = races.filter(
-    (race) => race.year !== "2021" && +race.year > 1995
+    // (race) => race.year !== "2021" && +race.year > 1995
+    (race) => race.year === year
   );
-     
-    // fill race select box
-  const selectRaceText = (item) => `${item.name} ${item.year}`;
+
+  // fill race select box
+  const selectRaceText = (item) => `${item.name}`;
   const sortCb = (a, b) => b.year - a.year;
   fillSelectElement(
     selectFormItems.race,
@@ -62,6 +73,18 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
     raceId,
     selectRaceText,
     sortCb
+  );
+
+  // fill year dropdown box
+  const selectYearText = (year) => `${year}`;
+  const yearSort = (a, b) => b - a;
+  fillSelectElement(
+    selectFormItems.year,
+    years,
+    "year",
+    year.toString(),
+    selectYearText,
+    yearSort
   );
 
   // fill driver's select box
@@ -88,11 +111,11 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
 
   const d1Data = {
     laps: selectLapsByDriverandRace(lapTimes, driver1.driverId, raceId),
-    driver: driver1
+    driver: driver1,
   };
   const d2Data = {
     laps: selectLapsByDriverandRace(lapTimes, driver2.driverId, raceId),
-    driver: driver2
+    driver: driver2,
   };
 
   d1Data.laps = processLapData(d1Data);

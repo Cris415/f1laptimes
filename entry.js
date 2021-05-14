@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const statsArr = await loadStats().catch(console.error);
 
   // year dropdown
-  raceEl.addEventListener("change", (e) => {
+  yearEl.addEventListener("change", (e) => {
     e.preventDefault();
     year = e.currentTarget.value;
     
