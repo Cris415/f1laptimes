@@ -9,11 +9,6 @@ import {
 import { createLine } from './createLine';
 
 function renderGraph(svg, race, ...drivers) {
-  select("#graph-container")
-    .append("div")
-    .attr("id", "tooltip")
-    .attr("style", "position: absolute; opacity: 0;");
-
   // set the dimensions and margins of the graph
   const height = +svg.attr("height");
   const width = +svg.attr("width");

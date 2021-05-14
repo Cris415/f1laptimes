@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     clearInputsAndGraph(...Object.values(dropdownElements));
     processData(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
-    loadResults(raceId, statsArr);
+    // loadResults(raceId, statsArr);
   });
 
   raceEl.addEventListener("change", (e) => {

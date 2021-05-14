@@ -7,7 +7,7 @@ function fillSelectElement(element, data, value, id, textCb, sortCb = (a, b) => 
       option.appendChild(document.createTextNode(textCb(item)));
       element.appendChild(option);
     });
-  element.value = id;
+  element.value = id.toString();
 }
 
 export default fillSelectElement;

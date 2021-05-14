@@ -13,7 +13,12 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
   const [lapTimes, circuits, constructors, drivers, races, results, status] =
     statsArr;
 
-  const race = selectRaceById(races, raceId);
+    
+    let race = selectRaceById(races, raceId);
+    let filteredRaces = races.filter((race) => race.year === year);
+    raceId = chooseItemIfNotInList(filteredRaces, race, 1).raceId;
+    race = selectRaceById(races, raceId);
+    
 
   let driver1 = selectDriverById(drivers, driver1Id);
   let driver2 = selectDriverById(drivers, driver2Id);
@@ -33,35 +38,31 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
   );
 
   let years = races.reduce((yearsArr, currVal) => {
-    if (!yearsArr.includes(currVal.year) && currVal.year > "1995" && currVal.year < "2021") {
-      return [...yearsArr, currVal.year]
+    if (
+      !yearsArr.includes(currVal.year) &&
+      currVal.year > "1995" &&
+      currVal.year < "2021"
+    ) {
+      return [...yearsArr, currVal.year];
     } else {
       return yearsArr;
     }
   }, []);
 
-
-  // if the driver's list does not include driverId from input
-  // select a driver from the list
-  if (!filteredDrivers1.includes(driver1)) {
-    driver1 = filteredDrivers1[0];
-    filteredDrivers2 = filteredDrivers2.filter(
-      (driver) => driver.driverId !== filteredDrivers1[0].driverId
-    );
+  // If item is not on list, choose another one,
+  function chooseItemIfNotInList(list, item, offset = 0) {
+    return list.includes(item) ? item : list[offset];
   }
 
-  if (!filteredDrivers2.includes(driver2)) {
-    driver2 = filteredDrivers2[1];
-    filteredDrivers1 = filteredDrivers1.filter(
-      (driver) => driver.driverId !== filteredDrivers2[1].driverId
-    );
+  function removeItemFromList(list, exclude, property) {
+    return list.filter((item) => item[property] !== exclude[property]);
   }
 
-  //
-  const filteredRaces = races.filter(
-    // (race) => race.year !== "2021" && +race.year > 1995
-    (race) => race.year === year
-  );
+  driver1 = chooseItemIfNotInList(filteredDrivers1, driver1, 1)
+  driver2 = chooseItemIfNotInList(filteredDrivers2, driver2, 2)
+
+  filteredDrivers1 = removeItemFromList(filteredDrivers1, driver2, 'driverId');
+  filteredDrivers2 = removeItemFromList(filteredDrivers2, driver1, 'driverId');
 
   // fill race select box
   const selectRaceText = (item) => `${item.name}`;
@@ -78,6 +79,7 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
   // fill year dropdown box
   const selectYearText = (year) => `${year}`;
   const yearSort = (a, b) => b - a;
+
   fillSelectElement(
     selectFormItems.year,
     years,
