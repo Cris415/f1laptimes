@@ -9,7 +9,7 @@ import {
 } from "./selectUtil";
 
 
-function processData(svg, statsArr ,raceId, driver1Id, driver2Id, selectFormItems) {
+function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFormItems) {
   const [lapTimes, circuits, constructors, drivers, races, results, status] = statsArr;
 
   const race = selectRaceById(races, raceId);

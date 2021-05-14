@@ -3920,7 +3920,7 @@
   var processLapData_default = processLapData;
 
   // src/processData.js
-  function processData(svg, statsArr, raceId, driver1Id, driver2Id, selectFormItems) {
+  function processData(svg, statsArr, raceId, year, driver1Id, driver2Id, selectFormItems) {
     const [lapTimes, circuits, constructors, drivers, races, results, status] = statsArr;
     const race = selectRaceById(races, raceId);
     let driver1 = selectDriverById(drivers, driver1Id);
@@ -3960,14 +3960,17 @@
   // entry.js
   document.addEventListener("DOMContentLoaded", async () => {
     const svg = select_default2("svg");
+    const yearEl = document.getElementById("year-select");
     const raceEl = document.getElementById("race-select");
     const driver1El = document.getElementById("driver1-select");
     const driver2El = document.getElementById("driver2-select");
     const table = document.getElementById("race-results");
     let raceId = "1033";
+    let year = "2020";
     let driver1Id = "1";
     let driver2Id = "847";
     const dropdownElements = {
+      year: yearEl,
       race: raceEl,
       driver1: driver1El,
       driver2: driver2El,
@@ -3976,24 +3979,31 @@
     const statsArr = await loadStats_default().catch(console.error);
     raceEl.addEventListener("change", (e) => {
       e.preventDefault();
+      year = e.currentTarget.value;
+      clearInputsAndGraph(...Object.values(dropdownElements));
+      processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
+      loadResults_default(raceId, statsArr);
+    });
+    raceEl.addEventListener("change", (e) => {
+      e.preventDefault();
       raceId = e.currentTarget.value;
       clearInputsAndGraph(...Object.values(dropdownElements));
-      processData_default(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
+      processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
       loadResults_default(raceId, statsArr);
     });
     driver1El.addEventListener("change", (e) => {
       e.preventDefault();
       driver1Id = e.currentTarget.value;
       clearInputsAndGraph(driver1El, driver2El, raceEl);
-      processData_default(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
+      processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
     });
     driver2El.addEventListener("change", (e) => {
       e.preventDefault();
       driver2Id = e.currentTarget.value;
       clearInputsAndGraph(driver1El, driver2El, raceEl);
-      processData_default(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
+      processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
     });
-    processData_default(svg, statsArr, raceId, driver1Id, driver2Id, dropdownElements);
+    processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
     loadResults_default(raceId, statsArr);
   });
 })();

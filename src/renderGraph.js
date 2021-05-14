@@ -104,18 +104,6 @@ function renderGraph(svg, race, ...drivers) {
     lines[driver.driver.code].render();
     lines[driver.driver.code].animate();
   });
-  // console.log(drivers)
-  // const driver1 = new createLine(
-  //   g,
-  //   drivers[0].laps,
-  //   xScale,
-  //   yScale,
-  //   xValue,
-  //   yValue,
-  //   'orange'
-  // );
-  // driver1.render();
-  // driver1.animate();
 
   // Circles for scatter plot
   g.selectAll("circle")
