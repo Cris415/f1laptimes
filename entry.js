@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     clearInputsAndGraph(...Object.values(dropdownElements));
     processData(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
-    // loadResults(raceId, statsArr);
+    loadResults(raceId, statsArr);
   });
 
   raceEl.addEventListener("change", (e) => {
@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     clearInputsAndGraph(...Object.values(dropdownElements));
     processData(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
     loadResults(raceId, statsArr);
-
   });
 
   driver1El.addEventListener("change", (e) => {
@@ -65,5 +64,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   processData(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
   loadResults(raceId, statsArr);
-
 })

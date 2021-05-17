@@ -1,6 +1,8 @@
 import renderGraph from "./renderGraph";
 import fillSelectElement from "./fillSelectElement";
 import processLapData from "./processLapData";
+import loadResults from "./loadResults";
+
 import {
   selectDriversFromRace,
   selectLapsByDriverandRace,
@@ -12,12 +14,18 @@ import {
 function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFormItems) {
   const [lapTimes, circuits, constructors, drivers, races, results, status] =
     statsArr;
+  const originalRaceId = raceId;
 
-    
-    let race = selectRaceById(races, raceId);
-    let filteredRaces = races.filter((race) => race.year === year);
-    raceId = chooseItemIfNotInList(filteredRaces, race, 1).raceId;
-    race = selectRaceById(races, raceId);
+  let filteredRaces = races.filter((race) => race.year === year);
+  let race = selectRaceById(races, raceId);
+  raceId = chooseItemIfNotInList(filteredRaces, race, 1).raceId;
+
+  if (raceId !== originalRaceId){
+    // If the year changes the results must display a different race.
+    loadResults(raceId, statsArr);
+  }
+
+  race = selectRaceById(races, raceId);
     
 
   let driver1 = selectDriverById(drivers, driver1Id);

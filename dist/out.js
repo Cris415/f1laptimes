@@ -3737,29 +3737,19 @@
     const table = document.getElementById("race-results");
     table.append(createRow(headerItems, true));
     results.forEach((result) => {
-      const driver = drivers.filter((driver2) => driver2.driverId === result.driverId)[0];
+      const newResult = {...result};
+      const driver = drivers.filter((driver2) => driver2.driverId === newResult.driverId)[0];
       if (driver) {
-        result.driverId = `${driver.forename} ${driver.surname}`;
+        newResult.driverId = `${driver.forename} ${driver.surname}`;
       } else {
-        result.driverId = "\\N";
+        newResult.driverId = "\\N";
       }
-      result.constructorId = constructors.filter((team) => team.constructorId === result.constructorId)[0].name;
-      result.status = status.filter((status2) => status2.statusId === result.statusId)[0].status;
-      const speedInt = parseInt(result.fastestLapSpeed);
+      newResult.constructorId = constructors.filter((team) => team.constructorId === newResult.constructorId)[0].name;
+      newResult.status = status.filter((status2) => status2.statusId === newResult.statusId)[0].status;
+      const speedInt = parseInt(newResult.fastestLapSpeed);
       if (speedInt) {
-        result.fastestLapSpeed = (speedInt / 1.609).toFixed(2) + " mph";
+        newResult.fastestLapSpeed = (speedInt / 1.609).toFixed(2) + " mph";
       }
-      delete result.grid;
-      delete result.raceId;
-      delete result.resultId;
-      delete result.statusId;
-      delete result.position;
-      delete result.positionOrder;
-      delete result.points;
-      delete result.milliseconds;
-      delete result.rank;
-      delete result.fastestLap;
-      delete result.time;
       const resultDict = {
         positionText: 0,
         driverId: 1,
@@ -3771,8 +3761,8 @@
         status: 7
       };
       const orderedArr = new Array(8);
-      for (const property in result) {
-        orderedArr[resultDict[property]] = result[property];
+      for (const property in newResult) {
+        orderedArr[resultDict[property]] = newResult[property];
       }
       table.append(createRow(orderedArr));
     });
@@ -3802,7 +3792,10 @@
   // src/loadResults.js
   function loadResults(raceId, raceData2) {
     const [laps, circuits, constructors, drivers, races, results, status] = raceData2;
-    let filteredResults = results.filter((result) => result.raceId === raceId);
+    console.log(raceId);
+    let filteredResults = results.filter((result) => {
+      return result.raceId === raceId;
+    });
     const filteredDrivers = selectDriversFromRace(laps, drivers, raceId);
     raceResults_default(filteredResults, status, filteredDrivers, constructors);
   }
@@ -3921,9 +3914,13 @@
   // src/processData.js
   function processData(svg, statsArr, raceId, year, driver1Id, driver2Id, selectFormItems) {
     const [lapTimes, circuits, constructors, drivers, races, results, status] = statsArr;
-    let race = selectRaceById(races, raceId);
+    const originalRaceId = raceId;
     let filteredRaces = races.filter((race2) => race2.year === year);
+    let race = selectRaceById(races, raceId);
     raceId = chooseItemIfNotInList(filteredRaces, race, 1).raceId;
+    if (raceId !== originalRaceId) {
+      loadResults_default(raceId, statsArr);
+    }
     race = selectRaceById(races, raceId);
     let driver1 = selectDriverById(drivers, driver1Id);
     let driver2 = selectDriverById(drivers, driver2Id);
@@ -3995,6 +3992,7 @@
       year = e.currentTarget.value;
       clearInputsAndGraph(...Object.values(dropdownElements));
       processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
+      loadResults_default(raceId, statsArr);
     });
     raceEl.addEventListener("change", (e) => {
       e.preventDefault();
