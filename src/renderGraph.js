@@ -22,7 +22,7 @@ function renderGraph(svg, race, ...drivers) {
   const xAxisLabel = "Lap";
 
   const yValue = (d) => d.seconds;
-  const yAxisLabel = "Lap time";
+  const yAxisLabel = "Lap Time";
 
   // set the ranges
   const xScale = scaleLinear()
@@ -68,7 +68,7 @@ function renderGraph(svg, race, ...drivers) {
     .attr("class", "axis-label")
     .attr("y", -60)
     .attr("x", -innerHeight / 2)
-    .attr("fill", "black")
+    // .attr("fill", "black")
     .attr("transform", "rotate(-90)")
     .attr("text-anchor", "middle")
     .text(yAxisLabel);
@@ -78,7 +78,7 @@ function renderGraph(svg, race, ...drivers) {
     .attr("class", "axis-label")
     .attr("y", 50)
     .attr("x", innerWidth / 2)
-    .attr("fill", "black")
+    // .attr("fill", "black")
     .text(xAxisLabel);
 
   // Iterate over driver data and create line for each driver
@@ -138,7 +138,6 @@ function renderGraph(svg, race, ...drivers) {
     .attr("x", innerWidth - 115)
     .attr("y", 5)
     .attr("rx", 4)
-    .style("filter", "url(#glow)");
 
   legendG
     .append("circle")
@@ -154,14 +153,14 @@ function renderGraph(svg, race, ...drivers) {
     .style("fill", colors[1]);
   legendG
     .append("text")
-    .attr("x", innerWidth - 80)
-    .attr("y", 30)
+    .attr("x", innerWidth - 85)
+    .attr("y", 35)
     .text(drivers[0].driver.surname)
     .attr("alignment-baseline", "middle");
   legendG
     .append("text")
-    .attr("x", innerWidth - 80)
-    .attr("y", 60)
+    .attr("x", innerWidth - 85)
+    .attr("y", 65)
     .text(drivers[1].driver.surname)
     .attr("alignment-baseline", "middle");
 }

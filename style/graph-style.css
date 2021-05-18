@@ -1,31 +1,37 @@
 .title {
-  font-size: 1.6rem;
+  fill: rgb(28, 28, 28);
 }
 .axis-label {
-  fill: rgb(16, 16, 16);
+  fill: rgb(36, 36, 36);
+  font-size: 1.4rem;
 }
 .axis {
-  color: rgb(55, 55, 55);
+  color: rgb(29, 29, 29);
+  font-family: inherit;
+  font-size: 1.2rem;
 }
 
 svg {
   /* width and height are set inline on the html to access in js*/
-  fill: rgba(42, 42, 42, 0.784);
-  background: #edc0bf;
-  background: linear-gradient(90deg, #eae0e0 0,#d0e6f2 58%);
+  fill: rgba(28, 28, 28, 0.75);
+  background: #edc0bf; 
+  background: linear-gradient(90deg, #eae0e0 0,#d0e6f2 50%);
+  background: linear-gradient(90deg, #e0e4ea 0,#e8e7f7 58%); 
+  /* background-color: rgb(255, 255, 255); */
+  border-radius: 10px;
+  box-shadow: var(--shadow);
 }
 
 .line-path {
   fill: none;
   stroke-width: 3px;
   stroke-linejoin: round;
-  stroke-linejoin: round;
 }
 
 #tooltip {
   position: absolute;
   opacity: 0;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.8);
   -webkit-backdrop-filter: blur(10px);
 	backdrop-filter: blur(10px);
   width: 11rem;
@@ -41,7 +47,7 @@ svg {
   font-size: 1.4rem;   
 }    
 .legend-box {
-  fill: rgba(255, 255, 255, 0.743);
+  fill: rgba(255, 255, 255, 0.9);
   height: 80px;
   width: 115px;
 }     

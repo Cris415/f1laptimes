@@ -3848,7 +3848,7 @@
     const xValue = (d) => d.lap;
     const xAxisLabel = "Lap";
     const yValue = (d) => d.seconds;
-    const yAxisLabel = "Lap time";
+    const yAxisLabel = "Lap Time";
     const xScale = linear2().domain(extent_default(allLapData, xValue)).range([0, innerWidth]).clamp(true).nice();
     const yScale = linear2().domain(extent_default(allLapData, yValue)).range([innerHeight, 0]).nice();
     const g = svg.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
@@ -3858,8 +3858,8 @@
     const yAxis = axisLeft(yScale).tickFormat((d) => d + "s").tickSize(-innerWidth).tickPadding(10);
     const yAxisG = g.append("g").call(yAxis).attr("class", "axis");
     const xAxisG = g.append("g").call(xAxis).attr("class", "axis").attr("transform", `translate(0, ${innerHeight})`);
-    yAxisG.append("text").attr("class", "axis-label").attr("y", -60).attr("x", -innerHeight / 2).attr("fill", "black").attr("transform", "rotate(-90)").attr("text-anchor", "middle").text(yAxisLabel);
-    xAxisG.append("text").attr("class", "axis-label").attr("y", 50).attr("x", innerWidth / 2).attr("fill", "black").text(xAxisLabel);
+    yAxisG.append("text").attr("class", "axis-label").attr("y", -60).attr("x", -innerHeight / 2).attr("transform", "rotate(-90)").attr("text-anchor", "middle").text(yAxisLabel);
+    xAxisG.append("text").attr("class", "axis-label").attr("y", 50).attr("x", innerWidth / 2).text(xAxisLabel);
     colors = ["#03BFB5", "red"];
     const lines = {};
     drivers.forEach((driver, i) => {
@@ -3877,11 +3877,11 @@
     const legendG = g.append("g").attr("class", "legend");
     const filter2 = legendG.append("filter").attr("id", "glow");
     filter2.append("feGaussianBlur").attr("stdDeviation", "0.9");
-    legendG.append("rect").attr("class", "legend-box").attr("x", innerWidth - 115).attr("y", 5).attr("rx", 4).style("filter", "url(#glow)");
+    legendG.append("rect").attr("class", "legend-box").attr("x", innerWidth - 115).attr("y", 5).attr("rx", 4);
     legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 30).attr("r", 6).style("fill", colors[0]);
     legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 60).attr("r", 6).style("fill", colors[1]);
-    legendG.append("text").attr("x", innerWidth - 80).attr("y", 30).text(drivers[0].driver.surname).attr("alignment-baseline", "middle");
-    legendG.append("text").attr("x", innerWidth - 80).attr("y", 60).text(drivers[1].driver.surname).attr("alignment-baseline", "middle");
+    legendG.append("text").attr("x", innerWidth - 85).attr("y", 35).text(drivers[0].driver.surname).attr("alignment-baseline", "middle");
+    legendG.append("text").attr("x", innerWidth - 85).attr("y", 65).text(drivers[1].driver.surname).attr("alignment-baseline", "middle");
   }
   var renderGraph_default = renderGraph;
 
