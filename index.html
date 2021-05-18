@@ -10,12 +10,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Racing+Sans+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style/reset.css">
   <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="style/graph-style.css">
   <script src="dist/out.js"></script>
-  <title>Formula 1 Lap Time Stats</title>
+  <title>Formula 1 Lap Times</title>
 </head>
 <body>
   <header>
-    <h1>Formula1 Lap Time Stats</h1> 
+    <h1>Formula1 Lap Times</h1> 
   </header>
 
   <div class="card description">
@@ -28,41 +29,47 @@
     </p>
   </div>
 
-  <label for="year-select">Choose a year:</label>
-  <select name="year-select" id="year-select">
-  </select>
-  <label for="race-select">Choose a race:</label>
-  <select name="race-select" id="race-select">
-  </select>
-  <label for="race-select">Choose a driver:</label>
-  <select name="driver1-select" id="driver1-select">
-  </select>
-  <label for="race-select">Choose a driver:</label>
-  <select name="driver2-select" id="driver2-select">
-  </select>
+  <div class="dropdowns">
+    <label for="year-select">Choose a year:</label>
+    <select name="year-select" id="year-select" class="dropdown">
+    </select>
+    <label for="race-select">Choose a race:</label>
+    <select name="race-select" id="race-select" class="dropdown">
+    </select>
+    <label for="race-select">Choose a driver:</label>
+    <select name="driver1-select" id="driver1-select" class="dropdown">
+    </select>
+    <label for="race-select">Choose a driver:</label>
+    <select name="driver2-select" id="driver2-select" class="dropdown">
+    </select>
+  </div>
 
   <div id="graph-container">
     <svg width='960' height="500"></svg>
-    <div class="card explanation">
-      <ul>
-        <h3>Tips</h3>
-        <li>
-          Laps towards the end of the race will be slightly faster. As Formula 1 cars do not refill gasoline during the race (since 2010), making them lighter and faster
-        </li>
-        <li>
-         Typically, increases in laptimes of around 30-40 seconds are pitstops
-        </li>
-        <li>
-          Larger increases in lap times typically indicate an accident occured and a safety car was deployed to guide the cars around the track
-        </li>
-      </ul>
-    </div>
     <div id="tooltip"></div>
   </div>
 
-  <table id="race-results">
+  <div class="card tips">
+    <ul>
+      <h3>Tips</h3>
+      <li>
+        Formula 1 cars do not refill fuel during the race (since 2010), making them lighter and faster
+      </li>
+      <li>
+        Laps towards the end of the race will be slightly faster
+      </li>
+      <li>
+        Typically, increases in laptimes of around 30-40 seconds are pitstops
+      </li>
+      <li>
+        Larger increases in lap times typically indicate an accident occured and a safety car was deployed to guide the cars around the track
+      </li>
+    </ul>
+  </div>
 
+  <table id="race-results">
   </table>
+
 </body>
 
 <footer>

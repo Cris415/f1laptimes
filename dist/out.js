@@ -3792,7 +3792,6 @@
   // src/loadResults.js
   function loadResults(raceId, raceData2) {
     const [laps, circuits, constructors, drivers, races, results, status] = raceData2;
-    console.log(raceId);
     let filteredResults = results.filter((result) => {
       return result.raceId === raceId;
     });

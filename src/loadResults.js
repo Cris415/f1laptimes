@@ -6,7 +6,6 @@ import {
 
 function loadResults(raceId, raceData) {
   const [laps, circuits, constructors, drivers, races, results, status] = raceData;
-  console.log(raceId)
   let filteredResults = results.filter((result) => {
     return result.raceId === raceId
   });
