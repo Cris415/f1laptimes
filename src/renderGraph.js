@@ -68,7 +68,6 @@ function renderGraph(svg, race, ...drivers) {
     .attr("class", "axis-label")
     .attr("y", -60)
     .attr("x", -innerHeight / 2)
-    // .attr("fill", "black")
     .attr("transform", "rotate(-90)")
     .attr("text-anchor", "middle")
     .text(yAxisLabel);
@@ -78,12 +77,11 @@ function renderGraph(svg, race, ...drivers) {
     .attr("class", "axis-label")
     .attr("y", 50)
     .attr("x", innerWidth / 2)
-    // .attr("fill", "black")
     .text(xAxisLabel);
 
   // Iterate over driver data and create line for each driver
   // store in a lines object
-  colors = ["#03BFB5", "red"];
+  colors = ["#1f673c", "#dc9e42", "#03BFB5"];
 
   const lines = {};
   drivers.forEach((driver, i) => {
@@ -127,10 +125,6 @@ function renderGraph(svg, race, ...drivers) {
     });
   const legendG = g.append("g").attr("class", "legend");
 
-  const filter = legendG.append("filter").attr("id", "glow");
-  filter.append("feGaussianBlur").attr("stdDeviation", "0.9");
-
-  // https://www.visualcinnamon.com/2016/06/glow-filter-d3-visualization/
   // www.d3-graph-gallery.com/graph/custom_legend.html
   legendG
     .append("rect")

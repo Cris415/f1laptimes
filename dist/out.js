@@ -3860,7 +3860,7 @@
     const xAxisG = g.append("g").call(xAxis).attr("class", "axis").attr("transform", `translate(0, ${innerHeight})`);
     yAxisG.append("text").attr("class", "axis-label").attr("y", -60).attr("x", -innerHeight / 2).attr("transform", "rotate(-90)").attr("text-anchor", "middle").text(yAxisLabel);
     xAxisG.append("text").attr("class", "axis-label").attr("y", 50).attr("x", innerWidth / 2).text(xAxisLabel);
-    colors = ["#03BFB5", "red"];
+    colors = ["#1f673c", "#dc9e42", "#03BFB5"];
     const lines = {};
     drivers.forEach((driver, i) => {
       lines[driver.driver.code] = new createLine(g, driver.laps, xScale, yScale, xValue, yValue, colors[i]);
@@ -3875,8 +3875,6 @@
       select_default2("#tooltip").style("left", event.pageX + 10 + "px").style("top", event.pageY + 10 + "px");
     });
     const legendG = g.append("g").attr("class", "legend");
-    const filter2 = legendG.append("filter").attr("id", "glow");
-    filter2.append("feGaussianBlur").attr("stdDeviation", "0.9");
     legendG.append("rect").attr("class", "legend-box").attr("x", innerWidth - 115).attr("y", 5).attr("rx", 4);
     legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 30).attr("r", 6).style("fill", colors[0]);
     legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 60).attr("r", 6).style("fill", colors[1]);

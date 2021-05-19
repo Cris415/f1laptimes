@@ -6,7 +6,7 @@
   font-size: 1.4rem;
 }
 .axis {
-  color: rgb(29, 29, 29);
+  color: rgb(80, 9, 80);
   font-family: inherit;
   font-size: 1.2rem;
 }
@@ -15,11 +15,11 @@ svg {
   /* width and height are set inline on the html to access in js*/
   fill: rgba(28, 28, 28, 0.75);
   background: #edc0bf; 
-  background: linear-gradient(90deg, #eae0e0 0,#d0e6f2 50%);
-  background: linear-gradient(90deg, #e0e4ea 0,#e8e7f7 58%); 
-  /* background-color: rgb(255, 255, 255); */
   border-radius: 10px;
   box-shadow: var(--shadow);
+  /* background: linear-gradient(90deg, #eae0e0 0,#d0e6f2 58%); */
+  /* background: linear-gradient(90deg, rgba(227, 208, 224, 0.95) 0,rgba(189, 220, 220, 0.900) 100%);  */
+  background: linear-gradient(90deg, rgba(225, 200, 221, 0.95) 0,rgba(187, 220, 220, 0.9) 58%); 
 }
 
 .line-path {
