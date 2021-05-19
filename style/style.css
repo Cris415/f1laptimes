@@ -64,6 +64,7 @@ h3 {
   grid-column: 2 / 3;
   grid-row: 5 / 7;
 
+  width: 100%;
   border-bottom: solid 2px rgb(232, 232, 232);
 }
 

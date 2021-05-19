@@ -14,12 +14,12 @@
 svg {
   /* width and height are set inline on the html to access in js*/
   fill: rgba(28, 28, 28, 0.75);
-  background: #edc0bf; 
+  background: #faf2f2; 
   border-radius: 10px;
   box-shadow: var(--shadow);
   /* background: linear-gradient(90deg, #eae0e0 0,#d0e6f2 58%); */
   /* background: linear-gradient(90deg, rgba(227, 208, 224, 0.95) 0,rgba(189, 220, 220, 0.900) 100%);  */
-  background: linear-gradient(90deg, rgba(225, 200, 221, 0.95) 0,rgba(187, 220, 220, 0.9) 58%); 
+  background: linear-gradient(90deg, rgba(223, 203, 220, 0.70) 0,rgba(193, 222, 222, 0.70) 58%); 
 }
 
 .line-path {

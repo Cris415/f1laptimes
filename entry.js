@@ -11,12 +11,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const raceEl = document.getElementById("race-select");
   const driver1El = document.getElementById("driver1-select");
   const driver2El = document.getElementById("driver2-select");
-  const table = document.getElementById("race-results");
 
   let raceId = "1033";
   let year = "2020";
   let driver1Id = "1";
-  let driver2Id = "847";
+  let driver2Id = "844";
 
   const dropdownElements = {
     year: yearEl,
@@ -26,12 +25,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   const statsArr = await loadStats().catch(console.error);
 
-  // year dropdown
   yearEl.addEventListener("change", (e) => {
     e.preventDefault();
     year = e.currentTarget.value;
     
-    clearInputsAndGraph(...Object.values(dropdownElements));
     processData(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
   });
 
@@ -39,7 +36,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     e.preventDefault();
     raceId = e.currentTarget.value;
     
-    clearInputsAndGraph(...Object.values(dropdownElements));
     processData(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
     loadResults(raceId, statsArr);
   });
@@ -48,7 +44,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     e.preventDefault();
     driver1Id = e.currentTarget.value;
 
-    clearInputsAndGraph(driver1El, driver2El, raceEl);
     processData(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
   });
 
@@ -56,7 +51,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     e.preventDefault();
     driver2Id = e.currentTarget.value;
 
-    clearInputsAndGraph(driver1El, driver2El, raceEl);
     processData(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
   });
 

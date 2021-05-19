@@ -1,4 +1,7 @@
+import { clearInputChildren } from './clearInputs';
+
 function fillSelectElement(element, data, value, id, textCb, sortCb = (a, b) => a - b) {
+  clearInputChildren(element);
   data
     .sort((a, b) => sortCb(a, b))
     .forEach((item) => {

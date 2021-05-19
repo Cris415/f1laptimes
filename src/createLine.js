@@ -1,7 +1,7 @@
 import { line, curveMonotoneX, easePoly } from 'd3';
 
 export class createLine {
-  constructor(group, data, xScale, yScale, xValue, yValue, color = "black") {
+  constructor(group, data, xScale, yScale, xValue, yValue, color = "#2b2b2b") {
     this.group = group;
     this.data = data;
     this.color = color;
@@ -30,10 +30,10 @@ export class createLine {
 
   render() {
     this.path = this.group
-    .append("path")
-    .attr("class", "line-path")
-    .style("stroke", this.color)
-    .attr("d", this.lineGeneratorOutput(this.data))
+      .append("path")
+      .attr("class", "line-path")
+      .style("stroke", this.color)
+      .attr("d", this.lineGeneratorOutput(this.data));
     return this.path;
   }
 }

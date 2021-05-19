@@ -131,6 +131,17 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
   d1Data.laps = processLapData(d1Data);
   d2Data.laps = processLapData(d2Data);
 
-  renderGraph(svg, race, d1Data, d2Data);
+  const driverTeams = {
+    driver1: results.filter(
+      (result) =>
+        result.driverId === driver1.driverId && result.raceId === raceId
+    )[0].constructorId,
+    driver2: results.filter(
+      (result) =>
+        result.driverId === driver2.driverId && result.raceId === raceId
+    )[0].constructorId,
+  };
+
+  renderGraph(svg, race, driverTeams, d1Data, d2Data);
 }
 export default processData;

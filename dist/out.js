@@ -3717,11 +3717,6 @@
       });
     });
   }
-  function clearInputsAndGraph(...elements) {
-    const svg = select_default2("svg");
-    svg.selectChildren().remove();
-    clearInputChildren(...elements);
-  }
 
   // src/raceResults.js
   function createRow(datum2, header) {
@@ -3818,9 +3813,61 @@
   }
   var loadStats_default = loadStats;
 
+  // src/constructorColors.js
+  var colorsMain = {
+    1: "#FF8700",
+    3: "#FFFFFF",
+    4: "#FFF500",
+    5: "#469BFF",
+    6: "#DC0000",
+    9: "#1E41FF",
+    15: "#006EFF",
+    10: "#F596C8",
+    11: "#00CFBA",
+    17: "#FF80C7",
+    18: "#0000FF",
+    20: "#318CE7",
+    23: "#00CFBA",
+    25: "#00CFBA",
+    27: "#318CE7",
+    51: "#960000",
+    131: "#00D2BE",
+    205: "#FFB800",
+    207: "#225129",
+    210: "#F0D787",
+    211: "#F596C8",
+    213: "#374357",
+    214: "#FFF500"
+  };
+  var colorsAlt = {
+    1: "#a45700",
+    3: "#c2c2c2",
+    4: "#a09b00",
+    5: "#2b609c",
+    6: "#7b0000",
+    9: "#11238d",
+    15: "#013c88",
+    10: "#8b5371",
+    11: "#007267",
+    17: "#8b456d",
+    18: "#000088",
+    20: "#194a7a",
+    23: "#00766a",
+    25: "#00766a",
+    27: "#184877",
+    51: "#4d0000",
+    131: "#007267",
+    205: "#7b5800",
+    207: "#122b15",
+    210: "#85784b",
+    211: "#804e69",
+    213: "#1f2531",
+    214: "#858102"
+  };
+
   // src/createLine.js
   var createLine = class {
-    constructor(group, data, xScale, yScale, xValue, yValue, color2 = "black") {
+    constructor(group, data, xScale, yScale, xValue, yValue, color2 = "#2b2b2b") {
       this.group = group;
       this.data = data;
       this.color = color2;
@@ -3841,7 +3888,8 @@
   };
 
   // src/renderGraph.js
-  function renderGraph(svg, race, ...drivers) {
+  function renderGraph(svg, race, constructors, ...drivers) {
+    svg.selectChildren().remove();
     const height = +svg.attr("height");
     const width = +svg.attr("width");
     const margin = {top: 50, right: 20, bottom: 70, left: 80};
@@ -3863,7 +3911,9 @@
     const xAxisG = g.append("g").call(xAxis).attr("class", "axis").attr("transform", `translate(0, ${innerHeight})`);
     yAxisG.append("text").attr("class", "axis-label").attr("y", -60).attr("x", -innerHeight / 2).attr("transform", "rotate(-90)").attr("text-anchor", "middle").text(yAxisLabel);
     xAxisG.append("text").attr("class", "axis-label").attr("y", 50).attr("x", innerWidth / 2).text(xAxisLabel);
-    colors = ["#1f673c", "#dc9e42", "#03BFB5"];
+    const d1Color = colorsMain[constructors["driver1"]];
+    const d2Color = constructors["driver1"] === constructors["driver2"] ? colorsAlt[constructors["driver2"]] : colorsMain[constructors["driver2"]];
+    colors = [d1Color, d2Color];
     const lines = {};
     drivers.forEach((driver, i) => {
       lines[driver.driver.code] = new createLine(g, driver.laps, xScale, yScale, xValue, yValue, colors[i]);
@@ -3878,16 +3928,17 @@
       select_default2("#tooltip").style("left", event.pageX + 10 + "px").style("top", event.pageY + 10 + "px");
     });
     const legendG = g.append("g").attr("class", "legend");
-    legendG.append("rect").attr("class", "legend-box").attr("x", innerWidth - 115).attr("y", 5).attr("rx", 4);
-    legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 30).attr("r", 6).style("fill", colors[0]);
-    legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 60).attr("r", 6).style("fill", colors[1]);
-    legendG.append("text").attr("x", innerWidth - 85).attr("y", 35).text(drivers[0].driver.surname).attr("alignment-baseline", "middle");
-    legendG.append("text").attr("x", innerWidth - 85).attr("y", 65).text(drivers[1].driver.surname).attr("alignment-baseline", "middle");
+    legendG.append("rect").attr("class", "legend-box").attr("x", innerWidth - 117).attr("y", 5).attr("rx", 4);
+    legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 30).attr("r", 6).style("stroke", "black").style("fill", colors[0]);
+    legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 60).attr("r", 6).style("stroke", "black").style("fill", colors[1]);
+    legendG.append("text").attr("x", innerWidth - 85).attr("y", 30).text(drivers[0].driver.surname).attr("alignment-baseline", "middle");
+    legendG.append("text").attr("x", innerWidth - 85).attr("y", 60).text(drivers[1].driver.surname).attr("alignment-baseline", "middle");
   }
   var renderGraph_default = renderGraph;
 
   // src/fillSelectElement.js
   function fillSelectElement(element, data, value, id2, textCb, sortCb = (a, b) => a - b) {
+    clearInputChildren(element);
     data.sort((a, b) => sortCb(a, b)).forEach((item) => {
       option = document.createElement("option");
       option.setAttribute("value", item[value] ? item[value] : item);
@@ -3963,7 +4014,11 @@
     };
     d1Data.laps = processLapData_default(d1Data);
     d2Data.laps = processLapData_default(d2Data);
-    renderGraph_default(svg, race, d1Data, d2Data);
+    const driverTeams = {
+      driver1: results.filter((result) => result.driverId === driver1.driverId && result.raceId === raceId)[0].constructorId,
+      driver2: results.filter((result) => result.driverId === driver2.driverId && result.raceId === raceId)[0].constructorId
+    };
+    renderGraph_default(svg, race, driverTeams, d1Data, d2Data);
   }
   var processData_default = processData;
 
@@ -3974,11 +4029,10 @@
     const raceEl = document.getElementById("race-select");
     const driver1El = document.getElementById("driver1-select");
     const driver2El = document.getElementById("driver2-select");
-    const table = document.getElementById("race-results");
     let raceId = "1033";
     let year = "2020";
     let driver1Id = "1";
-    let driver2Id = "847";
+    let driver2Id = "844";
     const dropdownElements = {
       year: yearEl,
       race: raceEl,
@@ -3989,26 +4043,22 @@
     yearEl.addEventListener("change", (e) => {
       e.preventDefault();
       year = e.currentTarget.value;
-      clearInputsAndGraph(...Object.values(dropdownElements));
       processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
     });
     raceEl.addEventListener("change", (e) => {
       e.preventDefault();
       raceId = e.currentTarget.value;
-      clearInputsAndGraph(...Object.values(dropdownElements));
       processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
       loadResults_default(raceId, statsArr);
     });
     driver1El.addEventListener("change", (e) => {
       e.preventDefault();
       driver1Id = e.currentTarget.value;
-      clearInputsAndGraph(driver1El, driver2El, raceEl);
       processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
     });
     driver2El.addEventListener("change", (e) => {
       e.preventDefault();
       driver2Id = e.currentTarget.value;
-      clearInputsAndGraph(driver1El, driver2El, raceEl);
       processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
     });
     processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);

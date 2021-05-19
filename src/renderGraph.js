@@ -6,9 +6,12 @@ import {
   select
 } from "d3";
 
+import {colorsMain, colorsAlt} from './constructorColors';
 import { createLine } from './createLine';
 
-function renderGraph(svg, race, ...drivers) {
+function renderGraph(svg, race, constructors, ...drivers) {
+  svg.selectChildren().remove();
+
   // set the dimensions and margins of the graph
   const height = +svg.attr("height");
   const width = +svg.attr("width");
@@ -81,7 +84,13 @@ function renderGraph(svg, race, ...drivers) {
 
   // Iterate over driver data and create line for each driver
   // store in a lines object
-  colors = ["#1f673c", "#dc9e42", "#03BFB5"];
+  const d1Color = colorsMain[constructors["driver1"]];
+  const d2Color =
+    constructors["driver1"] === constructors["driver2"]
+      ? colorsAlt[constructors["driver2"]]
+      : colorsMain[constructors["driver2"]];
+
+  colors = [d1Color, d2Color];
 
   const lines = {};
   drivers.forEach((driver, i) => {
@@ -129,7 +138,7 @@ function renderGraph(svg, race, ...drivers) {
   legendG
     .append("rect")
     .attr("class", "legend-box")
-    .attr("x", innerWidth - 115)
+    .attr("x", innerWidth - 117)
     .attr("y", 5)
     .attr("rx", 4)
 
@@ -138,23 +147,25 @@ function renderGraph(svg, race, ...drivers) {
     .attr("cx", innerWidth - 100)
     .attr("cy", 30)
     .attr("r", 6)
+    .style("stroke", "black")
     .style("fill", colors[0]);
   legendG
     .append("circle")
     .attr("cx", innerWidth - 100)
     .attr("cy", 60)
     .attr("r", 6)
+    .style("stroke", "black")
     .style("fill", colors[1]);
   legendG
     .append("text")
     .attr("x", innerWidth - 85)
-    .attr("y", 35)
+    .attr("y", 30)
     .text(drivers[0].driver.surname)
     .attr("alignment-baseline", "middle");
   legendG
     .append("text")
     .attr("x", innerWidth - 85)
-    .attr("y", 65)
+    .attr("y", 60)
     .text(drivers[1].driver.surname)
     .attr("alignment-baseline", "middle");
 }
