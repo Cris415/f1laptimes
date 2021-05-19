@@ -3712,7 +3712,9 @@
   // src/clearInputs.js
   function clearInputChildren(...elements) {
     elements.forEach((el) => {
-      [...el.children].forEach((child) => child.remove());
+      [...el.children].forEach((child) => {
+        child.remove();
+      });
     });
   }
   function clearInputsAndGraph(...elements) {
@@ -3735,6 +3737,7 @@
   var headerItems = ["position", "driver", "number", "constructor", "laps", "fastest lap time", "fastest lap speed", "status"];
   function raceResults(results, status, drivers, constructors) {
     const table = document.getElementById("race-results");
+    clearInputChildren(table);
     table.append(createRow(headerItems, true));
     results.forEach((result) => {
       const newResult = {...result};
@@ -3980,8 +3983,7 @@
       year: yearEl,
       race: raceEl,
       driver1: driver1El,
-      driver2: driver2El,
-      table
+      driver2: driver2El
     };
     const statsArr = await loadStats_default().catch(console.error);
     yearEl.addEventListener("change", (e) => {
@@ -3989,7 +3991,6 @@
       year = e.currentTarget.value;
       clearInputsAndGraph(...Object.values(dropdownElements));
       processData_default(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
-      loadResults_default(raceId, statsArr);
     });
     raceEl.addEventListener("change", (e) => {
       e.preventDefault();

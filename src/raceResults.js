@@ -1,3 +1,5 @@
+import {clearInputChildren} from './clearInputs';
+
 function createRow(datum, header) {
   const newRow = document.createElement("tr");
   datum.forEach(d => {
@@ -13,6 +15,8 @@ const headerItems = ['position', 'driver','number','constructor','laps','fastest
 
 function raceResults(results, status, drivers, constructors) {
   const table = document.getElementById("race-results");
+
+  clearInputChildren(table);
 
   table.append(createRow(headerItems, true));
 

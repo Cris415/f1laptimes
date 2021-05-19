@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     race: raceEl,
     driver1: driver1El,
     driver2: driver2El,
-    table
   }
   const statsArr = await loadStats().catch(console.error);
 
@@ -34,7 +33,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     clearInputsAndGraph(...Object.values(dropdownElements));
     processData(svg, statsArr, raceId, year, driver1Id, driver2Id, dropdownElements);
-    loadResults(raceId, statsArr);
   });
 
   raceEl.addEventListener("change", (e) => {
