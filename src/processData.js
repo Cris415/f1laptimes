@@ -131,17 +131,33 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
   d1Data.laps = processLapData(d1Data);
   d2Data.laps = processLapData(d2Data);
 
-  const driverTeams = {
-    driver1: results.filter(
-      (result) =>
-        result.driverId === driver1.driverId && result.raceId === raceId
-    )[0].constructorId,
-    driver2: results.filter(
-      (result) =>
-        result.driverId === driver2.driverId && result.raceId === raceId
-    )[0].constructorId,
+  const constructorId1 = results.filter(
+        (result) =>
+          result.driverId === driver1.driverId && result.raceId === raceId
+      )[0].constructorId;
+  const constructorId2 = results.filter(
+        (result) =>
+          result.driverId === driver2.driverId && result.raceId === raceId
+      )[0].constructorId;
+      
+  const constructor1 = constructors.filter(
+    (item) => item.constructorId === constructorId1
+  )[0];
+  const constructor2 = constructors.filter(
+    (item) => item.constructorId === constructorId2
+  )[0];
+
+  const driversConstructors = {
+    driver1: {
+      id: constructorId1,
+      name: constructor1.name,
+    },
+    driver2: {
+      id: constructorId2,
+      name: constructor2.name,
+    },
   };
 
-  renderGraph(svg, race, driverTeams, d1Data, d2Data);
+  renderGraph(svg, race, driversConstructors, d1Data, d2Data);
 }
 export default processData;

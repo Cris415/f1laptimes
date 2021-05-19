@@ -8,6 +8,7 @@ import {
 
 import {colorsMain, colorsAlt} from './constructorColors';
 import { createLine } from './createLine';
+import renderLegend from './renderLegend';
 
 function renderGraph(svg, race, constructors, ...drivers) {
   svg.selectChildren().remove();
@@ -84,11 +85,11 @@ function renderGraph(svg, race, constructors, ...drivers) {
 
   // Iterate over driver data and create line for each driver
   // store in a lines object
-  const d1Color = colorsMain[constructors["driver1"]];
+  const d1Color = colorsMain[constructors["driver1"].id];
   const d2Color =
-    constructors["driver1"] === constructors["driver2"]
-      ? colorsAlt[constructors["driver2"]]
-      : colorsMain[constructors["driver2"]];
+    constructors["driver1"].id === constructors["driver2"].id
+      ? colorsAlt[constructors["driver2"].id]
+      : colorsMain[constructors["driver2"].id];
 
   colors = [d1Color, d2Color];
 
@@ -132,42 +133,21 @@ function renderGraph(svg, race, constructors, ...drivers) {
         .style("left", event.pageX + 10 + "px")
         .style("top", event.pageY + 10 + "px");
     });
-  const legendG = g.append("g").attr("class", "legend");
-
-  // www.d3-graph-gallery.com/graph/custom_legend.html
-  legendG
-    .append("rect")
-    .attr("class", "legend-box")
-    .attr("x", innerWidth - 117)
-    .attr("y", 5)
-    .attr("rx", 4)
-
-  legendG
-    .append("circle")
-    .attr("cx", innerWidth - 100)
-    .attr("cy", 30)
-    .attr("r", 6)
-    .style("stroke", "black")
-    .style("fill", colors[0]);
-  legendG
-    .append("circle")
-    .attr("cx", innerWidth - 100)
-    .attr("cy", 60)
-    .attr("r", 6)
-    .style("stroke", "black")
-    .style("fill", colors[1]);
-  legendG
-    .append("text")
-    .attr("x", innerWidth - 85)
-    .attr("y", 30)
-    .text(drivers[0].driver.surname)
-    .attr("alignment-baseline", "middle");
-  legendG
-    .append("text")
-    .attr("x", innerWidth - 85)
-    .attr("y", 60)
-    .text(drivers[1].driver.surname)
-    .attr("alignment-baseline", "middle");
+    
+    const driversLengendInfo = {
+      driver1: {
+        name: drivers[0].driver.surname,
+        color: colors[0],
+        team: constructors["driver1"].name
+      },
+      driver2: {
+        name: drivers[1].driver.surname,
+        color: colors[1],
+        team: constructors["driver2"].name
+      },
+    };
+    
+    renderLegend(driversLengendInfo);
 }
 
 export default renderGraph;

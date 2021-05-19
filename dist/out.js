@@ -3887,6 +3887,20 @@
     }
   };
 
+  // src/renderLegend.js
+  function renderLegend(drivers) {
+    const legend = select_default2("#legend");
+    legend.selectAll("*").remove();
+    const {driver1, driver2} = drivers;
+    const legend1 = legend.append("div").attr("class", "legend-container");
+    legend1.append("div").attr("class", "legend-color").style("background-color", driver1.color);
+    legend1.append("p").text(`${driver1.name} (${driver1.team})`);
+    const legend2 = legend.append("div").attr("class", "legend-container");
+    legend2.append("div").attr("class", "legend-color").style("background-color", driver2.color);
+    legend2.append("p").text(`${driver2.name} (${driver2.team})`);
+  }
+  var renderLegend_default = renderLegend;
+
   // src/renderGraph.js
   function renderGraph(svg, race, constructors, ...drivers) {
     svg.selectChildren().remove();
@@ -3911,8 +3925,8 @@
     const xAxisG = g.append("g").call(xAxis).attr("class", "axis").attr("transform", `translate(0, ${innerHeight})`);
     yAxisG.append("text").attr("class", "axis-label").attr("y", -60).attr("x", -innerHeight / 2).attr("transform", "rotate(-90)").attr("text-anchor", "middle").text(yAxisLabel);
     xAxisG.append("text").attr("class", "axis-label").attr("y", 50).attr("x", innerWidth / 2).text(xAxisLabel);
-    const d1Color = colorsMain[constructors["driver1"]];
-    const d2Color = constructors["driver1"] === constructors["driver2"] ? colorsAlt[constructors["driver2"]] : colorsMain[constructors["driver2"]];
+    const d1Color = colorsMain[constructors["driver1"].id];
+    const d2Color = constructors["driver1"].id === constructors["driver2"].id ? colorsAlt[constructors["driver2"].id] : colorsMain[constructors["driver2"].id];
     colors = [d1Color, d2Color];
     const lines = {};
     drivers.forEach((driver, i) => {
@@ -3927,12 +3941,19 @@
     }).on("mousemove", function(event) {
       select_default2("#tooltip").style("left", event.pageX + 10 + "px").style("top", event.pageY + 10 + "px");
     });
-    const legendG = g.append("g").attr("class", "legend");
-    legendG.append("rect").attr("class", "legend-box").attr("x", innerWidth - 117).attr("y", 5).attr("rx", 4);
-    legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 30).attr("r", 6).style("stroke", "black").style("fill", colors[0]);
-    legendG.append("circle").attr("cx", innerWidth - 100).attr("cy", 60).attr("r", 6).style("stroke", "black").style("fill", colors[1]);
-    legendG.append("text").attr("x", innerWidth - 85).attr("y", 30).text(drivers[0].driver.surname).attr("alignment-baseline", "middle");
-    legendG.append("text").attr("x", innerWidth - 85).attr("y", 60).text(drivers[1].driver.surname).attr("alignment-baseline", "middle");
+    const driversLengendInfo = {
+      driver1: {
+        name: drivers[0].driver.surname,
+        color: colors[0],
+        team: constructors["driver1"].name
+      },
+      driver2: {
+        name: drivers[1].driver.surname,
+        color: colors[1],
+        team: constructors["driver2"].name
+      }
+    };
+    renderLegend_default(driversLengendInfo);
   }
   var renderGraph_default = renderGraph;
 
@@ -4014,11 +4035,21 @@
     };
     d1Data.laps = processLapData_default(d1Data);
     d2Data.laps = processLapData_default(d2Data);
-    const driverTeams = {
-      driver1: results.filter((result) => result.driverId === driver1.driverId && result.raceId === raceId)[0].constructorId,
-      driver2: results.filter((result) => result.driverId === driver2.driverId && result.raceId === raceId)[0].constructorId
+    const constructorId1 = results.filter((result) => result.driverId === driver1.driverId && result.raceId === raceId)[0].constructorId;
+    const constructorId2 = results.filter((result) => result.driverId === driver2.driverId && result.raceId === raceId)[0].constructorId;
+    const constructor1 = constructors.filter((item) => item.constructorId === constructorId1)[0];
+    const constructor2 = constructors.filter((item) => item.constructorId === constructorId2)[0];
+    const driversConstructors = {
+      driver1: {
+        id: constructorId1,
+        name: constructor1.name
+      },
+      driver2: {
+        id: constructorId2,
+        name: constructor2.name
+      }
     };
-    renderGraph_default(svg, race, driverTeams, d1Data, d2Data);
+    renderGraph_default(svg, race, driversConstructors, d1Data, d2Data);
   }
   var processData_default = processData;
 
