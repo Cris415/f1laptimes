@@ -85,11 +85,11 @@ function renderGraph(svg, race, constructors, ...drivers) {
 
   // Iterate over driver data and create line for each driver
   // store in a lines object
-  const d1Color = colorsMain[constructors["driver1"].id];
+  const d1Color = colorsMain[constructors["driver1"].constructorId];
   const d2Color =
-    constructors["driver1"].id === constructors["driver2"].id
-      ? colorsAlt[constructors["driver2"].id]
-      : colorsMain[constructors["driver2"].id];
+    constructors["driver1"].constructorId === constructors["driver2"].constructorId
+      ? colorsAlt[constructors["driver2"].constructorId]
+      : colorsMain[constructors["driver2"].constructorId];
 
   colors = [d1Color, d2Color];
 

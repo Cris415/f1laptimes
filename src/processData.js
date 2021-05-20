@@ -2,6 +2,7 @@ import renderGraph from "./renderGraph";
 import fillSelectElement from "./fillSelectElement";
 import processLapData from "./processLapData";
 import loadResults from "./loadResults";
+import renderRaceInfo from './renderRaceInfo';
 
 import {
   selectDriversFromRace,
@@ -26,8 +27,8 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
   }
 
   race = selectRaceById(races, raceId);
+  const circuit = circuits.filter(circuit => circuit.circuitId === race.circuitId)[0];
     
-
   let driver1 = selectDriverById(drivers, driver1Id);
   let driver2 = selectDriverById(drivers, driver2Id);
 
@@ -148,15 +149,16 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
   )[0];
 
   const driversConstructors = {
-    driver1: {
-      id: constructorId1,
-      name: constructor1.name,
-    },
-    driver2: {
-      id: constructorId2,
-      name: constructor2.name,
-    },
+    driver1: constructor1,
+    driver2: constructor2,
   };
+
+  const driverInfo = {
+    driver1,
+    driver2
+  }
+
+  renderRaceInfo(race, circuit, driversConstructors, driverInfo);
 
   renderGraph(svg, race, driversConstructors, d1Data, d2Data);
 }

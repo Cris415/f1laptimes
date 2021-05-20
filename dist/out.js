@@ -3925,8 +3925,8 @@
     const xAxisG = g.append("g").call(xAxis).attr("class", "axis").attr("transform", `translate(0, ${innerHeight})`);
     yAxisG.append("text").attr("class", "axis-label").attr("y", -60).attr("x", -innerHeight / 2).attr("transform", "rotate(-90)").attr("text-anchor", "middle").text(yAxisLabel);
     xAxisG.append("text").attr("class", "axis-label").attr("y", 50).attr("x", innerWidth / 2).text(xAxisLabel);
-    const d1Color = colorsMain[constructors["driver1"].id];
-    const d2Color = constructors["driver1"].id === constructors["driver2"].id ? colorsAlt[constructors["driver2"].id] : colorsMain[constructors["driver2"].id];
+    const d1Color = colorsMain[constructors["driver1"].constructorId];
+    const d2Color = constructors["driver1"].constructorId === constructors["driver2"].constructorId ? colorsAlt[constructors["driver2"].constructorId] : colorsMain[constructors["driver2"].constructorId];
     colors = [d1Color, d2Color];
     const lines = {};
     drivers.forEach((driver, i) => {
@@ -3983,6 +3983,61 @@
   }
   var processLapData_default = processLapData;
 
+  // src/renderRaceInfo.js
+  function textToEl(el, text, type2) {
+    const p = document.createElement(type2);
+    const textNode = document.createTextNode(text);
+    p.appendChild(textNode);
+    el.appendChild(p);
+  }
+  function linkToEl(el, text, url) {
+    const a = document.createElement("a");
+    const textNode = document.createTextNode(text);
+    a.href = url;
+    a.target = "_blank";
+    a.appendChild(textNode);
+    el.appendChild(a);
+  }
+  function linkH3(el, text, url) {
+    const h3 = document.createElement("h3");
+    linkToEl(h3, text, url);
+    el.appendChild(h3);
+  }
+  function renderRaceInfo(race, circuit, constructors, drivers) {
+    const infoDiv = document.querySelector("#race-info");
+    clearInputChildren(infoDiv);
+    const raceInfo = document.createElement("div");
+    const circuitInfo = document.createElement("div");
+    const driversInfo1 = document.createElement("div");
+    const driversInfo2 = document.createElement("div");
+    const constructorsInfo1 = document.createElement("div");
+    const constructorsInfo2 = document.createElement("div");
+    textToEl(infoDiv, "Race Info", "h3");
+    linkH3(raceInfo, race.name, race.url);
+    textToEl(raceInfo, `Race Date: ${new Date(race.date).toDateString()}`, "p");
+    textToEl(raceInfo, `Time: ${race.time}`, "p");
+    textToEl(raceInfo, `Round: ${race.round}`, "p");
+    linkH3(circuitInfo, circuit.name, circuit.url);
+    textToEl(circuitInfo, `Location: ${circuit.location}, ${circuit.country}`, "p");
+    textToEl(circuitInfo, `Altitude: ${circuit.alt} m`, "p");
+    linkH3(driversInfo1, `${drivers["driver1"].forename} ${drivers["driver1"].surname}`, drivers["driver1"].url);
+    textToEl(driversInfo1, `Number: ${drivers["driver1"].number}`, "p");
+    textToEl(driversInfo1, `Nationality: ${drivers["driver1"].nationality}`, "p");
+    linkH3(driversInfo2, `${drivers["driver2"].forename} ${drivers["driver2"].surname}`, drivers["driver2"].url);
+    textToEl(driversInfo2, `Number: ${drivers["driver2"].number}`, "p");
+    textToEl(driversInfo2, `Nationality: ${drivers["driver2"].nationality}`, "p");
+    linkH3(constructorsInfo1, `${constructors["driver1"].name}`, constructors["driver1"].url);
+    textToEl(constructorsInfo1, `Nationality: ${constructors["driver1"].nationality}`, "p");
+    linkH3(constructorsInfo2, `${constructors["driver2"].name}`, constructors["driver2"].url);
+    textToEl(constructorsInfo2, `Nationality: ${constructors["driver2"].nationality}`, "p");
+    infoDiv.appendChild(raceInfo);
+    infoDiv.appendChild(circuitInfo);
+    infoDiv.appendChild(driversInfo1);
+    infoDiv.appendChild(driversInfo2);
+    infoDiv.appendChild(constructorsInfo1);
+    infoDiv.appendChild(constructorsInfo2);
+  }
+
   // src/processData.js
   function processData(svg, statsArr, raceId, year, driver1Id, driver2Id, selectFormItems) {
     const [lapTimes, circuits, constructors, drivers, races, results, status] = statsArr;
@@ -3994,6 +4049,7 @@
       loadResults_default(raceId, statsArr);
     }
     race = selectRaceById(races, raceId);
+    const circuit = circuits.filter((circuit2) => circuit2.circuitId === race.circuitId)[0];
     let driver1 = selectDriverById(drivers, driver1Id);
     let driver2 = selectDriverById(drivers, driver2Id);
     let filteredDrivers1 = selectDriversFromRace(lapTimes, drivers, raceId, driver2.driverId);
@@ -4040,15 +4096,14 @@
     const constructor1 = constructors.filter((item) => item.constructorId === constructorId1)[0];
     const constructor2 = constructors.filter((item) => item.constructorId === constructorId2)[0];
     const driversConstructors = {
-      driver1: {
-        id: constructorId1,
-        name: constructor1.name
-      },
-      driver2: {
-        id: constructorId2,
-        name: constructor2.name
-      }
+      driver1: constructor1,
+      driver2: constructor2
     };
+    const driverInfo = {
+      driver1,
+      driver2
+    };
+    renderRaceInfo(race, circuit, driversConstructors, driverInfo);
     renderGraph_default(svg, race, driversConstructors, d1Data, d2Data);
   }
   var processData_default = processData;

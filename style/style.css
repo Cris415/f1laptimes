@@ -17,7 +17,7 @@ body {
   line-height: 1.5;
 
   display: grid;
-  grid-template-columns: minmax(6rem, 1fr) 96rem minmax(min-content, 14rem) minmax(6rem, 1fr);
+  grid-template-columns: minmax(6rem, 1fr) 2fr minmax(min-content, 14rem) minmax(6rem, 1fr);
   gap: 3rem;
 
 }
@@ -57,7 +57,7 @@ h3 {
 
 #graph-container{
   grid-column: 2 / 3;
-  grid-row: 3 / 6;
+  grid-row: 3 / 5;
 }
 
 #race-results {
@@ -174,10 +174,27 @@ footer a {
   margin-right: 1rem;
 }
 
-#legend legend-container {
-
-}
-
 #legend p {
   display: inline-block;
+}
+
+#race-info {
+  grid-column: 3 / 4;
+  grid-row: 6 / 7;
+}
+
+#race-info a{
+  color: var(--main-text-color, black);
+  text-decoration: none;
+}
+#race-info a:hover{
+  color: var(--racing-red, red);
+}
+#race-info h3 {
+  padding-top: 0;
+}
+#race-info div {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgb(189, 189, 189);
+  padding-bottom: 1rem;
 }
