@@ -78,21 +78,23 @@ export default function renderRaceInfo(race, circuit, constructors, drivers){
     "p"
   );
 
-  linkH3(
-    constructorsInfo2,
-    `${constructors["driver2"].name}`,
-    constructors["driver2"].url
-  );
-  textToEl(
-    constructorsInfo2,
-    `Nationality: ${constructors["driver2"].nationality}`,
-    "p"
-  );
-  
   infoDiv.appendChild(raceInfo)
   infoDiv.appendChild(circuitInfo);
   infoDiv.appendChild(driversInfo1);
   infoDiv.appendChild(driversInfo2);
   infoDiv.appendChild(constructorsInfo1);
-  infoDiv.appendChild(constructorsInfo2);
+  
+  if (constructors["driver2"].name !== constructors["driver1"].name) {
+    linkH3(
+      constructorsInfo2,
+      `${constructors["driver2"].name}`,
+      constructors["driver2"].url
+    );
+    textToEl(
+      constructorsInfo2,
+      `Nationality: ${constructors["driver2"].nationality}`,
+      "p"
+    );
+    infoDiv.appendChild(constructorsInfo2);
+  }
 }

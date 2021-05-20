@@ -4028,14 +4028,16 @@
     textToEl(driversInfo2, `Nationality: ${drivers["driver2"].nationality}`, "p");
     linkH3(constructorsInfo1, `${constructors["driver1"].name}`, constructors["driver1"].url);
     textToEl(constructorsInfo1, `Nationality: ${constructors["driver1"].nationality}`, "p");
-    linkH3(constructorsInfo2, `${constructors["driver2"].name}`, constructors["driver2"].url);
-    textToEl(constructorsInfo2, `Nationality: ${constructors["driver2"].nationality}`, "p");
     infoDiv.appendChild(raceInfo);
     infoDiv.appendChild(circuitInfo);
     infoDiv.appendChild(driversInfo1);
     infoDiv.appendChild(driversInfo2);
     infoDiv.appendChild(constructorsInfo1);
-    infoDiv.appendChild(constructorsInfo2);
+    if (constructors["driver2"].name !== constructors["driver1"].name) {
+      linkH3(constructorsInfo2, `${constructors["driver2"].name}`, constructors["driver2"].url);
+      textToEl(constructorsInfo2, `Nationality: ${constructors["driver2"].nationality}`, "p");
+      infoDiv.appendChild(constructorsInfo2);
+    }
   }
 
   // src/processData.js
