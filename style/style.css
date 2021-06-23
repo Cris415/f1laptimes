@@ -139,20 +139,38 @@ label {
 footer {
   grid-column: 1/ -1;
   grid-row: 8 / 8;
+  padding: 0 5rem;
   height: 10rem;
   display: flex;
   justify-content: space-between;
   align-items: center; 
-  /* background-color: var(--racing-red); */
-  background: linear-gradient(90deg, rgba(227, 208, 224, 0.95) 0,rgba(189, 220, 220, 0.900) 100%); 
+  background: linear-gradient(90deg, rgba(227, 208, 224, 0.95) 0,rgba(189, 220, 220, 0.900) 100%);
+}
+
+footer .profiles {
+  display: flex;
+  align-items: center;
+  width: 30%;
+  justify-content: space-around;
 }
 
 footer img {
   height: 2.5rem;
+  margin: 0;
+  align-self: start;
+}
+.img-link{ 
+  padding-top: 10px;
 }
 
 footer a {
-  margin: 0 5rem;
+  text-decoration: none;
+  color: inherit;
+  font-family: inherit;
+}
+
+footer a:hover {
+  color: var(--racing-red, red)
 }
 
 #legend {
