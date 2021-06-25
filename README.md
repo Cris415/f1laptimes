@@ -1,5 +1,7 @@
 # Formula1 lap times
 
+<img src="assets/laptimes_graph.gif" height="300">
+
 [Live Link](https://cris415.github.io/f1laptimes/)
 
-Will display lap time graphs for each Formula 1 driver in the course of a race for each driver. Users will be able to compare two drivers, on different races from 1996 to 2020.
+In this Javascript project, users can compare lap times between two drivers in any race between 1996 to 2020. 
