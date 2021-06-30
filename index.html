@@ -1,90 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="dist/images/favicon.ico">
-  <link rel="apple-touch-icon" href="dist/images/apple-touch-icon.png">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Racing+Sans+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style/reset.css">
-  <link rel="stylesheet" href="style/style.css">
-  <link rel="stylesheet" href="style/graph-style.css">
-  <script src="dist/out.js"></script>
-  <title>Formula 1 Lap Times</title>
-</head>
-<body>
-  <header>
-    <h1>Formula1 Lap Times</h1> 
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="dist/images/favicon.ico" />
+    <link rel="apple-touch-icon" href="dist/images/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Racing+Sans+One&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style/reset.css" />
+    <link rel="stylesheet" href="style/style.css" />
+    <link rel="stylesheet" href="style/graph-style.css" />
+    <meta property="og:title" content="Formula 1 Lap Times" />
+    <meta property="og:image" content="assets/project_pic.png" />
+    <meta
+      property="og:description"
+      content="In this Javascript project, users can compare lap times between two drivers in any race between 1996 to 2020."
+    />
+    <meta property="og:url" content="https://cris415.github.io/f1laptimes/" />
 
-  <div id="legend" class="card"></div>
+    <script src="dist/out.js"></script>
+    <title>Formula 1 Lap Times</title>
+  </head>
+  <body>
+    <header>
+      <h1>Formula1 Lap Times</h1>
+    </header>
 
-  <div class="card instructions">
-    <h3>Instructions</h3>
-    <p>
-      Visualize lap times over the course of a race! 
-    </p>
-    <p>
-      Use the dropdown menus to select a race, and then two drivers to compare.
-    </p>
-  </div>
+    <div id="legend" class="card"></div>
 
-  <div class="card dropdowns">
-    <label for="year-select">Choose a year:</label>
-    <select name="year-select" id="year-select" class="dropdown">
-    </select>
-    <label for="race-select">Choose a race:</label>
-    <select name="race-select" id="race-select" class="dropdown">
-    </select>
-    <label for="race-select">Choose a driver:</label>
-    <select name="driver1-select" id="driver1-select" class="dropdown">
-    </select>
-    <label for="race-select">Choose a driver:</label>
-    <select name="driver2-select" id="driver2-select" class="dropdown">
-    </select>
-  </div>
+    <div class="card instructions">
+      <h3>Instructions</h3>
+      <p>Visualize lap times over the course of a race!</p>
+      <p>
+        Use the dropdown menus to select a race, and then two drivers to
+        compare.
+      </p>
+    </div>
 
-  <div id="graph-container">
-    <svg width='960' height="580"></svg>
-    <div id="tooltip"></div>
-  </div>
+    <div class="card dropdowns">
+      <label for="year-select">Choose a year:</label>
+      <select name="year-select" id="year-select" class="dropdown"></select>
+      <label for="race-select">Choose a race:</label>
+      <select name="race-select" id="race-select" class="dropdown"></select>
+      <label for="race-select">Choose a driver:</label>
+      <select
+        name="driver1-select"
+        id="driver1-select"
+        class="dropdown"
+      ></select>
+      <label for="race-select">Choose a driver:</label>
+      <select
+        name="driver2-select"
+        id="driver2-select"
+        class="dropdown"
+      ></select>
+    </div>
 
-  <div class="card tips">
-    <ul>
-      <h3>Tips</h3>
-      <li>
-        Formula 1 cars do not refill fuel during the race (since 2010), making them lighter and faster
-      </li>
-      <li>
-        Laps towards the end of the race will be slightly faster
-      </li>
-      <li>
-        Typically, increases in laptimes of around 30-40 seconds are pitstops
-      </li>
-      <li>
-        Larger increases in lap times typically indicate an accident occured and a safety car was deployed to guide the cars around the track
-      </li>
-    </ul>
-  </div>
+    <div id="graph-container">
+      <svg width="960" height="580"></svg>
+      <div id="tooltip"></div>
+    </div>
 
-  <table id="race-results">
-  </table>
+    <div class="card tips">
+      <ul>
+        <h3>Tips</h3>
+        <li>
+          Formula 1 cars do not refill fuel during the race (since 2010), making
+          them lighter and faster
+        </li>
+        <li>Laps towards the end of the race will be slightly faster</li>
+        <li>
+          Typically, increases in laptimes of around 30-40 seconds are pitstops
+        </li>
+        <li>
+          Larger increases in lap times typically indicate an accident occured
+          and a safety car was deployed to guide the cars around the track
+        </li>
+      </ul>
+    </div>
 
-  <section id="race-info" class="card">
-  </section>
+    <table id="race-results"></table>
 
-</body>
+    <section id="race-info" class="card"></section>
+  </body>
 
-<footer>
-   <a href="https://github.com/Cris415/f1laptimes" target="_blank" rel="noreferrer"><img src="dist/images/GitHub_Logo.png" alt="github-img"/></a>
-   <div class="profiles">
-    My Profiles:
-    <a href="https://angel.co/u/cristian-reynoso-1" target="_blank" rel="noreferrer" class="img-link"><img src="dist/images/AngelList_Black_Victory_Hand.png" alt="angelist-img"/></a>
-    <a href="https://www.linkedin.com/in/cristian-reynoso-31b4168b/" target="_blank" rel="noreferrer" class="img-link"><img src="dist/images/linkedin_logo.png" alt="linkedin-img"/></a>
-    <a href="https://github.com/Cris415" target="_blank" rel="noreferrer" class="img-link"><img src="dist/images/GitHub_Logo.png" alt="github-img"/></a>
-    <a href="https://www.cristianreynoso.com" target="_blank" rel="noreferrer">My Portfolio</a>
-   </div>
-</footer>
+  <footer>
+    <a
+      href="https://github.com/Cris415/f1laptimes"
+      target="_blank"
+      rel="noreferrer"
+      ><img src="dist/images/GitHub_Logo.png" alt="github-img"
+    /></a>
+    <div class="profiles">
+      My Profiles:
+      <a
+        href="https://angel.co/u/cristian-reynoso-1"
+        target="_blank"
+        rel="noreferrer"
+        class="img-link"
+        ><img
+          src="dist/images/AngelList_Black_Victory_Hand.png"
+          alt="angelist-img"
+      /></a>
+      <a
+        href="https://www.linkedin.com/in/cristian-reynoso-31b4168b/"
+        target="_blank"
+        rel="noreferrer"
+        class="img-link"
+        ><img src="dist/images/linkedin_logo.png" alt="linkedin-img"
+      /></a>
+      <a
+        href="https://github.com/Cris415"
+        target="_blank"
+        rel="noreferrer"
+        class="img-link"
+        ><img src="dist/images/GitHub_Logo.png" alt="github-img"
+      /></a>
+      <a href="https://www.cristianreynoso.com" target="_blank" rel="noreferrer"
+        >My Portfolio</a
+      >
+    </div>
+  </footer>
 </html>
