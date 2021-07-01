@@ -1,6 +1,7 @@
 # Formula1 lap times
 
 <img src="assets/laptimes_graph.gif" height="300">
+<img src="assets/project_pic.png" height="300">
 
 [Live Link](https://cris415.github.io/f1laptimes/)
 
