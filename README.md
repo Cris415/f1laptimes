@@ -7,6 +7,11 @@
 
 In this Javascript project, users can compare lap times between two drivers in any race between 1996 to 2020. 
 
+## Technology
+
+F1 Lap times is built using HTML, CSS, JavaScript, and D3.js. D3.js is used to render the graph and import the dataset.
+
+
 ## Features
 
 - Use the dropdown menus to select the year, race, and drivers
