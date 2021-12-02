@@ -1,26 +1,17 @@
-import {
-  scaleLinear,
-  extent,
-  axisLeft,
-  axisBottom,
-  select
-} from "d3";
+import { scaleLinear, extent, axisLeft, axisBottom, select } from "d3";
 
-import {colorsMain, colorsAlt} from './constructorColors';
-import { createLine } from './createLine';
-import renderLegend from './renderLegend';
+import { colorsMain, colorsAlt } from "./constructorColors";
+import { createLine } from "./createLine";
+import renderLegend from "./renderLegend";
 
 function renderGraph(svg, race, constructors, ...drivers) {
   svg.selectChildren().remove();
-
+  svg.attr("viewBox", `0 0 960 580`);
   // set the dimensions and margins of the graph
-  const height = +svg.attr("height");
-  const width = +svg.attr("width");
   const margin = { top: 50, right: 20, bottom: 70, left: 80 };
-  const innerWidth = width - margin.left - margin.right;
-  const innerHeight = height - margin.top - margin.bottom;
+  const innerWidth = 960 - margin.left - margin.right;
+  const innerHeight = 580 - margin.top - margin.bottom;
   const allLapData = [].concat(drivers[1].laps, drivers[0].laps);
-
 
   const xValue = (d) => d.lap;
   const xAxisLabel = "Lap";
@@ -87,7 +78,8 @@ function renderGraph(svg, race, constructors, ...drivers) {
   // store in a lines object
   const d1Color = colorsMain[constructors["driver1"].constructorId];
   const d2Color =
-    constructors["driver1"].constructorId === constructors["driver2"].constructorId
+    constructors["driver1"].constructorId ===
+    constructors["driver2"].constructorId
       ? colorsAlt[constructors["driver2"].constructorId]
       : colorsMain[constructors["driver2"].constructorId];
 
@@ -133,21 +125,21 @@ function renderGraph(svg, race, constructors, ...drivers) {
         .style("left", event.pageX + 10 + "px")
         .style("top", event.pageY + 10 + "px");
     });
-    
-    const driversLengendInfo = {
-      driver1: {
-        name: drivers[0].driver.surname,
-        color: colors[0],
-        team: constructors["driver1"].name
-      },
-      driver2: {
-        name: drivers[1].driver.surname,
-        color: colors[1],
-        team: constructors["driver2"].name
-      },
-    };
-    
-    renderLegend(driversLengendInfo);
+
+  const driversLengendInfo = {
+    driver1: {
+      name: drivers[0].driver.surname,
+      color: colors[0],
+      team: constructors["driver1"].name,
+    },
+    driver2: {
+      name: drivers[1].driver.surname,
+      color: colors[1],
+      team: constructors["driver2"].name,
+    },
+  };
+
+  renderLegend(driversLengendInfo);
 }
 
 export default renderGraph;
