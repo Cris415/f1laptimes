@@ -2,7 +2,7 @@ import renderGraph from "./renderGraph";
 import fillSelectElement from "./fillSelectElement";
 import processLapData from "./processLapData";
 import loadResults from "./loadResults";
-import renderRaceInfo from './renderRaceInfo';
+import renderRaceInfo from "./renderRaceInfo";
 
 import {
   selectDriversFromRace,
@@ -11,8 +11,13 @@ import {
   selectRaceById,
 } from "./selectUtil";
 
-
-function processData(statsArr ,raceId, year, driver1Id, driver2Id, selectFormItems) {
+function processData(statsArr, raceId, year, driver1Id, driver2Id) {
+  const selectFormItems = {
+    year: document.getElementById("year-select"),
+    race: document.getElementById("race-select"),
+    driver1: document.getElementById("driver1-select"),
+    driver2: document.getElementById("driver2-select"),
+  };
   const [lapTimes, circuits, constructors, drivers, races, results, status] =
     statsArr;
   const originalRaceId = raceId;
@@ -21,14 +26,16 @@ function processData(statsArr ,raceId, year, driver1Id, driver2Id, selectFormIte
   let race = selectRaceById(races, raceId);
   raceId = chooseItemIfNotInList(filteredRaces, race, 1).raceId;
 
-  if (raceId !== originalRaceId){
+  if (raceId !== originalRaceId) {
     // If the year changes the results must display a different race.
     loadResults(raceId, statsArr);
   }
 
   race = selectRaceById(races, raceId);
-  const circuit = circuits.filter(circuit => circuit.circuitId === race.circuitId)[0];
-    
+  const circuit = circuits.filter(
+    (circuit) => circuit.circuitId === race.circuitId
+  )[0];
+
   let driver1 = selectDriverById(drivers, driver1Id);
   let driver2 = selectDriverById(drivers, driver2Id);
 
@@ -67,11 +74,11 @@ function processData(statsArr ,raceId, year, driver1Id, driver2Id, selectFormIte
     return list.filter((item) => item[property] !== exclude[property]);
   }
 
-  driver1 = chooseItemIfNotInList(filteredDrivers1, driver1, 1)
-  driver2 = chooseItemIfNotInList(filteredDrivers2, driver2, 2)
+  driver1 = chooseItemIfNotInList(filteredDrivers1, driver1, 1);
+  driver2 = chooseItemIfNotInList(filteredDrivers2, driver2, 2);
 
-  filteredDrivers1 = removeItemFromList(filteredDrivers1, driver2, 'driverId');
-  filteredDrivers2 = removeItemFromList(filteredDrivers2, driver1, 'driverId');
+  filteredDrivers1 = removeItemFromList(filteredDrivers1, driver2, "driverId");
+  filteredDrivers2 = removeItemFromList(filteredDrivers2, driver1, "driverId");
 
   // fill race select box
   const selectRaceText = (item) => `${item.name}`;
@@ -133,14 +140,12 @@ function processData(statsArr ,raceId, year, driver1Id, driver2Id, selectFormIte
   d2Data.laps = processLapData(d2Data);
 
   const constructorId1 = results.filter(
-        (result) =>
-          result.driverId === driver1.driverId && result.raceId === raceId
-      )[0].constructorId;
+    (result) => result.driverId === driver1.driverId && result.raceId === raceId
+  )[0].constructorId;
   const constructorId2 = results.filter(
-        (result) =>
-          result.driverId === driver2.driverId && result.raceId === raceId
-      )[0].constructorId;
-      
+    (result) => result.driverId === driver2.driverId && result.raceId === raceId
+  )[0].constructorId;
+
   const constructor1 = constructors.filter(
     (item) => item.constructorId === constructorId1
   )[0];
@@ -155,8 +160,8 @@ function processData(statsArr ,raceId, year, driver1Id, driver2Id, selectFormIte
 
   const driverInfo = {
     driver1,
-    driver2
-  }
+    driver2,
+  };
 
   renderRaceInfo(race, circuit, driversConstructors, driverInfo);
   renderGraph(race, driversConstructors, d1Data, d2Data);
