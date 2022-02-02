@@ -4,7 +4,8 @@ import { colorsMain, colorsAlt } from "./constructorColors";
 import { createLine } from "./createLine";
 import renderLegend from "./renderLegend";
 
-function renderGraph(svg, race, constructors, ...drivers) {
+function renderGraph(race, constructors, ...drivers) {
+  const svg = select("svg");
   svg.selectChildren().remove();
   svg.attr("viewBox", `0 0 960 580`);
   // set the dimensions and margins of the graph

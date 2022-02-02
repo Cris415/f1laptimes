@@ -12,7 +12,7 @@ import {
 } from "./selectUtil";
 
 
-function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFormItems) {
+function processData(statsArr ,raceId, year, driver1Id, driver2Id, selectFormItems) {
   const [lapTimes, circuits, constructors, drivers, races, results, status] =
     statsArr;
   const originalRaceId = raceId;
@@ -50,7 +50,7 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
     if (
       !yearsArr.includes(currVal.year) &&
       currVal.year > "1995" &&
-      currVal.year < "2021"
+      currVal.year <= "2021"
     ) {
       return [...yearsArr, currVal.year];
     } else {
@@ -159,7 +159,6 @@ function processData(svg, statsArr ,raceId, year, driver1Id, driver2Id, selectFo
   }
 
   renderRaceInfo(race, circuit, driversConstructors, driverInfo);
-
-  renderGraph(svg, race, driversConstructors, d1Data, d2Data);
+  renderGraph(race, driversConstructors, d1Data, d2Data);
 }
 export default processData;
