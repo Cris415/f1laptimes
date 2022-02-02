@@ -3,10 +3,12 @@ import loadStats from "./src/loadStats";
 import processData from "./src/processData";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  let raceId = "1052";
-  let year = "2021";
-  let driver1Id = "1";
-  let driver2Id = "844";
+  const selection = {
+    raceId: "1052",
+    year: "2021",
+    driver1Id: "1",
+    driver2Id: "844",
+  };
 
   const statsArr = await loadStats().catch(console.error);
 
@@ -14,24 +16,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.target.classList.contains("dropdown")) {
       switch (e.target.name) {
         case "year-select":
-          year = e.target.value;
+          selection.year = e.target.value;
           break;
         case "race-select":
-          raceId = e.target.value;
-          loadRaceResultsChart(raceId, statsArr);
+          selection.raceId = e.target.value;
+          loadRaceResultsChart(selection.raceId, statsArr);
           break;
         case "driver1-select":
-          driver1Id = e.target.value;
+          selection.driver1Id = e.target.value;
           break;
         case "driver2-select":
-          driver2Id = e.target.value;
+          selection.driver2Id = e.target.value;
           break;
       }
-
-      processData(statsArr, raceId, year, driver1Id, driver2Id);
+      processData(statsArr, selection);
     }
   });
 
-  processData(statsArr, raceId, year, driver1Id, driver2Id);
-  loadRaceResultsChart(raceId, statsArr);
+  processData(statsArr, selection);
+  loadRaceResultsChart(selection.raceId, statsArr);
 });

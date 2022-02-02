@@ -11,7 +11,8 @@ import {
   selectRaceById,
 } from "./selectUtil";
 
-function processData(statsArr, raceId, year, driver1Id, driver2Id) {
+function processData(statsArr, selection) {
+  let { raceId, year, driver1Id, driver2Id } = selection;
   const selectFormItems = {
     year: document.getElementById("year-select"),
     race: document.getElementById("race-select"),
