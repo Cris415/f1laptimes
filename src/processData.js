@@ -1,7 +1,7 @@
 import renderGraph from "./renderGraph";
 import fillSelectElement from "./fillSelectElement";
 import processLapData from "./processLapData";
-import loadResults from "./loadResults";
+import loadResults from "./loadRaceResultsChart";
 import renderRaceInfo from "./renderRaceInfo";
 
 import {

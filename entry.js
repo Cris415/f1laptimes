@@ -1,4 +1,4 @@
-import loadResults from "./src/loadResults";
+import loadRaceResultsChart from "./src/loadRaceResultsChart";
 import loadStats from "./src/loadStats";
 import processData from "./src/processData";
 
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           break;
         case "race-select":
           raceId = e.target.value;
-          loadResults(raceId, statsArr);
+          loadRaceResultsChart(raceId, statsArr);
           break;
         case "driver1-select":
           driver1Id = e.target.value;
@@ -28,16 +28,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           break;
       }
 
-      processData(
-        statsArr,
-        raceId,
-        year,
-        driver1Id,
-        driver2Id,
-      );
+      processData(statsArr, raceId, year, driver1Id, driver2Id);
     }
   });
 
   processData(statsArr, raceId, year, driver1Id, driver2Id);
-  loadResults(raceId, statsArr);
+  loadRaceResultsChart(raceId, statsArr);
 });
