@@ -1,5 +1,4 @@
-function processLapData(driverData){
-  const { laps, driver } = driverData;
+function processLapData(driver, laps){
 
   laps.forEach((d) => {
     d.lap = +d.lap;
