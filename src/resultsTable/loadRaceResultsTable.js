@@ -1,5 +1,5 @@
 import raceResults from "./raceResults";
-import { selectDriversFromRace } from "./selectDataUtil";
+import { selectDriversFromRace } from "../data/selectDataUtil";
 
 function loadRaceResultsTable(raceId, raceData) {
   const [laps, circuits, constructors, drivers, races, results, status] =

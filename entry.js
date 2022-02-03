@@ -1,4 +1,4 @@
-import loadRaceResultsChart from "./src/loadRaceResultsChart";
+import loadRaceResultsChart from "./src/resultsTable/loadRaceResultsTable";
 import loadStats from "./src/data/loadStats";
 import processData from "./src/data/processData";
 

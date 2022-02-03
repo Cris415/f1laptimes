@@ -1,7 +1,7 @@
 import renderGraph from "../graph/renderGraph";
-import fillSelectElement from "../dropdown/populateSelectElement";
+import populateSelectelement from "../dropdown/populateSelectElement";
 import processLapData from "../graph/processLapData";
-import loadRaceResultsTable from "../loadRaceResultsTable";
+import loadRaceResultsTable from "../resultsTable/loadRaceResultsTable";
 import renderRaceFacts from "../raceFacts/renderRaceFacts";
 
 import {
@@ -69,7 +69,7 @@ function processData(statsArr, selection) {
   // fill race select box
   const selectRaceText = (item) => `${item.name}`;
   const sortCb = (a, b) => b.year - a.year;
-  fillSelectElement(
+  populateSelectelement(
     selectFormItems.race,
     racesForYear,
     "raceId",
@@ -83,7 +83,7 @@ function processData(statsArr, selection) {
   const selectYearText = (year) => `${year}`;
   const yearSort = (a, b) => b - a;
 
-  fillSelectElement(
+  populateSelectelement(
     selectFormItems.year,
     years,
     "year",
@@ -96,7 +96,7 @@ function processData(statsArr, selection) {
   const selectDriverNameText = (item) => `${item.forename} ${item.surname}`;
   const driverSortCb = (a, b) => b.surname - a.surname;
 
-  fillSelectElement(
+  populateSelectelement(
     selectFormItems.driver1,
     filteredDrivers1,
     "driverId",
@@ -105,7 +105,7 @@ function processData(statsArr, selection) {
     driverSortCb
   );
 
-  fillSelectElement(
+  populateSelectelement(
     selectFormItems.driver2,
     filteredDrivers2,
     "driverId",

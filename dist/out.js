@@ -3718,7 +3718,7 @@
     });
   }
 
-  // src/raceResults.js
+  // src/resultsTable/raceResults.js
   function createRow(datum2, header) {
     const newRow = document.createElement("tr");
     datum2.forEach((d) => {
@@ -3767,7 +3767,7 @@
   }
   var raceResults_default = raceResults;
 
-  // src/selectDataUtil.js
+  // src/data/selectDataUtil.js
   function selectDriversFromRace(lapsArray, drivers, raceId, excludedDriverId) {
     const lapsFromRace = lapsArray.filter((lap) => lap.raceId === raceId);
     const listOfDriverIds = lapsFromRace.map((lap) => lap.driverId);
@@ -3802,8 +3802,8 @@
     }, []);
   }
 
-  // src/loadRaceResultsChart.js
-  function loadRaceResultsChart(raceId, raceData2) {
+  // src/resultsTable/loadRaceResultsTable.js
+  function loadRaceResultsTable(raceId, raceData2) {
     const [laps, circuits, constructors, drivers, races, results, status] = raceData2;
     let filteredResults = results.filter((result) => {
       return result.raceId === raceId;
@@ -3811,7 +3811,7 @@
     const filteredDrivers = selectDriversFromRace(laps, drivers, raceId);
     raceResults_default(filteredResults, status, filteredDrivers, constructors);
   }
-  var loadRaceResultsChart_default = loadRaceResultsChart;
+  var loadRaceResultsTable_default = loadRaceResultsTable;
 
   // src/data/loadStats.js
   var raceData = [
@@ -3902,7 +3902,7 @@
     }
   };
 
-  // src/renderLegend.js
+  // src/graph/renderLegend.js
   function renderLegend(drivers) {
     const legend = select_default2("#legend");
     legend.selectAll("*").remove();
@@ -3998,7 +3998,7 @@
   }
   var processLapData_default = processLapData;
 
-  // src/renderRaceInfo.js
+  // src/raceFacts/renderRaceFacts.js
   function textToEl(el, text, type2) {
     const p = document.createElement(type2);
     const textNode = document.createTextNode(text);
@@ -4018,7 +4018,7 @@
     linkToEl(h3, text, url);
     el.appendChild(h3);
   }
-  function renderRaceInfo(race, circuit, constructors, drivers) {
+  function renderRaceFacts(race, circuit, constructors, drivers) {
     const infoDiv = document.querySelector("#race-info");
     clearInputChildren(infoDiv);
     const raceInfo = document.createElement("div");
@@ -4070,7 +4070,7 @@
     let race = selectRaceById(races, raceId);
     raceId = chooseItemIfNotInList(racesForYear, race, 1).raceId;
     if (raceId !== originalRaceId) {
-      loadRaceResultsChart_default(raceId, statsArr);
+      loadRaceResultsTable_default(raceId, statsArr);
     }
     race = selectRaceById(races, raceId);
     const circuit = circuits.filter((circuit2) => circuit2.circuitId === race.circuitId)[0];
@@ -4115,7 +4115,7 @@
       driver1,
       driver2
     };
-    renderRaceInfo(race, circuit, driversConstructors, driverInfo);
+    renderRaceFacts(race, circuit, driversConstructors, driverInfo);
     renderGraph_default(race, driversConstructors, d1Data, d2Data);
   }
   var processData_default = processData;
@@ -4137,7 +4137,7 @@
             break;
           case "race-select":
             selection2.raceId = e.target.value;
-            loadRaceResultsChart_default(selection2.raceId, statsArr);
+            loadRaceResultsTable_default(selection2.raceId, statsArr);
             break;
           case "driver1-select":
             selection2.driver1Id = e.target.value;
@@ -4150,7 +4150,7 @@
       }
     });
     processData_default(statsArr, selection2);
-    loadRaceResultsChart_default(selection2.raceId, statsArr);
+    loadRaceResultsTable_default(selection2.raceId, statsArr);
   });
 })();
 //# sourceMappingURL=out.js.map
