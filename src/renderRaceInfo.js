@@ -1,6 +1,3 @@
-// ideally it would render links to 
-// the race, drivers, track, race date
-
 // races: round, circuitId, name, date, time, url
 // circuits: name, location country lat lng alt url
 // drivers: driverId, forename surname dob nationality, url
