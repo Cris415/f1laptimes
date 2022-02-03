@@ -1,5 +1,7 @@
 import renderGraph from "../graph/renderGraph";
-import populateSelectelement from "../dropdown/populateSelectElement";
+import populateYearDropdown from "../dropdown/populateYearDropdown";
+import populateDriverDropdown from "../dropdown/populateDriverDropdown";
+import populateRaceDropdown from "../dropdown/populateRaceDropdown";
 import processLapData from "../graph/processLapData";
 import loadRaceResultsTable from "../resultsTable/loadRaceResultsTable";
 import renderRaceFacts from "../raceFacts/renderRaceFacts";
@@ -11,18 +13,12 @@ import {
   selectRaceById,
   chooseItemIfNotInList,
   removeItemFromList,
-  reduceRaceYears,
+  selectCircuitById,
+  selectDriverConstructor,
 } from "./selectDataUtil";
 
 function processData(statsArr, selection) {
   let { raceId, year, driver1Id, driver2Id } = selection;
-
-  const selectFormItems = {
-    year: document.getElementById("year-select"),
-    race: document.getElementById("race-select"),
-    driver1: document.getElementById("driver1-select"),
-    driver2: document.getElementById("driver2-select"),
-  };
 
   const [lapTimes, circuits, constructors, drivers, races, results, status] =
     statsArr;
@@ -39,9 +35,7 @@ function processData(statsArr, selection) {
   }
 
   race = selectRaceById(races, raceId);
-  const circuit = circuits.filter(
-    (circuit) => circuit.circuitId === race.circuitId
-  )[0];
+  const circuit = selectCircuitById(circuits, race.circuitId);
 
   let driver1 = selectDriverById(drivers, driver1Id);
   let driver2 = selectDriverById(drivers, driver2Id);
@@ -59,98 +53,49 @@ function processData(statsArr, selection) {
     raceId,
     driver1.driverId
   );
-
+  
+  // If a driver is not present in a race, find another
   driver1 = chooseItemIfNotInList(filteredDrivers1, driver1, 1);
   driver2 = chooseItemIfNotInList(filteredDrivers2, driver2, 2);
 
   filteredDrivers1 = removeItemFromList(filteredDrivers1, driver2, "driverId");
   filteredDrivers2 = removeItemFromList(filteredDrivers2, driver1, "driverId");
 
-  // fill race select box
-  const selectRaceText = (item) => `${item.name}`;
-  const sortCb = (a, b) => b.year - a.year;
-  populateSelectelement(
-    selectFormItems.race,
-    racesForYear,
-    "raceId",
-    raceId,
-    selectRaceText,
-    sortCb
-  );
+  // Populate Dropdowns
+  populateRaceDropdown(racesForYear, raceId);
+  populateYearDropdown(races, year);
+  populateDriverDropdown("driver1", filteredDrivers1, driver1.driverId);
+  populateDriverDropdown("driver2", filteredDrivers2, driver2.driverId);
 
-  // fill year dropdown box
-  const years = reduceRaceYears(races);
-  const selectYearText = (year) => `${year}`;
-  const yearSort = (a, b) => b - a;
-
-  populateSelectelement(
-    selectFormItems.year,
-    years,
-    "year",
-    year.toString(),
-    selectYearText,
-    yearSort
-  );
-
-  // fill driver's select box
-  const selectDriverNameText = (item) => `${item.forename} ${item.surname}`;
-  const driverSortCb = (a, b) => b.surname - a.surname;
-
-  populateSelectelement(
-    selectFormItems.driver1,
-    filteredDrivers1,
-    "driverId",
-    driver1.driverId,
-    selectDriverNameText,
-    driverSortCb
-  );
-
-  populateSelectelement(
-    selectFormItems.driver2,
-    filteredDrivers2,
-    "driverId",
-    driver2.driverId,
-    selectDriverNameText,
-    driverSortCb
-  );
+  // package driver data for graph
+  const d1Laps = selectLapsByDriverandRace(lapTimes, driver1.driverId, raceId);
+  const d2Laps = selectLapsByDriverandRace(lapTimes, driver2.driverId, raceId);
 
   const d1Data = {
-    laps: selectLapsByDriverandRace(lapTimes, driver1.driverId, raceId),
     driver: driver1,
+    laps: processLapData(driver1, d1Laps),
   };
   const d2Data = {
-    laps: selectLapsByDriverandRace(lapTimes, driver2.driverId, raceId),
     driver: driver2,
+    laps: processLapData(driver2, d2Laps),
   };
-
-  d1Data.laps = processLapData(d1Data);
-  d2Data.laps = processLapData(d2Data);
-
-  const constructorId1 = results.filter(
-    (result) => result.driverId === driver1.driverId && result.raceId === raceId
-  )[0].constructorId;
-  const constructorId2 = results.filter(
-    (result) => result.driverId === driver2.driverId && result.raceId === raceId
-  )[0].constructorId;
-
-  const constructor1 = constructors.filter(
-    (item) => item.constructorId === constructorId1
-  )[0];
-  const constructor2 = constructors.filter(
-    (item) => item.constructorId === constructorId2
-  )[0];
 
   const driversConstructors = {
-    driver1: constructor1,
-    driver2: constructor2,
+    driver1: selectDriverConstructor(
+      results,
+      constructors,
+      driver1.driverId,
+      raceId
+    ),
+    driver2: selectDriverConstructor(
+      results,
+      constructors,
+      driver2.driverId,
+      raceId
+    ),
   };
 
-  const driverInfo = {
-    driver1,
-    driver2,
-  };
-
-  renderRaceFacts(race, circuit, driversConstructors, driverInfo);
   renderGraph(race, driversConstructors, d1Data, d2Data);
+  renderRaceFacts(race, circuit, driversConstructors, { driver1, driver2 });
 }
 export default processData;

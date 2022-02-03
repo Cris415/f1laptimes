@@ -3787,7 +3787,11 @@
     return races.filter((race) => race.raceId === raceId)[0];
   }
   function chooseItemIfNotInList(list, item, offset = 0) {
-    return list.includes(item) ? item : list[offset];
+    while (!list.includes(item) && offset < list.length) {
+      item = list[offset];
+      offset++;
+    }
+    return item;
   }
   function removeItemFromList(list, exclude, property) {
     return list.filter((item) => item[property] !== exclude[property]);
@@ -3800,6 +3804,13 @@
         return yearsArr;
       }
     }, []);
+  }
+  function selectCircuitById(circuits, id2) {
+    return circuits.filter((circuit) => circuit.circuitId === id2)[0];
+  }
+  function selectDriverConstructor(results, constructors, driverId, raceId) {
+    const constructorId = results.filter((result) => result.driverId === driverId && result.raceId === raceId)[0].constructorId;
+    return constructors.filter((item) => item.constructorId === constructorId)[0];
   }
 
   // src/resultsTable/loadRaceResultsTable.js
@@ -3985,9 +3996,36 @@
   }
   var populateSelectElement_default = populateSelectElement;
 
+  // src/dropdown/populateYearDropdown.js
+  function populateYearDropdown(races, selectedYear) {
+    const years = reduceRaceYears(races);
+    const selectYearText = (year) => `${year}`;
+    const yearSort = (a, b) => b - a;
+    const selectYearElement = document.getElementById("year-select");
+    populateSelectElement_default(selectYearElement, years, "year", selectedYear.toString(), selectYearText, yearSort);
+  }
+  var populateYearDropdown_default = populateYearDropdown;
+
+  // src/dropdown/populateDriverDropdown.js
+  function populateDriverDropdown(driverNum, driverList, driverId) {
+    const driverElement = document.getElementById(`${driverNum}-select`);
+    const selectDriverNameText = (item) => `${item.forename} ${item.surname}`;
+    const driverSortCb = (a, b) => b.surname - a.surname;
+    populateSelectElement_default(driverElement, driverList, "driverId", driverId, selectDriverNameText, driverSortCb);
+  }
+  var populateDriverDropdown_default = populateDriverDropdown;
+
+  // src/dropdown/populateRaceDropdown.js
+  function populateRaceDropdown(races, raceId) {
+    const raceDropdownElement = document.getElementById("race-select");
+    const selectRaceText = (item) => `${item.name}`;
+    const sortCb = (a, b) => b.year - a.year;
+    populateSelectElement_default(raceDropdownElement, races, "raceId", raceId, selectRaceText, sortCb);
+  }
+  var populateRaceDropdown_default = populateRaceDropdown;
+
   // src/graph/processLapData.js
-  function processLapData(driverData) {
-    const {laps, driver} = driverData;
+  function processLapData(driver, laps) {
     laps.forEach((d) => {
       d.lap = +d.lap;
       d.seconds = +d.milliseconds / 1e3;
@@ -4058,12 +4096,6 @@
   // src/data/processData.js
   function processData(statsArr, selection2) {
     let {raceId, year, driver1Id, driver2Id} = selection2;
-    const selectFormItems = {
-      year: document.getElementById("year-select"),
-      race: document.getElementById("race-select"),
-      driver1: document.getElementById("driver1-select"),
-      driver2: document.getElementById("driver2-select")
-    };
     const [lapTimes, circuits, constructors, drivers, races, results, status] = statsArr;
     const originalRaceId = raceId;
     const racesForYear = races.filter((race2) => race2.year === year);
@@ -4073,7 +4105,7 @@
       loadRaceResultsTable_default(raceId, statsArr);
     }
     race = selectRaceById(races, raceId);
-    const circuit = circuits.filter((circuit2) => circuit2.circuitId === race.circuitId)[0];
+    const circuit = selectCircuitById(circuits, race.circuitId);
     let driver1 = selectDriverById(drivers, driver1Id);
     let driver2 = selectDriverById(drivers, driver2Id);
     let filteredDrivers1 = selectDriversFromRace(lapTimes, drivers, raceId, driver2.driverId);
@@ -4082,41 +4114,26 @@
     driver2 = chooseItemIfNotInList(filteredDrivers2, driver2, 2);
     filteredDrivers1 = removeItemFromList(filteredDrivers1, driver2, "driverId");
     filteredDrivers2 = removeItemFromList(filteredDrivers2, driver1, "driverId");
-    const selectRaceText = (item) => `${item.name}`;
-    const sortCb = (a, b) => b.year - a.year;
-    populateSelectElement_default(selectFormItems.race, racesForYear, "raceId", raceId, selectRaceText, sortCb);
-    const years = reduceRaceYears(races);
-    const selectYearText = (year2) => `${year2}`;
-    const yearSort = (a, b) => b - a;
-    populateSelectElement_default(selectFormItems.year, years, "year", year.toString(), selectYearText, yearSort);
-    const selectDriverNameText = (item) => `${item.forename} ${item.surname}`;
-    const driverSortCb = (a, b) => b.surname - a.surname;
-    populateSelectElement_default(selectFormItems.driver1, filteredDrivers1, "driverId", driver1.driverId, selectDriverNameText, driverSortCb);
-    populateSelectElement_default(selectFormItems.driver2, filteredDrivers2, "driverId", driver2.driverId, selectDriverNameText, driverSortCb);
+    populateRaceDropdown_default(racesForYear, raceId);
+    populateYearDropdown_default(races, year);
+    populateDriverDropdown_default("driver1", filteredDrivers1, driver1.driverId);
+    populateDriverDropdown_default("driver2", filteredDrivers2, driver2.driverId);
+    const d1Laps = selectLapsByDriverandRace(lapTimes, driver1.driverId, raceId);
+    const d2Laps = selectLapsByDriverandRace(lapTimes, driver2.driverId, raceId);
     const d1Data = {
-      laps: selectLapsByDriverandRace(lapTimes, driver1.driverId, raceId),
-      driver: driver1
+      driver: driver1,
+      laps: processLapData_default(driver1, d1Laps)
     };
     const d2Data = {
-      laps: selectLapsByDriverandRace(lapTimes, driver2.driverId, raceId),
-      driver: driver2
+      driver: driver2,
+      laps: processLapData_default(driver2, d2Laps)
     };
-    d1Data.laps = processLapData_default(d1Data);
-    d2Data.laps = processLapData_default(d2Data);
-    const constructorId1 = results.filter((result) => result.driverId === driver1.driverId && result.raceId === raceId)[0].constructorId;
-    const constructorId2 = results.filter((result) => result.driverId === driver2.driverId && result.raceId === raceId)[0].constructorId;
-    const constructor1 = constructors.filter((item) => item.constructorId === constructorId1)[0];
-    const constructor2 = constructors.filter((item) => item.constructorId === constructorId2)[0];
     const driversConstructors = {
-      driver1: constructor1,
-      driver2: constructor2
+      driver1: selectDriverConstructor(results, constructors, driver1.driverId, raceId),
+      driver2: selectDriverConstructor(results, constructors, driver2.driverId, raceId)
     };
-    const driverInfo = {
-      driver1,
-      driver2
-    };
-    renderRaceFacts(race, circuit, driversConstructors, driverInfo);
     renderGraph_default(race, driversConstructors, d1Data, d2Data);
+    renderRaceFacts(race, circuit, driversConstructors, {driver1, driver2});
   }
   var processData_default = processData;
 
