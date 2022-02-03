@@ -35,7 +35,11 @@ export function selectRaceById(races, raceId) {
 
 // If item is not on list, choose another one,
 export function chooseItemIfNotInList(list, item, offset = 0) {
-  return list.includes(item) ? item : list[offset];
+  while (!list.includes(item) && offset < list.length) {
+    item = list[offset];
+    offset++;
+  }
+  return item;
 }
 
 export function removeItemFromList(list, exclude, property) {
@@ -54,4 +58,16 @@ export function reduceRaceYears(races) {
       return yearsArr;
     }
   }, []);
+}
+
+export function selectCircuitById(circuits, id) {
+  return circuits.filter((circuit) => circuit.circuitId === id)[0];
+}
+
+export function selectDriverConstructor(results, constructors, driverId, raceId) {
+  const constructorId = results.filter(
+    (result) => result.driverId === driverId && result.raceId === raceId
+  )[0].constructorId;
+
+  return constructors.filter((item) => item.constructorId === constructorId)[0];
 }
