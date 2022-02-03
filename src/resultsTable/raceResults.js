@@ -1,4 +1,4 @@
-import {clearInputChildren} from './clearInputs';
+import {clearInputChildren} from '../graph/clearInputs';
 
 function createRow(datum, header) {
   const newRow = document.createElement("tr");

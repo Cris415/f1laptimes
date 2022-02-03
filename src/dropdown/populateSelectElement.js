@@ -1,6 +1,6 @@
-import { clearInputChildren } from './clearInputs';
+import { clearInputChildren } from '../graph/clearInputs';
 
-function fillSelectElement(element, data, value, id, textCb, sortCb = (a, b) => a - b) {
+function populateSelectElement(element, data, value, id, textCb, sortCb = (a, b) => a - b) {
   clearInputChildren(element);
   data
     .sort((a, b) => sortCb(a, b))
@@ -13,4 +13,4 @@ function fillSelectElement(element, data, value, id, textCb, sortCb = (a, b) => 
   element.value = id.toString();
 }
 
-export default fillSelectElement;
+export default populateSelectElement;

@@ -1,35 +1,41 @@
-import renderGraph from "./renderGraph";
-import fillSelectElement from "./fillSelectElement";
-import processLapData from "./processLapData";
-import loadResults from "./loadRaceResultsChart";
-import renderRaceInfo from "./renderRaceInfo";
+import renderGraph from "../graph/renderGraph";
+import fillSelectElement from "../dropdown/populateSelectElement";
+import processLapData from "../graph/processLapData";
+import loadRaceResultsTable from "../loadRaceResultsTable";
+import renderRaceFacts from "../raceFacts/renderRaceFacts";
 
 import {
   selectDriversFromRace,
   selectLapsByDriverandRace,
   selectDriverById,
   selectRaceById,
-} from "./selectUtil";
+  chooseItemIfNotInList,
+  removeItemFromList,
+  reduceRaceYears,
+} from "./selectDataUtil";
 
 function processData(statsArr, selection) {
   let { raceId, year, driver1Id, driver2Id } = selection;
+
   const selectFormItems = {
     year: document.getElementById("year-select"),
     race: document.getElementById("race-select"),
     driver1: document.getElementById("driver1-select"),
     driver2: document.getElementById("driver2-select"),
   };
+
   const [lapTimes, circuits, constructors, drivers, races, results, status] =
     statsArr;
+
   const originalRaceId = raceId;
 
-  let filteredRaces = races.filter((race) => race.year === year);
+  const racesForYear = races.filter((race) => race.year === year);
   let race = selectRaceById(races, raceId);
-  raceId = chooseItemIfNotInList(filteredRaces, race, 1).raceId;
+  raceId = chooseItemIfNotInList(racesForYear, race, 1).raceId;
 
   if (raceId !== originalRaceId) {
     // If the year changes the results must display a different race.
-    loadResults(raceId, statsArr);
+    loadRaceResultsTable(raceId, statsArr);
   }
 
   race = selectRaceById(races, raceId);
@@ -54,27 +60,6 @@ function processData(statsArr, selection) {
     driver1.driverId
   );
 
-  let years = races.reduce((yearsArr, currVal) => {
-    if (
-      !yearsArr.includes(currVal.year) &&
-      currVal.year > "1995" &&
-      currVal.year <= "2021"
-    ) {
-      return [...yearsArr, currVal.year];
-    } else {
-      return yearsArr;
-    }
-  }, []);
-
-  // If item is not on list, choose another one,
-  function chooseItemIfNotInList(list, item, offset = 0) {
-    return list.includes(item) ? item : list[offset];
-  }
-
-  function removeItemFromList(list, exclude, property) {
-    return list.filter((item) => item[property] !== exclude[property]);
-  }
-
   driver1 = chooseItemIfNotInList(filteredDrivers1, driver1, 1);
   driver2 = chooseItemIfNotInList(filteredDrivers2, driver2, 2);
 
@@ -86,7 +71,7 @@ function processData(statsArr, selection) {
   const sortCb = (a, b) => b.year - a.year;
   fillSelectElement(
     selectFormItems.race,
-    filteredRaces,
+    racesForYear,
     "raceId",
     raceId,
     selectRaceText,
@@ -94,6 +79,7 @@ function processData(statsArr, selection) {
   );
 
   // fill year dropdown box
+  const years = reduceRaceYears(races);
   const selectYearText = (year) => `${year}`;
   const yearSort = (a, b) => b - a;
 
@@ -164,7 +150,7 @@ function processData(statsArr, selection) {
     driver2,
   };
 
-  renderRaceInfo(race, circuit, driversConstructors, driverInfo);
+  renderRaceFacts(race, circuit, driversConstructors, driverInfo);
   renderGraph(race, driversConstructors, d1Data, d2Data);
 }
 export default processData;

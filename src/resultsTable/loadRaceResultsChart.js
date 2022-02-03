@@ -1,7 +1,7 @@
 import raceResults from "./raceResults";
-import { selectDriversFromRace } from "./selectUtil";
+import { selectDriversFromRace } from "./selectDataUtil";
 
-function loadRaceResultsChart(raceId, raceData) {
+function loadRaceResultsTable(raceId, raceData) {
   const [laps, circuits, constructors, drivers, races, results, status] =
     raceData;
   let filteredResults = results.filter((result) => {
@@ -12,4 +12,4 @@ function loadRaceResultsChart(raceId, raceData) {
   raceResults(filteredResults, status, filteredDrivers, constructors);
 }
 
-export default loadRaceResultsChart;
+export default loadRaceResultsTable;

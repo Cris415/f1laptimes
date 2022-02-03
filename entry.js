@@ -1,6 +1,6 @@
 import loadRaceResultsChart from "./src/loadRaceResultsChart";
-import loadStats from "./src/loadStats";
-import processData from "./src/processData";
+import loadStats from "./src/data/loadStats";
+import processData from "./src/data/processData";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const selection = {

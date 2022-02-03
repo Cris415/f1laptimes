@@ -2,7 +2,7 @@
 // circuits: name, location country lat lng alt url
 // drivers: driverId, forename surname dob nationality, url
 // constructors: name, nationality, url
-import {clearInputChildren} from './clearInputs';
+import {clearInputChildren} from '../graph/clearInputs';
 function textToEl(el, text, type) {
   const p = document.createElement(type);
   const textNode = document.createTextNode(text);
@@ -25,29 +25,32 @@ function linkH3(el, text, url) {
 }
 
 
-export default function renderRaceInfo(race, circuit, constructors, drivers){
-  const infoDiv = document.querySelector('#race-info');
+export default function renderRaceFacts(race, circuit, constructors, drivers) {
+  const infoDiv = document.querySelector("#race-info");
   clearInputChildren(infoDiv);
 
-  const raceInfo = document.createElement('div');
-  const circuitInfo = document.createElement('div');
-  const driversInfo1 = document.createElement('div');
-  const driversInfo2 = document.createElement('div');
-  const constructorsInfo1 = document.createElement('div');
-  const constructorsInfo2 = document.createElement('div');
+  const raceInfo = document.createElement("div");
+  const circuitInfo = document.createElement("div");
+  const driversInfo1 = document.createElement("div");
+  const driversInfo2 = document.createElement("div");
+  const constructorsInfo1 = document.createElement("div");
+  const constructorsInfo2 = document.createElement("div");
 
-  textToEl(infoDiv, 'Race Info', 'h3');
+  textToEl(infoDiv, "Race Info", "h3");
 
-  
   linkH3(raceInfo, race.name, race.url);
   textToEl(raceInfo, `Race Date: ${new Date(race.date).toDateString()}`, "p");
   textToEl(raceInfo, `Time: ${race.time}`, "p");
   textToEl(raceInfo, `Round: ${race.round}`, "p");
 
   linkH3(circuitInfo, circuit.name, circuit.url);
-  textToEl(circuitInfo, `Location: ${circuit.location}, ${circuit.country}`, "p");
+  textToEl(
+    circuitInfo,
+    `Location: ${circuit.location}, ${circuit.country}`,
+    "p"
+  );
   textToEl(circuitInfo, `Altitude: ${circuit.alt} m`, "p");
-  
+
   linkH3(
     driversInfo1,
     `${drivers["driver1"].forename} ${drivers["driver1"].surname}`,
@@ -75,12 +78,12 @@ export default function renderRaceInfo(race, circuit, constructors, drivers){
     "p"
   );
 
-  infoDiv.appendChild(raceInfo)
+  infoDiv.appendChild(raceInfo);
   infoDiv.appendChild(circuitInfo);
   infoDiv.appendChild(driversInfo1);
   infoDiv.appendChild(driversInfo2);
   infoDiv.appendChild(constructorsInfo1);
-  
+
   if (constructors["driver2"].name !== constructors["driver1"].name) {
     linkH3(
       constructorsInfo2,
