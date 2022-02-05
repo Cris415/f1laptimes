@@ -20,9 +20,11 @@
   --right-header-color: var(--primary-color);
 
   --deg: 90deg;
-  --header-gradient: linear-gradient(var(--deg),
-      var(--left-header-color) 0,
-      var(--right-header-color) 50%);
+  --header-gradient: linear-gradient(
+    var(--deg),
+    var(--left-header-color) 0,
+    var(--right-header-color) 50%
+  );
 }
 
 html {
@@ -39,8 +41,10 @@ body {
   font-size: 1.8rem;
   line-height: 1.5;
   display: grid;
-  grid-template-columns: minmax(6rem, 1fr) 8fr minmax(min-content, 14rem) minmax(6rem,
-      1fr);
+  grid-template-columns: minmax(6rem, 1fr) 8fr minmax(min-content, 14rem) minmax(
+      6rem,
+      1fr
+    );
   grid-template-rows: auto auto auto 10px auto;
   gap: 3rem;
 }
@@ -200,9 +204,11 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(90deg,
-      rgba(227, 208, 224, 0.95) 0,
-      rgba(189, 220, 220, 0.9) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(227, 208, 224, 0.95) 0,
+    rgba(189, 220, 220, 0.9) 100%
+  );
 }
 
 footer .profiles {
@@ -283,7 +289,7 @@ footer a:hover {
     width: 100%;
     grid-template-columns: 1rem auto auto 1rem;
     grid-template-rows: auto auto auto auto auto;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
   }
 
   header {
@@ -357,5 +363,11 @@ footer a:hover {
 
   footer .profiles {
     width: 80%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 1.4rem;
   }
 }
