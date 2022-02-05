@@ -348,7 +348,7 @@ footer a:hover {
   #race-results {
     grid-column: 2 / 4;
     grid-row: 5 / 7;
-    font-size: 1rem;
+    font-size: 1.4rem;
   }
 
   #race-info {
@@ -369,5 +369,8 @@ footer a:hover {
 @media only screen and (max-width: 600px) {
   body {
     font-size: 1.4rem;
+  }
+  #race-results {
+    font-size: 1.2rem;
   }
 }
