@@ -20,11 +20,9 @@
   --right-header-color: var(--primary-color);
 
   --deg: 90deg;
-  --header-gradient: linear-gradient(
-    var(--deg),
-    var(--left-header-color) 0,
-    var(--right-header-color) 50%
-  );
+  --header-gradient: linear-gradient(var(--deg),
+      var(--left-header-color) 0,
+      var(--right-header-color) 50%);
 }
 
 html {
@@ -41,10 +39,8 @@ body {
   font-size: 1.8rem;
   line-height: 1.5;
   display: grid;
-  grid-template-columns: minmax(6rem, 1fr) 8fr minmax(min-content, 14rem) minmax(
-      6rem,
-      1fr
-    );
+  grid-template-columns: minmax(6rem, 1fr) 8fr minmax(min-content, 14rem) minmax(6rem,
+      1fr);
   grid-template-rows: auto auto auto 10px auto;
   gap: 3rem;
 }
@@ -204,11 +200,9 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(
-    90deg,
-    rgba(227, 208, 224, 0.95) 0,
-    rgba(189, 220, 220, 0.9) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(227, 208, 224, 0.95) 0,
+      rgba(189, 220, 220, 0.9) 100%);
 }
 
 footer .profiles {
@@ -289,7 +283,9 @@ footer a:hover {
     width: 100%;
     grid-template-columns: 1rem auto auto 1rem;
     grid-template-rows: auto auto auto auto auto;
+    font-size: 1.4rem;
   }
+
   header {
     font-size: 3rem;
     padding: 1rem 0;
@@ -302,18 +298,22 @@ footer a:hover {
     margin-bottom: 1rem;
     font-size: 1rem;
   }
+
   #legend {
     grid-column: 3 / 4;
     grid-row: 2 / 3;
   }
+
   .instructions {
     grid-column: 2 / 3;
     grid-row: 2 / 3;
   }
+
   #graph-container {
     grid-column: 2 / 4;
     grid-row: 3 / 4;
   }
+
   .dropdowns {
     grid-column: 2 / 4;
     grid-row: 4 / 5;
@@ -328,7 +328,7 @@ footer a:hover {
     margin-bottom: 1rem;
     width: 50%;
   }
-  
+
   .dropdowns select {
     height: 5rem;
     width: 90%;
@@ -338,9 +338,11 @@ footer a:hover {
     grid-column: 2 / 3;
     grid-row: 7 / 8;
   }
+
   #race-results {
     grid-column: 2 / 4;
     grid-row: 5 / 7;
+    font-size: 1rem;
   }
 
   #race-info {
@@ -352,7 +354,8 @@ footer a:hover {
     grid-column: 1/ -1;
     grid-row: 10 / 11;
   }
+
   footer .profiles {
-    width: 50%;
+    width: 80%;
   }
 }
