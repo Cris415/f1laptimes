@@ -1,3 +1,9 @@
+:root {
+  --lynxWhite: #f9f6f8;
+  --svg-gradient-left: var(--lynxWhite);
+  --svg-gradient-right: var(--lynxWhite);
+}
+
 .title {
   fill: rgb(28, 28, 28);
 }
@@ -14,11 +20,15 @@
 svg {
   /* width and height are set inline on the html to access in js*/
   fill: rgba(28, 28, 28, 0.75);
-  background: #faf2f2; 
+  background: #faf2f2;
   border-radius: 10px;
   box-shadow: var(--shadow);
-  /* background: linear-gradient(90deg, #eae0e0 0,#d0e6f2 58%); */
-  background: linear-gradient(90deg, rgba(223, 203, 220, 0.70) 0,rgba(193, 222, 222, 0.70) 58%); 
+  background: linear-gradient(
+    90deg,
+    var(--svg-gradient-left) 0,
+    var(--svg-gradient-right) 58%
+  );
+  background: linear-gradient(90deg, #eae0e0 0,#dff4ff 58%);
 }
 
 .line-path {
@@ -32,7 +42,7 @@ svg {
   opacity: 0;
   background: rgba(255, 255, 255, 0.8);
   -webkit-backdrop-filter: blur(10px);
-	backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   width: 11rem;
   padding: 1.5rem;
   border-radius: 5px;
@@ -42,12 +52,11 @@ svg {
   line-height: 2rem;
 }
 
-.legend {                                               
-  font-size: 1.4rem;   
-}    
+.legend {
+  font-size: 1.4rem;
+}
 .legend-box {
   fill: rgba(255, 255, 255, 0.9);
   height: 80px;
   width: 115px;
-}     
-
+}

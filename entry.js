@@ -1,8 +1,10 @@
 import loadRaceResultsChart from "./src/resultsTable/loadRaceResultsTable";
 import loadStats from "./src/data/loadStats";
 import processData from "./src/data/processData";
+import changeThemeButton from "./src/changeThemeButton/changeThemeButton";
 
 document.addEventListener("DOMContentLoaded", async () => {
+  changeThemeButton();
   const selection = {
     raceId: "1052",
     year: "2021",

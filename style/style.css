@@ -1,22 +1,45 @@
+:root {
+  /* colors */
+  --racing-red: rgb(221, 56, 18);
+  --light-gray: rgb(232, 232, 232);
+  --dark-gray: rgb(199, 199, 199);
+  --white: rgb(255, 255, 255);
+  --almost-black: rgb(41, 41, 41);
+
+  --primary-color: var(--racing-red);
+  --secondary-color: rgb(103, 64, 64);
+
+  --main-bg-color: var(--white);
+
+  --main-text-color: var(--almost-black);
+  --display-font: "Racing Sans One", Impact, Haettenschweiler,
+    "Arial Narrow Bold", sans-serif;
+  --shadow: 5px 4px 35px -12px rgba(144, 144, 144, 0.5);
+
+  --left-header-color: var(--secondary-color);
+  --right-header-color: var(--primary-color);
+
+  --deg: 90deg;
+  --header-gradient: linear-gradient(
+    var(--deg),
+    var(--left-header-color) 0,
+    var(--right-header-color) 50%
+  );
+}
+
 html {
   box-sizing: border-box;
   /* 10px/16px = 62% -> 1rem =>  10px */
   font-size: 62.5%;
-  --main-bg-color: rgb(245, 243, 240);
-  --main-text-color: rgb(60, 50, 40);
-  --racing-red: rgb(221, 56, 18);
-  --display-font: "Racing Sans One", Impact, Haettenschweiler,
-    "Arial Narrow Bold", sans-serif;
-  --shadow: 5px 4px 35px -12px rgba(144, 144, 144, 0.5);
 }
 
 body {
   font-family: "Open Sans", sans-serif;
   color: var(--main-text-color, black);
   background-color: var(--main-bg-color, white);
+  background: var(--main-bg-color);
   font-size: 1.8rem;
   line-height: 1.5;
-
   display: grid;
   grid-template-columns: minmax(6rem, 1fr) 8fr minmax(min-content, 14rem) minmax(
       6rem,
@@ -33,10 +56,35 @@ header {
   font-size: 4.8rem;
   text-align: center;
   padding: 2.5rem 0;
-  color: white;
-  text-shadow: 2px 2px 4px #000000;
+  color: var(--white);
+  text-shadow: 2px 2px 4px #292929e3;
   background-color: var(--racing-red);
-  background: linear-gradient(90deg, rgb(103, 64, 64) 0, var(--racing-red) 50%);
+  background: var(--header-gradient);
+
+  display: flex;
+  flex-direction: column;
+}
+.btn {
+  background-color: var(--light-gray);
+  border: none;
+  color: var(--main-text-color);
+  /* padding: 10px 16px; */
+  width: 10rem;
+  border-radius: 3px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  font-family: inherit;
+  margin-right: 2rem;
+  cursor: pointer;
+  align-self: flex-end;
+  box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.24);
+}
+
+.btn:active {
+  box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+  transform: scale(0.98);
 }
 
 h3 {
@@ -46,7 +94,7 @@ h3 {
 }
 
 .card {
-  background-color: rgb(255, 255, 255);
+  background-color: var(--white);
   border-radius: 10px;
   box-shadow: var(--shadow);
   padding: 2rem 3rem;
@@ -67,7 +115,7 @@ h3 {
   grid-row: 5 / 7;
 
   width: 100%;
-  border-bottom: solid 2px rgb(232, 232, 232);
+  border-bottom: solid 2px var(--light-gray);
 }
 
 #race-results td {
@@ -78,7 +126,7 @@ h3 {
 #race-results th {
   padding: 0.5rem;
   text-transform: capitalize;
-  background-color: var(--racing-red);
+  background-color: var(--primary-color);
   color: white;
   font-weight: 300;
 }
@@ -90,7 +138,10 @@ h3 {
 }
 
 #race-results tr:nth-child(even) {
-  background-color: rgb(232, 232, 232);
+  background-color: var(--light-gray);
+}
+#race-results tr:nth-child(odd) {
+  background-color: var(--white);
 }
 
 .instructions {
@@ -122,7 +173,7 @@ h3 {
   -moz-appearance: none;
   appearance: none;
   display: block;
-  border: 1px rgb(34, 34, 34) solid;
+  border: 1px var(--almost-black) solid;
   border-radius: 10px;
   box-shadow: var(--shadow);
   font-size: inherit;
@@ -176,7 +227,7 @@ footer a {
 }
 
 footer a:hover {
-  color: var(--racing-red, red);
+  color: var(--primary-color, red);
 }
 
 #legend {
@@ -211,13 +262,13 @@ footer a:hover {
   text-decoration: none;
 }
 #race-info a:hover {
-  color: var(--racing-red, red);
+  color: var(--primary-color, red);
 }
 #race-info h3 {
   padding-top: 0;
 }
 #race-info div {
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid rgb(189, 189, 189);
+  border-bottom: 1px solid var(--dark-gray);
   padding-bottom: 1rem;
 }
