@@ -3729,7 +3729,15 @@
     });
     return newRow;
   }
-  var headerItems = ["position", "driver", "number", "constructor", "laps", "fastest lap time", "fastest lap speed", "status"];
+  var headerItems = [
+    "position",
+    "driver",
+    "constructor",
+    "laps",
+    "fastest lap time",
+    "fastest lap speed",
+    "status"
+  ];
   function raceResults(results, status, drivers, constructors) {
     const table = document.getElementById("race-results");
     clearInputChildren(table);
@@ -3738,7 +3746,7 @@
       const newResult = {...result};
       const driver = drivers.filter((driver2) => driver2.driverId === newResult.driverId)[0];
       if (driver) {
-        newResult.driverId = `${driver.forename} ${driver.surname}`;
+        newResult.driverId = `${driver.forename} ${driver.surname} (${driver.number})`;
       } else {
         newResult.driverId = "\\N";
       }
@@ -3751,12 +3759,11 @@
       const resultDict = {
         positionText: 0,
         driverId: 1,
-        number: 2,
-        constructorId: 3,
-        laps: 4,
-        fastestLapTime: 5,
-        fastestLapSpeed: 6,
-        status: 7
+        constructorId: 2,
+        laps: 3,
+        fastestLapTime: 4,
+        fastestLapSpeed: 5,
+        status: 6
       };
       const orderedArr = new Array(8);
       for (const property in newResult) {
