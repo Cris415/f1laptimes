@@ -51,7 +51,7 @@ export function reduceRaceYears(races) {
     if (
       !yearsArr.includes(currVal.year) &&
       currVal.year > "1995" &&
-      currVal.year <= "2023"
+      currVal.year <= "2022"
     ) {
       return [...yearsArr, currVal.year];
     } else {

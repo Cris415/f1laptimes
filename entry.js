@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   changeThemeButton();
   const selection = {
     raceId: "1098",
-    year: "2023",
+    year: "2022",
     driver1Id: "1",
     driver2Id: "844",
   };
