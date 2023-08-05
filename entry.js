@@ -6,7 +6,7 @@ import changeThemeButton from "./src/changeThemeButton/changeThemeButton";
 document.addEventListener("DOMContentLoaded", async () => {
   changeThemeButton();
   const selection = {
-    raceId: "1098",
+    raceId: "1074",
     year: "2022",
     driver1Id: "1",
     driver2Id: "844",
